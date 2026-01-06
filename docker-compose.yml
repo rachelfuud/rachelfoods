@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: rachelfood-postgres
+    environment:
+      POSTGRES_USER: rachelfood
+      POSTGRES_PASSWORD: rachelfood
+      POSTGRES_DB: rachelfood
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  # Backend service (uncomment when ready)
+  # backend:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile
+  #   container_name: rachelfood-backend
+  #   environment:
+  #     DATABASE_URL: postgresql://rachelfood:rachelfood@postgres:5432/rachelfood
+  #     JWT_SECRET: your-secret-key
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - postgres
+  #   restart: unless-stopped
+
+  # Frontend service (uncomment when ready)
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   container_name: rachelfood-frontend
+  #   ports:
+  #     - "3001:3000"
+  #   restart: unless-stopped
+
+volumes:
+  postgres_data:

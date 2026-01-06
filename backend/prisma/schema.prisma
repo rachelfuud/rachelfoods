@@ -1,0 +1,778 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model categories {
+  id               String         @id
+  name             String         @unique
+  slug             String         @unique
+  description      String?
+  parentId         String?
+  displayOrder     Int            @default(0)
+  status           CategoryStatus @default(ACTIVE)
+  imageUrl         String?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime
+  deletedAt        DateTime?
+  categories       categories?    @relation("categoriesTocategories", fields: [parentId], references: [id])
+  other_categories categories[]   @relation("categoriesTocategories")
+  order_items      order_items[]
+  products         products[]
+
+  @@index([displayOrder])
+  @@index([parentId])
+  @@index([slug])
+  @@index([status])
+}
+
+model custom_order_items {
+  id              String           @id
+  orderId         String
+  itemName        String
+  description     String?
+  quantity        Int
+  unit            String
+  estimatedPrice  Decimal?         @db.Decimal(10, 2)
+  approvedPrice   Decimal?         @db.Decimal(10, 2)
+  status          CustomItemStatus @default(PENDING)
+  approvedAt      DateTime?
+  approvedBy      String?
+  rejectedAt      DateTime?
+  rejectionReason String?
+  sellerNotes     String?
+  orders          orders           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@index([status])
+}
+
+model delivery_agents {
+  id                   String                 @id
+  userId               String                 @unique
+  agentCode            String                 @unique
+  vehicleType          String?
+  vehicleNumber        String?
+  licenseNumber        String?
+  serviceZipCodes      String[]
+  maxDeliveryDistance  Decimal?               @db.Decimal(10, 2)
+  isAvailable          Boolean                @default(true)
+  status               DeliveryAgentStatus    @default(ACTIVE)
+  totalDeliveries      Int                    @default(0)
+  successfulDeliveries Int                    @default(0)
+  averageRating        Decimal?               @db.Decimal(3, 2)
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime
+  users                users                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shipping_assignments shipping_assignments[]
+
+  @@index([agentCode])
+  @@index([isAvailable])
+  @@index([status])
+  @@index([userId])
+}
+
+model ledger_entries {
+  id             String          @id
+  walletId       String
+  amount         Decimal         @db.Decimal(15, 2)
+  entryType      LedgerEntryType
+  description    String
+  transactionId  String
+  paymentId      String?
+  orderId        String?
+  refundId       String?
+  idempotencyKey String?         @unique
+  createdAt      DateTime        @default(now())
+  createdBy      String?
+  orders         orders?         @relation(fields: [orderId], references: [id])
+  payments       payments?       @relation(fields: [paymentId], references: [id])
+  refunds        refunds?        @relation(fields: [refundId], references: [id])
+  wallets        wallets         @relation(fields: [walletId], references: [id])
+
+  @@index([createdAt])
+  @@index([orderId])
+  @@index([paymentId])
+  @@index([transactionId])
+  @@index([walletId, amount])
+  @@index([walletId])
+}
+
+model order_items {
+  id            String      @id
+  orderId       String
+  productId     String?
+  categoryId    String?
+  productName   String
+  productPrice  Decimal     @db.Decimal(10, 2)
+  productWeight Decimal     @db.Decimal(10, 2)
+  productUnit   String
+  quantity      Int
+  subtotal      Decimal     @db.Decimal(10, 2)
+  categories    categories? @relation(fields: [categoryId], references: [id])
+  orders        orders      @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  products      products?   @relation(fields: [productId], references: [id])
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+model orders {
+  id                     String                 @id
+  orderNumber            String                 @unique
+  buyerId                String
+  deliveryAddress        String
+  deliveryCity           String
+  deliveryState          String?
+  deliveryZipCode        String?
+  deliveryPhone          String
+  deliveryNotes          String?
+  subtotal               Decimal                @db.Decimal(10, 2)
+  shippingCost           Decimal                @db.Decimal(10, 2)
+  totalCost              Decimal                @db.Decimal(10, 2)
+  totalWeight            Decimal                @db.Decimal(10, 2)
+  distance               Decimal?               @db.Decimal(10, 2)
+  shippingProvider       String?
+  shippingOverride       Boolean                @default(false)
+  shippingOverrideReason String?
+  paymentMethod          PaymentMethod
+  paymentStatus          PaymentStatus          @default(PENDING)
+  paidAt                 DateTime?
+  status                 OrderStatus            @default(PENDING)
+  confirmedAt            DateTime?
+  confirmedBy            String?
+  shippedAt              DateTime?
+  deliveredAt            DateTime?
+  completedAt            DateTime?
+  cancelledAt            DateTime?
+  cancellationReason     String?
+  expectedDeliveryDate   DateTime?
+  actualDeliveryDate     DateTime?
+  isKitchenRefill        Boolean                @default(false)
+  refillType             RefillType?
+  refillStartDate        DateTime?
+  refillEndDate          DateTime?
+  eventDescription       String?
+  createdAt              DateTime               @default(now())
+  updatedAt              DateTime
+  custom_order_items     custom_order_items[]
+  ledger_entries         ledger_entries[]
+  order_items            order_items[]
+  users                  users                  @relation(fields: [buyerId], references: [id])
+  payments               payments?
+  refunds                refunds[]
+  reviews                reviews?
+  shipping_assignments   shipping_assignments[]
+
+  @@index([buyerId])
+  @@index([createdAt])
+  @@index([isKitchenRefill])
+  @@index([orderNumber])
+  @@index([paymentStatus])
+  @@index([status])
+}
+
+model payments {
+  id                                      String           @id
+  orderId                                 String           @unique
+  amount                                  Decimal          @db.Decimal(15, 2)
+  paymentMethod                           String
+  lifecycle                               PaymentLifecycle @default(INITIATED)
+  payerWalletId                           String
+  payeeWalletId                           String
+  platformFeeAmount                       Decimal?         @db.Decimal(15, 2)
+  platformFeePercent                      Decimal?         @db.Decimal(5, 2)
+  confirmedBy                             String?
+  confirmedAt                             DateTime?
+  gatewayTransactionId                    String?          @unique
+  gatewayResponse                         String?
+  idempotencyKey                          String?          @unique
+  initiatedAt                             DateTime         @default(now())
+  capturedAt                              DateTime?
+  createdAt                               DateTime         @default(now())
+  updatedAt                               DateTime
+  ledger_entries                          ledger_entries[]
+  orders                                  orders           @relation(fields: [orderId], references: [id])
+  wallets_payments_payeeWalletIdTowallets wallets          @relation("payments_payeeWalletIdTowallets", fields: [payeeWalletId], references: [id])
+  wallets_payments_payerWalletIdTowallets wallets          @relation("payments_payerWalletIdTowallets", fields: [payerWalletId], references: [id])
+  refunds                                 refunds[]
+
+  @@index([confirmedBy])
+  @@index([lifecycle])
+  @@index([orderId])
+  @@index([paymentMethod])
+}
+
+model permissions {
+  id               String             @id @default(uuid())
+  action           String
+  resource         String
+  description      String?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  role_permissions role_permissions[]
+
+  @@unique([action, resource])
+  @@index([action])
+  @@index([resource])
+}
+
+model platform_fee_config {
+  id          String   @id
+  name        String
+  description String?
+  categoryId  String?
+  sellerId    String?
+  minAmount   Decimal? @db.Decimal(15, 2)
+  maxAmount   Decimal? @db.Decimal(15, 2)
+  feeType     FeeType
+  feeValue    Decimal  @db.Decimal(10, 2)
+  priority    Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime
+  createdBy   String?
+  updatedBy   String?
+
+  @@index([categoryId])
+  @@index([isActive])
+  @@index([priority])
+  @@index([sellerId])
+}
+
+model products {
+  id          String        @id
+  name        String
+  slug        String        @unique
+  description String?
+  price       Decimal       @db.Decimal(10, 2)
+  unit        String
+  stock       Int           @default(0)
+  weight      Decimal       @db.Decimal(10, 2)
+  perishable  Boolean       @default(false)
+  categoryId  String?
+  status      ProductStatus @default(DRAFT)
+  images      String[]
+  createdBy   String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime
+  deletedAt   DateTime?
+  order_items order_items[]
+  categories  categories?   @relation(fields: [categoryId], references: [id])
+
+  @@index([categoryId])
+  @@index([createdBy])
+  @@index([slug])
+  @@index([status])
+}
+
+model referral_config {
+  id                String   @id
+  minOrdersRequired Int      @default(1)
+  rewardType        String
+  rewardValue       Decimal  @db.Decimal(10, 2)
+  rewardExpiryDays  Int      @default(30)
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime
+  updatedBy         String?
+}
+
+model referrals {
+  id                                    String         @id
+  referrerId                            String
+  referredUserId                        String?
+  referralCode                          String         @unique
+  referralLink                          String?
+  referredEmail                         String?
+  status                                ReferralStatus @default(PENDING)
+  qualifiedAt                           DateTime?
+  rewardedAt                            DateTime?
+  completedOrdersCount                  Int            @default(0)
+  rewardType                            String?
+  rewardValue                           Decimal?       @db.Decimal(10, 2)
+  rewardApplied                         Boolean        @default(false)
+  rewardExpiry                          DateTime?
+  createdAt                             DateTime       @default(now())
+  updatedAt                             DateTime
+  users_referrals_referredUserIdTousers users?         @relation("referrals_referredUserIdTousers", fields: [referredUserId], references: [id])
+  users_referrals_referrerIdTousers     users          @relation("referrals_referrerIdTousers", fields: [referrerId], references: [id], onDelete: Cascade)
+
+  @@index([referralCode])
+  @@index([referredUserId])
+  @@index([referrerId])
+  @@index([status])
+}
+
+model refunds {
+  id                                         String           @id
+  paymentId                                  String
+  orderId                                    String
+  amount                                     Decimal          @db.Decimal(15, 2)
+  reason                                     String
+  description                                String?
+  evidence                                   String[]
+  status                                     RefundStatus     @default(PENDING)
+  refundPlatformFee                          Boolean          @default(false)
+  issuerWalletId                             String
+  recipientWalletId                          String
+  requestedBy                                String
+  requestedAt                                DateTime         @default(now())
+  approvedBy                                 String?
+  approvedAt                                 DateTime?
+  rejectedBy                                 String?
+  rejectedAt                                 DateTime?
+  rejectionReason                            String?
+  processedAt                                DateTime?
+  completedAt                                DateTime?
+  failureReason                              String?
+  createdAt                                  DateTime         @default(now())
+  updatedAt                                  DateTime
+  ledger_entries                             ledger_entries[]
+  wallets_refunds_issuerWalletIdTowallets    wallets          @relation("refunds_issuerWalletIdTowallets", fields: [issuerWalletId], references: [id])
+  orders                                     orders           @relation(fields: [orderId], references: [id])
+  payments                                   payments         @relation(fields: [paymentId], references: [id])
+  wallets_refunds_recipientWalletIdTowallets wallets          @relation("refunds_recipientWalletIdTowallets", fields: [recipientWalletId], references: [id])
+
+  @@index([orderId])
+  @@index([paymentId])
+  @@index([requestedBy])
+  @@index([status])
+}
+
+model reviews {
+  id                        String       @id
+  orderId                   String       @unique
+  buyerId                   String
+  productQualityRating      Int
+  deliveryExperienceRating  Int
+  overallSatisfactionRating Int
+  recommendationScore       Int
+  feedback                  String?
+  status                    ReviewStatus @default(PENDING)
+  submittedAt               DateTime?
+  moderatedAt               DateTime?
+  moderatedBy               String?
+  isFlagged                 Boolean      @default(false)
+  isHidden                  Boolean      @default(false)
+  moderationNotes           String?
+  createdAt                 DateTime     @default(now())
+  updatedAt                 DateTime
+  users                     users        @relation(fields: [buyerId], references: [id], onDelete: Cascade)
+  orders                    orders       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([buyerId])
+  @@index([isFlagged])
+  @@index([orderId])
+  @@index([status])
+}
+
+model role_permissions {
+  id           String      @id @default(uuid())
+  roleId       String
+  permissionId String
+  grantedAt    DateTime    @default(now())
+  grantedBy    String?
+  permissions  permissions @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  roles        roles       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionId])
+  @@index([permissionId])
+  @@index([roleId])
+}
+
+model roles {
+  id               String             @id @default(uuid())
+  name             String             @unique
+  slug             String             @unique
+  description      String?
+  isActive         Boolean            @default(true)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  role_permissions role_permissions[]
+  user_roles       user_roles[]
+
+  @@index([isActive])
+  @@index([slug])
+}
+
+model shipping_assignments {
+  id                    String           @id
+  orderId               String
+  agentId               String?
+  assignedAt            DateTime         @default(now())
+  assignedBy            String?
+  status                ShippingStatus   @default(PENDING)
+  acceptedAt            DateTime?
+  pickedUpAt            DateTime?
+  inTransitAt           DateTime?
+  deliveredAt           DateTime?
+  deliveryNotes         String?
+  deliveryProof         String?
+  failureReason         String?
+  estimatedDeliveryTime DateTime?
+  actualDeliveryTime    DateTime?
+  delivery_agents       delivery_agents? @relation(fields: [agentId], references: [id])
+  orders                orders           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  shipping_logs         shipping_logs[]
+
+  @@index([agentId])
+  @@index([agentId, status, assignedAt])
+  @@index([assignedAt])
+  @@index([orderId])
+  @@index([status])
+}
+
+model shipping_logs {
+  id                   String               @id
+  assignmentId         String
+  fromStatus           ShippingStatus?
+  toStatus             ShippingStatus
+  changedBy            String?
+  notes                String?
+  location             String?
+  createdAt            DateTime             @default(now())
+  shipping_assignments shipping_assignments @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+
+  @@index([assignmentId])
+  @@index([createdAt])
+  @@index([toStatus])
+}
+
+model user_roles {
+  id         String   @id
+  userId     String
+  roleId     String
+  assignedAt DateTime @default(now())
+  assignedBy String?
+  roles      roles    @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  users      users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roleId])
+  @@index([roleId])
+  @@index([userId])
+}
+
+model users {
+  id                                        String           @id
+  email                                     String           @unique
+  password                                  String
+  firstName                                 String?
+  lastName                                  String?
+  phone                                     String?
+  status                                    UserStatus       @default(ACTIVE)
+  createdAt                                 DateTime         @default(now())
+  updatedAt                                 DateTime
+  lastLogin                                 DateTime?
+  delivery_agents                           delivery_agents?
+  orders                                    orders[]
+  referrals_referrals_referredUserIdTousers referrals[]      @relation("referrals_referredUserIdTousers")
+  referrals_referrals_referrerIdTousers     referrals[]      @relation("referrals_referrerIdTousers")
+  reviews                                   reviews[]
+  user_roles                                user_roles[]
+  wallets                                   wallets[]
+  withdrawals                               withdrawals[]
+
+  @@index([email])
+  @@index([status])
+}
+
+model wallets {
+  id                                         String           @id @default(uuid())
+  userId                                     String?
+  walletType                                 WalletType
+  walletStatus                               WalletStatus     @default(ACTIVE)
+  walletCode                                 String?          @unique
+  currency                                   String           @default("INR")
+  freezeReason                               String?
+  frozenAt                                   DateTime?
+  frozenBy                                   String?
+  createdAt                                  DateTime         @default(now())
+  updatedAt                                  DateTime         @updatedAt
+  ledger_entries                             ledger_entries[]
+  payments_payments_payeeWalletIdTowallets   payments[]       @relation("payments_payeeWalletIdTowallets")
+  payments_payments_payerWalletIdTowallets   payments[]       @relation("payments_payerWalletIdTowallets")
+  refunds_refunds_issuerWalletIdTowallets    refunds[]        @relation("refunds_issuerWalletIdTowallets")
+  refunds_refunds_recipientWalletIdTowallets refunds[]        @relation("refunds_recipientWalletIdTowallets")
+  withdrawals                                withdrawals[]
+  users                                      users?           @relation(fields: [userId], references: [id])
+
+  @@unique([userId, walletType])
+  @@index([userId])
+  @@index([walletCode])
+  @@index([walletType])
+}
+
+enum CategoryStatus {
+  ACTIVE
+  DISABLED
+}
+
+enum CustomItemStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum DeliveryAgentStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+enum FeeType {
+  PERCENTAGE
+  FLAT
+  TIERED
+}
+
+enum LedgerEntryType {
+  PAYMENT_DEBIT
+  PAYMENT_CREDIT
+  PLATFORM_FEE_DEBIT
+  PLATFORM_FEE_CREDIT
+  REFUND_DEBIT
+  REFUND_CREDIT
+  ADJUSTMENT_DEBIT
+  ADJUSTMENT_CREDIT
+  REFERRAL_CREDIT
+  REFERRAL_DEBIT
+  WITHDRAWAL_DEBIT
+  WITHDRAWAL_FEE
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PAID
+  PREPARING
+  SHIPPING
+  DELIVERED
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentLifecycle {
+  INITIATED
+  CAPTURED
+  REFUNDED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  COD
+  PREPAID
+  CHECKOUT
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  DISABLED
+  ARCHIVED
+}
+
+enum ReferralStatus {
+  PENDING
+  QUALIFIED
+  REWARDED
+  EXPIRED
+}
+
+enum RefillType {
+  WEEKLY
+  MONTHLY
+  EVENT
+}
+
+enum RefundStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum ReviewStatus {
+  PENDING
+  SUBMITTED
+  MODERATED
+}
+
+enum ShippingStatus {
+  PENDING
+  ASSIGNED
+  ACCEPTED
+  PICKED_UP
+  IN_TRANSIT
+  DELIVERED
+  FAILED
+  CANCELLED
+}
+
+enum UserStatus {
+  ACTIVE
+  DISABLED
+  PENDING
+}
+
+enum WalletStatus {
+  ACTIVE
+  SUSPENDED
+  FROZEN
+  CLOSED
+}
+
+enum WalletType {
+  USER
+  PLATFORM
+  ESCROW
+}
+
+enum WebhookDeliveryStatus {
+  PENDING
+  SENDING
+  DELIVERED
+  FAILED
+  CANCELLED
+}
+
+enum WithdrawalStatus {
+  REQUESTED
+  APPROVED
+  REJECTED
+  CANCELLED
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+model withdrawals {
+  id                  String           @id
+  userId              String
+  walletId            String
+  requestedAmount     Decimal          @db.Decimal(10, 2)
+  feeAmount           Decimal          @db.Decimal(10, 2)
+  netAmount           Decimal          @db.Decimal(10, 2)
+  policyType          String
+  feePercentage       Decimal?         @db.Decimal(5, 2)
+  flatFee             Decimal?         @db.Decimal(10, 2)
+  maxCap              Decimal?         @db.Decimal(10, 2)
+  status              WithdrawalStatus @default(REQUESTED)
+  bankAccount         String
+  accountHolder       String
+  bankName            String?
+  ifscCode            String?
+  requestedAt         DateTime         @default(now())
+  approvedAt          DateTime?
+  approvedBy          String?
+  rejectedAt          DateTime?
+  rejectedBy          String?
+  rejectionReason     String?
+  cancelledAt         DateTime?
+  cancelledBy         String?
+  cancellationReason  String?
+  processingStartedAt DateTime?
+  completedAt         DateTime?
+  failedAt            DateTime?
+  failureReason       String?
+  payoutProvider      String?
+  payoutTransactionId String?
+  payoutReference     String?
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime
+  users               users            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  wallets             wallets          @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@index([walletId, status])
+  @@index([status, requestedAt])
+  @@index([approvedAt])
+}
+
+model webhook_subscriptions {
+  id          String   @id @default(uuid())
+  url         String
+  eventTypes  String[]
+  secret      String
+  isActive    Boolean  @default(true)
+  description String?
+  createdBy   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  deliveries webhook_deliveries[]
+
+  @@index([isActive])
+}
+
+model webhook_deliveries {
+  id                    String                @id @default(uuid())
+  webhookSubscriptionId String
+  subscription          webhook_subscriptions @relation(fields: [webhookSubscriptionId], references: [id], onDelete: Cascade)
+  eventId               String
+  eventType             String
+  payload               Json
+  status                WebhookDeliveryStatus @default(PENDING)
+  attemptCount          Int                   @default(0)
+  maxRetries            Int                   @default(5)
+  createdAt             DateTime              @default(now())
+  lastAttemptAt         DateTime?
+  nextRetryAt           DateTime?
+  deliveredAt           DateTime?
+  responseStatus        Int?
+  responseBody          String?
+  errorMessage          String?
+
+  @@index([webhookSubscriptionId, status])
+  @@index([status, nextRetryAt])
+  @@index([eventType])
+  @@index([createdAt])
+}
+
+model withdrawal_policies {
+  id                  String   @id @default(uuid())
+  scopeType           String // GLOBAL | ROLE
+  role                String? // SELLER | AGENT | null
+  currency            String
+  dailyAmountLimit    Decimal? @db.Decimal(15, 2)
+  weeklyAmountLimit   Decimal? @db.Decimal(15, 2)
+  monthlyAmountLimit  Decimal? @db.Decimal(15, 2)
+  dailyCountLimit     Int?
+  weeklyCountLimit    Int?
+  monthlyCountLimit   Int?
+  maxSingleWithdrawal Decimal? @db.Decimal(15, 2)
+  minSingleWithdrawal Decimal? @db.Decimal(15, 2)
+  enabled             Boolean  @default(true)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@unique([scopeType, role, currency])
+  @@index([scopeType, enabled])
+  @@index([role, enabled])
+}
+
+model theme_config {
+  id             String   @id @default(uuid())
+  primaryColor   String   @default("#2563eb") // blue-600
+  secondaryColor String   @default("#7c3aed") // violet-600
+  accentColor    String   @default("#f59e0b") // amber-500
+  defaultMode    String   @default("light") // light | dark
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([isActive])
+}

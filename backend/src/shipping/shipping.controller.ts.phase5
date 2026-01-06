@@ -1,0 +1,133 @@
+import {
+    Controller,
+    Get,
+    Post,
+    Body,
+    Patch,
+    Param,
+    Query,
+    UseGuards,
+    Request,
+} from '@nestjs/common';
+import { ShippingService } from './shipping.service';
+import { AssignOrderDto } from './dto/assign-order.dto';
+import { UpdateShippingStatusDto } from './dto/update-shipping-status.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { PermissionsGuard } from '../auth/permissions.guard';
+import { Permissions } from '../auth/decorators/permissions.decorator';
+import { PrismaService } from '../prisma/prisma.service';
+
+@Controller('shipping')
+@UseGuards(JwtAuthGuard, PermissionsGuard)
+export class ShippingController {
+    constructor(
+        private readonly shippingService: ShippingService,
+        private prisma: PrismaService,
+    ) { }
+
+    /**
+     * Assign order to delivery agent
+     * POST /shipping/assign
+     */
+    @Post('assign')
+    @Permissions('shipping.assign')
+    async assignOrder(@Body() assignDto: AssignOrderDto, @Request() req: any) {
+        return this.shippingService.assignOrder(assignDto, req.user.userId);
+    }
+
+    /**
+     * Get all shipping assignments
+     * GET /shipping/assignments
+     */
+    @Get('assignments')
+    @Permissions('shipping.view')
+    async findAll(@Query() query: any) {
+        return this.shippingService.findAll(query);
+    }
+
+    /**
+     * Get my assignments (for delivery agents)
+     * GET /shipping/my-assignments
+     */
+    @Get('my-assignments')
+    @Permissions('shipping.view')
+    async getMyAssignments(@Request() req: any, @Query() query: any) {
+        // First, get the agent profile for this user
+        const agent = await this.prisma.deliveryAgent.findUnique({
+            where: { userId: req.user.userId },
+            select: { id: true },
+        });
+
+        if (!agent) {
+            return [];
+        }
+
+        return this.shippingService.findByAgent(agent.id, query);
+    }
+
+    /**
+     * Get shipping assignment by ID
+     * GET /shipping/assignments/:id
+     */
+    @Get('assignments/:id')
+    @Permissions('shipping.view')
+    async findOne(@Param('id') id: string) {
+        return this.shippingService.findOne(id);
+    }
+
+    /**
+     * Update shipping status
+     * PATCH /shipping/assignments/:id/status
+     */
+    @Patch('assignments/:id/status')
+    @Permissions('shipping.update_status')
+    async updateStatus(
+        @Param('id') id: string,
+        @Body() updateDto: UpdateShippingStatusDto,
+        @Request() req: any,
+    ) {
+        return this.shippingService.updateStatus(
+            id,
+            updateDto,
+            req.user.userId,
+            req.user.roles || [],
+        );
+    }
+
+    /**
+     * Cancel shipping assignment
+     * POST /shipping/assignments/:id/cancel
+     */
+    @Post('assignments/:id/cancel')
+    @Permissions('shipping.assign')
+    async cancelAssignment(
+        @Param('id') id: string,
+        @Body('reason') reason: string,
+        @Request() req: any,
+    ) {
+        return this.shippingService.cancelAssignment(id, reason, req.user.userId);
+    }
+
+    /**
+     * Get shipping history for an order
+     * GET /shipping/orders/:orderId/history
+     */
+    @Get('orders/:orderId/history')
+    @Permissions('shipping.view')
+    async getOrderHistory(@Param('orderId') orderId: string) {
+        return this.shippingService.getOrderShippingHistory(orderId);
+    }
+
+    /**
+     * Get assignments by agent
+     * GET /shipping/agents/:agentId/assignments
+     */
+    @Get('agents/:agentId/assignments')
+    @Permissions('shipping.view')
+    async getAgentAssignments(
+        @Param('agentId') agentId: string,
+        @Query() query: any,
+    ) {
+        return this.shippingService.findByAgent(agentId, query);
+    }
+}
