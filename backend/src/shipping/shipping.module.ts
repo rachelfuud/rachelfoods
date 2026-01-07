@@ -6,9 +6,10 @@ import { DeliveryAgentController } from './delivery-agent.controller';
 import { PrismaModule } from '../prisma/prisma.module';
 import { OrderModule } from '../orders/order.module';
 import { PaymentsModule } from '../payments/payments.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-    imports: [PrismaModule, OrderModule, PaymentsModule],
+    imports: [PrismaModule, OrderModule, PaymentsModule, AuthModule],
     // Controllers temporarily disabled until Phase 5
     // controllers: [DeliveryAgentController, ShippingController],
     controllers: [DeliveryAgentController], // Only DeliveryAgentController active for now

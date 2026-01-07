@@ -10,8 +10,9 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  turbopack: {
-    root: 'C:/Projects/Dev/Rachel Foods/frontend',
+  // Disable turbopack to avoid Windows resource errors
+  experimental: {
+    turbo: false,
   },
 };
 

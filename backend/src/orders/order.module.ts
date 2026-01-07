@@ -10,9 +10,10 @@ import { CustomShippingProvider } from './shipping/custom-shipping.provider';
 import { PrismaModule } from '../prisma/prisma.module';
 import { ReviewModule } from '../reviews/review.module';
 import { ReviewService } from '../reviews/review.service';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-    imports: [PrismaModule, forwardRef(() => ReviewModule)],
+    imports: [PrismaModule, forwardRef(() => ReviewModule), AuthModule],
     controllers: [OrderController],
     providers: [
         OrderService,

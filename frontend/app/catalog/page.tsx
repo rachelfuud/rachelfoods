@@ -8,17 +8,20 @@ import Link from 'next/link';
 export default async function CatalogPage({
     searchParams,
 }: {
-    searchParams: { category?: string; featured?: string };
+    searchParams: Promise<{ category?: string; featured?: string }>;
 }) {
+    // Await searchParams in Next.js 16
+    const params = await searchParams;
+
     // Fetch categories and products from backend
     let categories: Category[] = [];
     let products: Product[] = [];
 
     try {
         categories = await api.getCategories();
-        products = await api.getProducts(searchParams.category);
+        products = await api.getProducts(params.category);
 
-        if (searchParams.featured === 'true') {
+        if (params.featured === 'true') {
             products = products.filter((p: Product) => p.isFeatured);
         }
     } catch (error) {
@@ -45,8 +48,8 @@ export default async function CatalogPage({
                             <Link
                                 href="/catalog"
                                 className={`px-4 py-2 rounded-lg border transition-colors ${!searchParams.category
-                                        ? 'bg-primary text-white border-primary'
-                                        : 'border-border hover:border-primary'
+                                    ? 'bg-primary text-white border-primary'
+                                    : 'border-border hover:border-primary'
                                     }`}
                             >
                                 All Products
@@ -56,8 +59,8 @@ export default async function CatalogPage({
                                     key={category.id}
                                     href={`/catalog?category=${category.slug}`}
                                     className={`px-4 py-2 rounded-lg border transition-colors ${searchParams.category === category.slug
-                                            ? 'bg-primary text-white border-primary'
-                                            : 'border-border hover:border-primary'
+                                        ? 'bg-primary text-white border-primary'
+                                        : 'border-border hover:border-primary'
                                         }`}
                                 >
                                     {category.name}
@@ -72,8 +75,8 @@ export default async function CatalogPage({
                     <Link
                         href="/catalog?featured=true"
                         className={`px-4 py-2 rounded-lg border transition-colors ${searchParams.featured === 'true'
-                                ? 'bg-secondary text-white border-secondary'
-                                : 'border-border hover:border-secondary'
+                            ? 'bg-secondary text-white border-secondary'
+                            : 'border-border hover:border-secondary'
                             }`}
                     >
                         ⭐ Featured Only

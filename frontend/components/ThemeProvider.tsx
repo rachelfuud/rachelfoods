@@ -64,6 +64,18 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const [mode, setMode] = useState<'light' | 'dark'>('light');
 
     useEffect(() => {
+        // Default theme as fallback
+        const defaultTheme: ThemeConfig = {
+            id: 'default',
+            primaryColor: '#2563eb',
+            secondaryColor: '#7c3aed',
+            accentColor: '#f59e0b',
+            defaultMode: 'light',
+            isActive: true,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        };
+
         // Load theme from backend on mount
         api.getTheme()
             .then((themeData: ThemeConfig) => {
@@ -77,7 +89,10 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
                 }
             })
             .catch((error) => {
-                console.error('Failed to load theme:', error);
+                console.error('Failed to load theme from backend, using default theme:', error);
+                // Use default theme if backend is unavailable
+                setTheme(defaultTheme);
+                applyThemeToDOM(defaultTheme);
             });
     }, []);
 

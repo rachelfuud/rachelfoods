@@ -8,9 +8,10 @@ import { RefundService } from './refund.service';
 import { PlatformWalletInitializer } from './platform-wallet-initializer.service';
 import { PaymentController } from './payment.controller';
 import { RefundController } from './refund.controller';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-    imports: [PrismaModule],
+    imports: [PrismaModule, AuthModule],
     controllers: [PaymentController, RefundController],
     providers: [
         LedgerService,
