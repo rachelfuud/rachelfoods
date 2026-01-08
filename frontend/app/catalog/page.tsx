@@ -95,7 +95,7 @@ export default async function CatalogPage({
                         <div className="text-6xl mb-4">🍽️</div>
                         <h3 className="text-2xl font-bold mb-2">No products found</h3>
                         <p className="text-foreground/70 mb-6">
-                            {searchParams.category
+                            {params.category
                                 ? 'No products in this category yet'
                                 : 'Products will be displayed here once added by the seller'}
                         </p>
