@@ -219,9 +219,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: [backend-build, frontend-build]
     if: github.ref == 'refs/heads/develop'
-    environment:
-      name: staging
-      url: https://staging.rachelfoods.com
 
     steps:
       - name: Checkout code
@@ -249,9 +246,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: [backend-build, frontend-build, security-audit]
     if: github.ref == 'refs/heads/main'
-    environment:
-      name: production
-      url: https://rachelfoods.com
 
     steps:
       - name: Checkout code
