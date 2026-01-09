@@ -10,7 +10,7 @@ export default function Home() {
 
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 py-20">
+        <section className="bg-linear-to-br from-primary/10 via-secondary/10 to-accent/10 py-20">
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row items-center justify-between gap-12">
               <div className="flex-1 text-center md:text-left">
