@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { formatCurrency } from '@/lib/currency';
 import { useRouter } from 'next/navigation';
 
 export default function CheckoutPage() {
@@ -164,15 +165,15 @@ export default function CheckoutPage() {
                             <div className="space-y-3 mb-6">
                                 <div className="flex justify-between">
                                     <span className="text-foreground/70">Subtotal</span>
-                                    <span className="font-semibold">$0.00</span>
+                                    <span className="font-semibold">{formatCurrency(0)}</span>
                                 </div>
                                 <div className="flex justify-between">
                                     <span className="text-foreground/70">Tax</span>
-                                    <span className="font-semibold">$0.00</span>
+                                    <span className="font-semibold">{formatCurrency(0)}</span>
                                 </div>
                                 <div className="border-t border-border pt-3 flex justify-between text-lg">
                                     <span className="font-bold">Total</span>
-                                    <span className="font-bold text-primary">$0.00</span>
+                                    <span className="font-bold text-primary">{formatCurrency(0)}</span>
                                 </div>
                             </div>
 

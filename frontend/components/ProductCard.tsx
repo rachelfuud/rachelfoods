@@ -3,6 +3,7 @@
 import { Product } from '@/lib/types';
 import Link from 'next/link';
 import Image from 'next/image';
+import { formatCurrency } from '@/lib/currency';
 
 interface ProductCardProps {
     product: Product;
@@ -59,11 +60,11 @@ export function ProductCard({ product }: ProductCardProps) {
 
                 <div className="flex items-baseline gap-2 mb-2">
                     <span className="text-2xl font-bold text-primary">
-                        ${price.toFixed(2)}
+                        {formatCurrency(price)}
                     </span>
                     {hasDiscount && comparePrice && (
                         <span className="text-sm text-foreground/50 line-through">
-                            ${comparePrice.toFixed(2)}
+                            {formatCurrency(comparePrice)}
                         </span>
                     )}
                     <span className="text-sm text-foreground/70">/ {product.unit}</span>

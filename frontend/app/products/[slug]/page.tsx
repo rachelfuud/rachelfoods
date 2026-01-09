@@ -2,6 +2,7 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { api } from '@/lib/api';
 import { Product } from '@/lib/types';
+import { formatCurrency } from '@/lib/currency';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -97,11 +98,11 @@ export default async function ProductPage({
 
                         <div className="flex items-baseline gap-3 mb-6">
                             <span className="text-4xl font-bold text-primary">
-                                ${product.price.toFixed(2)}
+                                {formatCurrency(product.price)}
                             </span>
                             {hasDiscount && (
                                 <span className="text-xl text-foreground/50 line-through">
-                                    ${product.compareAtPrice!.toFixed(2)}
+                                    {formatCurrency(product.compareAtPrice!)}
                                 </span>
                             )}
                             <span className="text-lg text-foreground/70">/ {product.unit}</span>
@@ -109,8 +110,8 @@ export default async function ProductPage({
 
                         <div className="mb-6">
                             <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg font-semibold ${product.isAvailable
-                                    ? 'bg-green-50 text-green-700 border border-green-200'
-                                    : 'bg-red-50 text-red-700 border border-red-200'
+                                ? 'bg-green-50 text-green-700 border border-green-200'
+                                : 'bg-red-50 text-red-700 border border-red-200'
                                 }`}>
                                 {product.isAvailable ? (
                                     <>✓ In Stock ({product.stock} available)</>

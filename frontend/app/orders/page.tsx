@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { formatCurrency } from '@/lib/currency';
 import Link from 'next/link';
 import { Order } from '@/lib/types';
 
@@ -60,12 +61,12 @@ export default function OrdersPage() {
                                     </div>
 
                                     <span className={`px-4 py-2 rounded-full text-sm font-semibold ${order.status === 'PENDING'
-                                            ? 'bg-yellow-50 text-yellow-700 border border-yellow-200'
-                                            : order.status === 'CONFIRMED'
-                                                ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                                                : order.status === 'DELIVERED'
-                                                    ? 'bg-green-50 text-green-700 border border-green-200'
-                                                    : 'bg-gray-50 text-gray-700 border border-gray-200'
+                                        ? 'bg-yellow-50 text-yellow-700 border border-yellow-200'
+                                        : order.status === 'CONFIRMED'
+                                            ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                                            : order.status === 'DELIVERED'
+                                                ? 'bg-green-50 text-green-700 border border-green-200'
+                                                : 'bg-gray-50 text-gray-700 border border-gray-200'
                                         }`}>
                                         {order.status}
                                     </span>
@@ -73,7 +74,7 @@ export default function OrdersPage() {
 
                                 <div className="border-t border-border pt-4 mb-4">
                                     <div className="text-2xl font-bold text-primary">
-                                        ${order.totalAmount.toFixed(2)}
+                                        {formatCurrency(order.totalAmount)}
                                     </div>
                                     <p className="text-sm text-foreground/70">
                                         {order.items.length} item(s)

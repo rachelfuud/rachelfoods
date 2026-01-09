@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { formatCurrency } from '@/lib/currency';
 import Link from 'next/link';
 
 interface Order {
@@ -55,8 +56,8 @@ export default function AdminOrdersPage() {
                             key={status}
                             onClick={() => setFilter(status)}
                             className={`px-4 py-2 rounded-lg border transition-colors ${filter === status
-                                    ? 'bg-primary text-white border-primary'
-                                    : 'border-border hover:border-primary'
+                                ? 'bg-primary text-white border-primary'
+                                : 'border-border hover:border-primary'
                                 }`}
                         >
                             {status}
@@ -107,7 +108,7 @@ export default function AdminOrdersPage() {
                             <div className="flex justify-between items-center pt-4 border-t border-border">
                                 <div>
                                     <span className="text-2xl font-bold text-primary">
-                                        ${order.totalAmount.toFixed(2)}
+                                        {formatCurrency(order.totalAmount)}
                                     </span>
                                     <span className="text-sm text-foreground/70 ml-2">
                                         {order.items.length} item(s)

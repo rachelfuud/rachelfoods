@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { formatCurrency } from '@/lib/currency';
 import Link from 'next/link';
 import { CartItem, Product } from '@/lib/types';
 
@@ -72,7 +73,7 @@ export default function CartPage() {
                                     <div className="flex-1">
                                         <h3 className="font-semibold text-lg mb-1">{item.product.name}</h3>
                                         <p className="text-foreground/70 text-sm mb-2">
-                                            ${item.product.price.toFixed(2)} / {item.product.unit}
+                                            {formatCurrency(item.product.price)} / {item.product.unit}
                                         </p>
 
                                         <div className="flex items-center gap-3">
@@ -94,7 +95,7 @@ export default function CartPage() {
 
                                     <div className="text-right">
                                         <div className="font-bold text-lg mb-2">
-                                            ${(item.product.price * item.quantity).toFixed(2)}
+                                            {formatCurrency(item.product.price * item.quantity)}
                                         </div>
                                         <button
                                             onClick={() => removeItem(item.productId)}
@@ -115,15 +116,15 @@ export default function CartPage() {
                                 <div className="space-y-3 mb-6">
                                     <div className="flex justify-between">
                                         <span className="text-foreground/70">Subtotal</span>
-                                        <span className="font-semibold">${subtotal.toFixed(2)}</span>
+                                        <span className="font-semibold">{formatCurrency(subtotal)}</span>
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="text-foreground/70">Tax (10%)</span>
-                                        <span className="font-semibold">${tax.toFixed(2)}</span>
+                                        <span className="font-semibold">{formatCurrency(tax)}</span>
                                     </div>
                                     <div className="border-t border-border pt-3 flex justify-between text-lg">
                                         <span className="font-bold">Total</span>
-                                        <span className="font-bold text-primary">${total.toFixed(2)}</span>
+                                        <span className="font-bold text-primary">{formatCurrency(total)}</span>
                                     </div>
                                 </div>
 
