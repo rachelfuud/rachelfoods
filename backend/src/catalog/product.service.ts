@@ -49,7 +49,7 @@ export class ProductService {
                 updatedAt: new Date(),
             },
             include: {
-                categories: true,
+                category: true,
             },
         });
     }
@@ -78,7 +78,7 @@ export class ProductService {
                 status: { in: statusFilter },
             },
             include: {
-                categories: {
+                category: {
                     select: {
                         id: true,
                         name: true,
@@ -105,7 +105,7 @@ export class ProductService {
                 status: { in: statusFilter },
             },
             include: {
-                categories: {
+                category: {
                     select: {
                         id: true,
                         name: true,
@@ -124,7 +124,7 @@ export class ProductService {
         const product = await this.prisma.products.findUnique({
             where: { id },
             include: {
-                categories: true,
+                category: true,
             },
         });
 
@@ -142,7 +142,7 @@ export class ProductService {
         const product = await this.prisma.products.findUnique({
             where: { slug },
             include: {
-                categories: true,
+                category: true,
             },
         });
 
@@ -201,7 +201,7 @@ export class ProductService {
             where: { id },
             data,
             include: {
-                categories: true,
+                category: true,
             },
         });
     }

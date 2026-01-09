@@ -262,7 +262,7 @@ model products {
   updatedAt   DateTime
   deletedAt   DateTime?
   order_items order_items[]
-  categories  categories?   @relation(fields: [categoryId], references: [id])
+  category    categories?   @relation(fields: [categoryId], references: [id])
 
   @@index([categoryId])
   @@index([createdBy])

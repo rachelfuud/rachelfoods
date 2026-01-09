@@ -45,19 +45,19 @@ const PRODUCTS = [
     { name: 'Fufu', category: 'Grains & Staples', price: 500, unit: 'pack', weight: 0.5, description: 'Traditional fufu flour' },
     { name: 'Tapioca', category: 'Grains & Staples', price: 800, unit: 'kg', weight: 1.0, description: 'Fresh tapioca' },
     { name: 'Ogi', category: 'Grains & Staples', price: 600, unit: 'pack', weight: 0.5, description: 'Fermented cereal pudding' },
-    
+
     // Proteins
     { name: 'Cat Fish', category: 'Proteins', price: 3500, unit: 'kg', weight: 1.0, description: 'Fresh catfish', perishable: true },
     { name: 'Panla', category: 'Proteins', price: 2800, unit: 'kg', weight: 1.0, description: 'Dried Hake fish (Panla)', perishable: true },
     { name: 'Pomo', category: 'Proteins', price: 1500, unit: 'kg', weight: 1.0, description: 'Cow skin (Pomo)', perishable: true },
     { name: 'Kilishi', category: 'Proteins', price: 4000, unit: 'pack', weight: 0.3, description: 'Traditional spiced dried meat' },
-    
+
     // Spices & Ingredients
     { name: 'Cray Fish', category: 'Spices & Ingredients', price: 2000, unit: 'pack', weight: 0.2, description: 'Ground crayfish' },
     { name: 'Egusi', category: 'Spices & Ingredients', price: 1200, unit: 'pack', weight: 0.5, description: 'Melon seeds (Egusi)' },
     { name: 'Iru (Locust Beans)', category: 'Spices & Ingredients', price: 800, unit: 'pack', weight: 0.2, description: 'Fermented locust beans' },
     { name: 'Pepper Soup Ingredients', category: 'Spices & Ingredients', price: 1500, unit: 'pack', weight: 0.3, description: 'Complete pepper soup spice mix' },
-    
+
     // Ready Mixes
     { name: 'Ayamase Mix', category: 'Ready Mixes', price: 2500, unit: 'pack', weight: 0.5, description: 'Traditional Ayamase sauce ingredients', perishable: true },
     { name: 'Ofada Mix', category: 'Ready Mixes', price: 3000, unit: 'pack', weight: 0.5, description: 'Complete Ofada sauce ingredients', perishable: true },
