@@ -18,7 +18,7 @@ import { PermissionsGuard } from '../auth/permissions.guard';
 import { Permissions } from '../auth/decorators/permissions.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 
-@Controller('products')
+@Controller('api/products')
 export class ProductController {
     constructor(private readonly productService: ProductService) { }
 
