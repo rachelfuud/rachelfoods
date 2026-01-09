@@ -61,12 +61,13 @@ export class SeedController {
         for (const product of PRODUCTS) {
             const exists = await this.prisma.products.findFirst({ where: { slug: createSlug(product.name) } });
             if (!exists) {
+                const slug = createSlug(product.name);
                 await this.prisma.products.create({
                     data: {
-                        id: uuidv4(), name: product.name, slug: createSlug(product.name), description: product.description,
+                        id: uuidv4(), name: product.name, slug: slug, description: product.description,
                         price: product.price, unit: product.unit, weight: product.weight, stock: 50,
                         perishable: product.perishable || false, categoryId: categoryMap[product.category],
-                        status: ProductStatus.ACTIVE, images: [], updatedAt: new Date()
+                        status: ProductStatus.ACTIVE, images: [`/products/${slug}.svg`], updatedAt: new Date()
                     }
                 });
                 created++;

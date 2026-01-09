@@ -54,7 +54,7 @@ export const api = {
     },
 
     getProduct: async (slug: string) => {
-        const res = await fetch(`${API_BASE}/products/${slug}`, { cache: 'no-store' });
+        const res = await fetch(`${API_BASE}/products/slug/${slug}`, { cache: 'no-store' });
         if (!res.ok) throw new Error('Failed to fetch product');
         return res.json();
     },

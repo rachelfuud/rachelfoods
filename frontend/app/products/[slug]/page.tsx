@@ -1,5 +1,6 @@
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { PaymentIcons } from '@/components/PaymentIcons';
 import { api } from '@/lib/api';
 import { Product } from '@/lib/types';
 import { formatCurrency } from '@/lib/currency';
@@ -88,11 +89,16 @@ export default async function ProductPage({
 
                     {/* Product Info */}
                     <div>
-                        {product.isFeatured && (
-                            <div className="inline-block mb-4 px-3 py-1 bg-secondary/10 text-secondary rounded-full text-sm font-semibold">
-                                ⭐ Featured
+                        <div className="flex items-center gap-3 mb-4">
+                            {product.isFeatured && (
+                                <div className="inline-block px-3 py-1 bg-secondary/10 text-secondary rounded-full text-sm font-semibold">
+                                    ⭐ Featured
+                                </div>
+                            )}
+                            <div className="inline-block px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-semibold">
+                                🔄 Easy Refill Available
                             </div>
-                        )}
+                        </div>
 
                         <h1 className="text-4xl font-bold mb-4">{product.name}</h1>
 
@@ -165,10 +171,11 @@ export default async function ProductPage({
 
                         <div className="mt-8 p-6 bg-muted rounded-lg">
                             <h3 className="font-semibold mb-3">🛡️ Quality Guarantee</h3>
-                            <p className="text-sm text-foreground/70">
+                            <p className="text-sm text-foreground/70 mb-4">
                                 All orders are confirmed by the seller before payment.
                                 Your satisfaction is our priority.
                             </p>
+                            <PaymentIcons />
                         </div>
                     </div>
                 </div>

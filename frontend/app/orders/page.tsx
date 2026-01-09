@@ -81,12 +81,22 @@ export default function OrdersPage() {
                                     </p>
                                 </div>
 
-                                <Link
-                                    href={`/orders/${order.id}`}
-                                    className="inline-block px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary/5 transition-colors"
-                                >
-                                    View Details
-                                </Link>
+                                <div className="flex gap-3">
+                                    <Link
+                                        href={`/orders/${order.id}`}
+                                        className="inline-block px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary/5 transition-colors"
+                                    >
+                                        View Details
+                                    </Link>
+                                    <button
+                                        onClick={() => {
+                                            alert('Reorder feature coming soon! Your order items will be added to cart.');
+                                        }}
+                                        className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:opacity-90 transition-opacity"
+                                    >
+                                        🔄 Reorder
+                                    </button>
+                                </div>
                             </div>
                         ))}
                     </div>

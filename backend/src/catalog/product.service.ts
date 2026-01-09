@@ -9,6 +9,24 @@ export class ProductService {
     constructor(private prisma: PrismaService) { }
 
     /**
+     * Transform product to include imageUrl from images array
+     */
+    private transformProduct(product: any) {
+        if (!product) return product;
+        return {
+            ...product,
+            imageUrl: product.images && product.images.length > 0 ? product.images[0] : null,
+        };
+    }
+
+    /**
+     * Transform multiple products
+     */
+    private transformProducts(products: any[]) {
+        return products.map(p => this.transformProduct(p));
+    }
+
+    /**
      * Create a new product
      */
     async create(createProductDto: CreateProductDto, userId: string) {
@@ -72,7 +90,7 @@ export class ProductService {
             statusFilter.push('ACTIVE');
         }
 
-        return this.prisma.products.findMany({
+        const products = await this.prisma.products.findMany({
             where: {
                 deletedAt: null,
                 status: { in: statusFilter },
@@ -88,6 +106,8 @@ export class ProductService {
             },
             orderBy: [{ createdAt: 'desc' }],
         });
+
+        return this.transformProducts(products);
     }
 
     /**
@@ -98,7 +118,7 @@ export class ProductService {
             ? ['DRAFT', 'ACTIVE', 'DISABLED']
             : ['ACTIVE'];
 
-        return this.prisma.products.findMany({
+        const products = await this.prisma.products.findMany({
             where: {
                 categoryId,
                 deletedAt: null,
@@ -115,6 +135,8 @@ export class ProductService {
             },
             orderBy: [{ name: 'asc' }],
         });
+
+        return this.transformProducts(products);
     }
 
     /**
@@ -132,7 +154,7 @@ export class ProductService {
             throw new NotFoundException(`Product with id '${id}' not found`);
         }
 
-        return product;
+        return this.transformProduct(product);
     }
 
     /**
@@ -150,7 +172,7 @@ export class ProductService {
             throw new NotFoundException(`Product with slug '${slug}' not found`);
         }
 
-        return product;
+        return this.transformProduct(product);
     }
 
     /**
@@ -352,7 +374,7 @@ export class ProductService {
             ? ['DRAFT', 'ACTIVE', 'DISABLED']
             : ['ACTIVE'];
 
-        return this.prisma.products.findMany({
+        const products = await this.prisma.products.findMany({
             where: {
                 deletedAt: null,
                 status: { in: statusFilter },
@@ -372,5 +394,7 @@ export class ProductService {
             },
             orderBy: [{ name: 'asc' }],
         });
+
+        return this.transformProducts(products);
     }
 }

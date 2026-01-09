@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { PaymentIcons } from '@/components/PaymentIcons';
 import { formatCurrency } from '@/lib/currency';
 import { useRouter } from 'next/navigation';
 
@@ -187,6 +188,10 @@ export default function CheckoutPage() {
                             <p className="text-xs text-foreground/60 mt-4 text-center">
                                 Payment will be processed after seller confirmation
                             </p>
+
+                            <div className="mt-6 pt-6 border-t border-border">
+                                <PaymentIcons />
+                            </div>
                         </div>
                     </div>
                 </div>

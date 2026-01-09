@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { PaymentIcons } from './PaymentIcons';
 
 export function Footer() {
     return (
@@ -37,8 +38,11 @@ export function Footer() {
                     </div>
                 </div>
 
-                <div className="mt-8 pt-8 border-t border-border text-center text-sm text-foreground/60">
-                    <p>&copy; 2026 RachelFoods. All rights reserved.</p>
+                <div className="mt-8 pt-8 border-t border-border">
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                        <PaymentIcons />
+                        <p className="text-sm text-foreground/60">&copy; 2026 RachelFoods. All rights reserved.</p>
+                    </div>
                 </div>
             </div>
         </footer>
