@@ -16,23 +16,43 @@ export default function CartPage() {
         if (savedCart) {
             setCartItems(JSON.parse(savedCart));
         }
+
+        // Listen for cart updates
+        const handleCartUpdate = () => {
+            const savedCart = localStorage.getItem('cart');
+            if (savedCart) {
+                setCartItems(JSON.parse(savedCart));
+            }
+        };
+
+        window.addEventListener('cartUpdated', handleCartUpdate);
+        return () => window.removeEventListener('cartUpdated', handleCartUpdate);
     }, []);
 
-    const updateQuantity = (productId: string, newQuantity: number) => {
-        const updated = cartItems.map(item =>
-            item.productId === productId ? { ...item, quantity: newQuantity } : item
-        );
+    const updateQuantity = (productId: string, variantId: string | undefined, newQuantity: number) => {
+        const updated = cartItems.map(item => {
+            const matches = item.productId === productId &&
+                (variantId ? item.variantId === variantId : !item.variantId);
+            return matches ? { ...item, quantity: newQuantity } : item;
+        });
         setCartItems(updated);
         localStorage.setItem('cart', JSON.stringify(updated));
     };
 
-    const removeItem = (productId: string) => {
-        const updated = cartItems.filter(item => item.productId !== productId);
+    const removeItem = (productId: string, variantId: string | undefined) => {
+        const updated = cartItems.filter(item => {
+            const matches = item.productId === productId &&
+                (variantId ? item.variantId === variantId : !item.variantId);
+            return !matches;
+        });
         setCartItems(updated);
         localStorage.setItem('cart', JSON.stringify(updated));
     };
 
-    const subtotal = cartItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+    const subtotal = cartItems.reduce((sum, item) => {
+        const price = item.variant?.price ?? item.product.price;
+        return sum + (price * item.quantity);
+    }, 0);
     const tax = subtotal * 0.1; // 10% tax
     const total = subtotal + tax;
 
@@ -61,51 +81,61 @@ export default function CartPage() {
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         {/* Cart Items */}
                         <div className="lg:col-span-2 space-y-4">
-                            {cartItems.map((item) => (
-                                <div
-                                    key={item.productId}
-                                    className="flex gap-4 p-4 border border-border rounded-lg bg-background"
-                                >
-                                    <div className="w-24 h-24 bg-muted rounded-lg flex items-center justify-center">
-                                        🍽️
-                                    </div>
+                            {cartItems.map((item) => {
+                                const price = item.variant?.price ?? item.product.price;
+                                const itemKey = item.variantId ? `${item.productId}-${item.variantId}` : item.productId;
 
-                                    <div className="flex-1">
-                                        <h3 className="font-semibold text-lg mb-1">{item.product.name}</h3>
-                                        <p className="text-foreground/70 text-sm mb-2">
-                                            {formatCurrency(item.product.price)} / {item.product.unit}
-                                        </p>
+                                return (
+                                    <div
+                                        key={itemKey}
+                                        className="flex gap-4 p-4 border border-border rounded-lg bg-background"
+                                    >
+                                        <div className="w-24 h-24 bg-muted rounded-lg flex items-center justify-center">
+                                            🍽️
+                                        </div>
 
-                                        <div className="flex items-center gap-3">
+                                        <div className="flex-1">
+                                            <h3 className="font-semibold text-lg mb-1">{item.product.name}</h3>
+                                            {item.variant && (
+                                                <p className="text-foreground/60 text-sm mb-1">
+                                                    {item.variant.name}
+                                                </p>
+                                            )}
+                                            <p className="text-foreground/70 text-sm mb-2">
+                                                {formatCurrency(price)} / {item.product.unit}
+                                            </p>
+
+                                            <div className="flex items-center gap-3">
+                                                <button
+                                                    onClick={() => updateQuantity(item.productId, item.variantId, Math.max(1, item.quantity - 1))}
+                                                    className="w-8 h-8 border border-border rounded hover:bg-muted"
+                                                >
+                                                    -
+                                                </button>
+                                                <span className="font-semibold">{item.quantity}</span>
+                                                <button
+                                                    onClick={() => updateQuantity(item.productId, item.variantId, item.quantity + 1)}
+                                                    className="w-8 h-8 border border-border rounded hover:bg-muted"
+                                                >
+                                                    +
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div className="text-right">
+                                            <div className="font-bold text-lg mb-2">
+                                                {formatCurrency(price * item.quantity)}
+                                            </div>
                                             <button
-                                                onClick={() => updateQuantity(item.productId, Math.max(1, item.quantity - 1))}
-                                                className="w-8 h-8 border border-border rounded hover:bg-muted"
+                                                onClick={() => removeItem(item.productId, item.variantId)}
+                                                className="text-red-600 text-sm hover:underline"
                                             >
-                                                -
-                                            </button>
-                                            <span className="font-semibold">{item.quantity}</span>
-                                            <button
-                                                onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                                                className="w-8 h-8 border border-border rounded hover:bg-muted"
-                                            >
-                                                +
+                                                Remove
                                             </button>
                                         </div>
                                     </div>
-
-                                    <div className="text-right">
-                                        <div className="font-bold text-lg mb-2">
-                                            {formatCurrency(item.product.price * item.quantity)}
-                                        </div>
-                                        <button
-                                            onClick={() => removeItem(item.productId)}
-                                            className="text-red-600 text-sm hover:underline"
-                                        >
-                                            Remove
-                                        </button>
-                                    </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
 
                         {/* Order Summary */}

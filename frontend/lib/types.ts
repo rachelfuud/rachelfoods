@@ -27,6 +27,17 @@ export interface Category {
     displayOrder: number;
 }
 
+export interface ProductVariant {
+    id: string;
+    productId: string;
+    name: string;
+    sku: string;
+    price: number;
+    stock: number;
+    isDefault: boolean;
+    isActive: boolean;
+}
+
 export interface Product {
     id: string;
     name: string;
@@ -41,11 +52,14 @@ export interface Product {
     unit: string;
     isAvailable: boolean;
     isFeatured: boolean;
+    variants?: ProductVariant[];
 }
 
 export interface CartItem {
     productId: string;
+    variantId?: string;
     product: Product;
+    variant?: ProductVariant;
     quantity: number;
 }
 

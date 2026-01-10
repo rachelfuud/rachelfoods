@@ -9,13 +9,14 @@ export class ProductService {
     constructor(private prisma: PrismaService) { }
 
     /**
-     * Transform product to include imageUrl from images array
+     * Transform product to include imageUrl from images array and variants
      */
     private transformProduct(product: any) {
         if (!product) return product;
         return {
             ...product,
             imageUrl: product.images && product.images.length > 0 ? product.images[0] : null,
+            variants: product.variants || [],
         };
     }
 
@@ -103,6 +104,16 @@ export class ProductService {
                         slug: true,
                     },
                 },
+                variants: {
+                    where: {
+                        isActive: true,
+                        deletedAt: null,
+                    },
+                    orderBy: [
+                        { isDefault: 'desc' },
+                        { createdAt: 'asc' },
+                    ],
+                },
             },
             orderBy: [{ createdAt: 'desc' }],
         });
@@ -147,6 +158,16 @@ export class ProductService {
             where: { id },
             include: {
                 category: true,
+                variants: {
+                    where: {
+                        isActive: true,
+                        deletedAt: null,
+                    },
+                    orderBy: [
+                        { isDefault: 'desc' },
+                        { createdAt: 'asc' },
+                    ],
+                },
             },
         });
 
@@ -165,6 +186,16 @@ export class ProductService {
             where: { slug },
             include: {
                 category: true,
+                variants: {
+                    where: {
+                        isActive: true,
+                        deletedAt: null,
+                    },
+                    orderBy: [
+                        { isDefault: 'desc' },
+                        { createdAt: 'asc' },
+                    ],
+                },
             },
         });
 

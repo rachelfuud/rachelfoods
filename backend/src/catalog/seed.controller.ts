@@ -62,14 +62,42 @@ export class SeedController {
             const exists = await this.prisma.products.findFirst({ where: { slug: createSlug(product.name) } });
             if (!exists) {
                 const slug = createSlug(product.name);
+                const productId = uuidv4();
+
+                // Create product
                 await this.prisma.products.create({
                     data: {
-                        id: uuidv4(), name: product.name, slug: slug, description: product.description,
-                        price: product.price, unit: product.unit, weight: product.weight, stock: 50,
-                        perishable: product.perishable || false, categoryId: categoryMap[product.category],
-                        status: ProductStatus.ACTIVE, images: [`/products/${slug}.svg`], updatedAt: new Date()
+                        id: productId,
+                        name: product.name,
+                        slug: slug,
+                        description: product.description,
+                        price: product.price,
+                        unit: product.unit,
+                        weight: product.weight,
+                        stock: 50,
+                        perishable: product.perishable || false,
+                        categoryId: categoryMap[product.category],
+                        status: ProductStatus.ACTIVE,
+                        images: [`/products/${slug}.svg`],
+                        updatedAt: new Date()
                     }
                 });
+
+                // Create default variant for the product
+                await this.prisma.product_variants.create({
+                    data: {
+                        id: uuidv4(),
+                        productId: productId,
+                        name: `1 ${product.unit}`,
+                        sku: `${slug}-default`,
+                        price: product.price,
+                        stock: 50,
+                        isDefault: true,
+                        isActive: true,
+                        updatedAt: new Date(),
+                    }
+                });
+
                 created++;
             }
         }

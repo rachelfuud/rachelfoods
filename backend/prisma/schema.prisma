@@ -103,22 +103,26 @@ model ledger_entries {
 }
 
 model order_items {
-  id            String      @id
+  id            String            @id
   orderId       String
   productId     String?
+  variantId     String?
   categoryId    String?
   productName   String
-  productPrice  Decimal     @db.Decimal(10, 2)
-  productWeight Decimal     @db.Decimal(10, 2)
+  variantName   String?
+  productPrice  Decimal           @db.Decimal(10, 2)
+  productWeight Decimal           @db.Decimal(10, 2)
   productUnit   String
   quantity      Int
-  subtotal      Decimal     @db.Decimal(10, 2)
-  categories    categories? @relation(fields: [categoryId], references: [id])
-  orders        orders      @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  products      products?   @relation(fields: [productId], references: [id])
+  subtotal      Decimal           @db.Decimal(10, 2)
+  categories    categories?       @relation(fields: [categoryId], references: [id])
+  orders        orders            @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  products      products?         @relation(fields: [productId], references: [id])
+  variant       product_variants? @relation(fields: [variantId], references: [id])
 
   @@index([orderId])
   @@index([productId])
+  @@index([variantId])
 }
 
 model orders {
@@ -245,29 +249,50 @@ model platform_fee_config {
 }
 
 model products {
-  id          String        @id
+  id          String             @id
   name        String
-  slug        String        @unique
+  slug        String             @unique
   description String?
-  price       Decimal       @db.Decimal(10, 2)
+  price       Decimal            @db.Decimal(10, 2)
   unit        String
-  stock       Int           @default(0)
-  weight      Decimal       @db.Decimal(10, 2)
-  perishable  Boolean       @default(false)
+  stock       Int                @default(0)
+  weight      Decimal            @db.Decimal(10, 2)
+  perishable  Boolean            @default(false)
   categoryId  String?
-  status      ProductStatus @default(DRAFT)
+  status      ProductStatus      @default(DRAFT)
   images      String[]
   createdBy   String?
-  createdAt   DateTime      @default(now())
+  createdAt   DateTime           @default(now())
   updatedAt   DateTime
   deletedAt   DateTime?
   order_items order_items[]
-  category    categories?   @relation(fields: [categoryId], references: [id])
+  variants    product_variants[]
+  category    categories?        @relation(fields: [categoryId], references: [id])
 
   @@index([categoryId])
   @@index([createdBy])
   @@index([slug])
   @@index([status])
+}
+
+model product_variants {
+  id          String        @id
+  productId   String
+  name        String
+  sku         String        @unique
+  price       Decimal       @db.Decimal(10, 2)
+  stock       Int           @default(0)
+  isDefault   Boolean       @default(false)
+  isActive    Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime
+  deletedAt   DateTime?
+  product     products      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  order_items order_items[]
+
+  @@index([productId])
+  @@index([sku])
+  @@index([isDefault])
 }
 
 model referral_config {

@@ -1,9 +1,8 @@
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
-import { PaymentIcons } from '@/components/PaymentIcons';
 import { api } from '@/lib/api';
 import { Product } from '@/lib/types';
-import { formatCurrency } from '@/lib/currency';
+import { ProductDetailClient } from '@/components/ProductDetailClient';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -87,96 +86,9 @@ export default async function ProductPage({
                         )}
                     </div>
 
-                    {/* Product Info */}
+                    {/* Product Info - Client Component */}
                     <div>
-                        <div className="flex items-center gap-3 mb-4">
-                            {product.isFeatured && (
-                                <div className="inline-block px-3 py-1 bg-secondary/10 text-secondary rounded-full text-sm font-semibold">
-                                    ⭐ Featured
-                                </div>
-                            )}
-                            <div className="inline-block px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-semibold">
-                                🔄 Easy Refill Available
-                            </div>
-                        </div>
-
-                        <h1 className="text-4xl font-bold mb-4">{product.name}</h1>
-
-                        <div className="flex items-baseline gap-3 mb-6">
-                            <span className="text-4xl font-bold text-primary">
-                                {formatCurrency(product.price)}
-                            </span>
-                            {hasDiscount && (
-                                <span className="text-xl text-foreground/50 line-through">
-                                    {formatCurrency(product.compareAtPrice!)}
-                                </span>
-                            )}
-                            <span className="text-lg text-foreground/70">/ {product.unit}</span>
-                        </div>
-
-                        <div className="mb-6">
-                            <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg font-semibold ${product.isAvailable
-                                ? 'bg-green-50 text-green-700 border border-green-200'
-                                : 'bg-red-50 text-red-700 border border-red-200'
-                                }`}>
-                                {product.isAvailable ? (
-                                    <>✓ In Stock ({product.stock} available)</>
-                                ) : (
-                                    <>✗ Out of Stock</>
-                                )}
-                            </span>
-                        </div>
-
-                        {product.description && (
-                            <div className="mb-8">
-                                <h2 className="text-xl font-semibold mb-3">Description</h2>
-                                <p className="text-foreground/70 leading-relaxed">{product.description}</p>
-                            </div>
-                        )}
-
-                        {product.isAvailable && (
-                            <div className="space-y-4">
-                                <button
-                                    onClick={() => {
-                                        // Add to cart logic
-                                        const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-                                        const existingItem = cart.find((item: any) => item.productId === product!.id);
-
-                                        if (existingItem) {
-                                            existingItem.quantity += 1;
-                                        } else {
-                                            cart.push({
-                                                productId: product!.id,
-                                                product: product,
-                                                quantity: 1,
-                                            });
-                                        }
-
-                                        localStorage.setItem('cart', JSON.stringify(cart));
-                                        alert('Added to cart!');
-                                    }}
-                                    className="w-full py-4 bg-primary text-white rounded-lg font-semibold text-lg hover:opacity-90 transition-opacity"
-                                >
-                                    Add to Cart
-                                </button>
-
-                                <Link
-                                    href="/cart"
-                                    className="block w-full py-4 border-2 border-primary text-primary text-center rounded-lg font-semibold text-lg hover:bg-primary/5 transition-colors"
-                                >
-                                    View Cart
-                                </Link>
-                            </div>
-                        )}
-
-                        <div className="mt-8 p-6 bg-muted rounded-lg">
-                            <h3 className="font-semibold mb-3">🛡️ Quality Guarantee</h3>
-                            <p className="text-sm text-foreground/70 mb-4">
-                                All orders are confirmed by the seller before payment.
-                                Your satisfaction is our priority.
-                            </p>
-                            <PaymentIcons />
-                        </div>
+                        <ProductDetailClient product={product} />
                     </div>
                 </div>
             </main>
