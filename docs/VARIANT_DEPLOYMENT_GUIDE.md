@@ -1,16 +1,19 @@
 # Product Variants Migration Guide
 
 ## Overview
+
 This guide explains how to deploy the product variants feature to production.
 
 ## What Changed
 
 ### Database Schema
+
 - New `product_variants` table with fields: id, productId, name, sku, price, stock, isDefault, isActive, timestamps
 - Updated `order_items` table with `variantId` and `variantName` fields
 - Relation: One product has many variants, one variant belongs to one product
 
 ### Backend Changes
+
 - Added `ProductVariant` model to Prisma schema
 - Created DTOs: `CreateProductVariantDto` and `UpdateProductVariantDto`
 - Updated `ProductService` to include variants in all product queries
@@ -18,6 +21,7 @@ This guide explains how to deploy the product variants feature to production.
 - Updated transform method to expose variants in API responses
 
 ### Frontend Changes
+
 - Added `ProductVariant` interface to types
 - Updated `Product` interface to include optional `variants` array
 - Updated `CartItem` interface to include `variantId` and `variant`
@@ -40,11 +44,11 @@ Or use Render's dashboard to execute the SQL from `backend/migrations/add_produc
 ### Step 2: Deploy Backend
 
 1. Commit all changes:
-\`\`\`bash
-git add .
-git commit -m "feat: Add product variants system"
-git push origin main
-\`\`\`
+   \`\`\`bash
+   git add .
+   git commit -m "feat: Add product variants system"
+   git push origin main
+   \`\`\`
 
 2. Render will automatically deploy the backend
 3. Wait for deployment to complete
@@ -87,6 +91,7 @@ After deployment, verify:
 If issues occur:
 
 ### Database Rollback
+
 \`\`\`sql
 -- Remove variant columns from order_items
 ALTER TABLE "order_items" DROP COLUMN IF EXISTS "variantId";
@@ -97,6 +102,7 @@ DROP TABLE IF EXISTS "product_variants";
 \`\`\`
 
 ### Code Rollback
+
 \`\`\`bash
 git revert HEAD
 git push origin main
@@ -107,43 +113,48 @@ git push origin main
 To test locally (requires database permissions):
 
 1. Apply migration:
-\`\`\`bash
-cd backend
-npx prisma db push
-\`\`\`
+   \`\`\`bash
+   cd backend
+   npx prisma db push
+   \`\`\`
 
 2. Generate Prisma Client:
-\`\`\`bash
-npx prisma generate
-\`\`\`
+   \`\`\`bash
+   npx prisma generate
+   \`\`\`
 
 3. Run seed:
-\`\`\`bash
-npm run start:dev
+   \`\`\`bash
+   npm run start:dev
+
 # Then: curl -X POST http://localhost:3000/api/catalog/seed
+
 \`\`\`
 
 4. Start frontend:
-\`\`\`bash
-cd frontend
-npm run dev
-\`\`\`
+   \`\`\`bash
+   cd frontend
+   npm run dev
+   \`\`\`
 
 ## Architecture Notes
 
 ### Default Variant
+
 - Every product must have at least one variant
 - The seed script creates a default variant matching the product's base price
 - Default variant is named "1 {unit}" (e.g., "1 kg", "1 bottle")
 - isDefault flag ensures backward compatibility
 
 ### Cart Behavior
+
 - Cart items now reference variantId instead of just productId
 - Price is pulled from variant if available, otherwise from product
 - Stock is checked against variant stock, not product stock
 - Existing cart items (without variantId) still work for backward compatibility
 
 ### Future Enhancements
+
 - Admin UI for managing variants
 - Bulk variant creation
 - Variant-specific images
