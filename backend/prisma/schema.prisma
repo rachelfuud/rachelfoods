@@ -249,30 +249,35 @@ model platform_fee_config {
 }
 
 model products {
-  id          String             @id
-  name        String
-  slug        String             @unique
-  description String?
-  price       Decimal            @db.Decimal(10, 2)
-  unit        String
-  stock       Int                @default(0)
-  weight      Decimal            @db.Decimal(10, 2)
-  perishable  Boolean            @default(false)
-  categoryId  String?
-  status      ProductStatus      @default(DRAFT)
-  images      String[]
-  createdBy   String?
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime
-  deletedAt   DateTime?
-  order_items order_items[]
-  variants    product_variants[]
-  category    categories?        @relation(fields: [categoryId], references: [id])
+  id             String             @id
+  name           String
+  slug           String             @unique
+  description    String?
+  price          Decimal            @db.Decimal(10, 2)
+  unit           String
+  stock          Int                @default(0)
+  weight         Decimal            @db.Decimal(10, 2)
+  perishable     Boolean            @default(false)
+  categoryId     String?
+  status         ProductStatus      @default(DRAFT)
+  images         String[]
+  isFeatured     Boolean            @default(false)
+  supportsRefill Boolean            @default(true)
+  orderCount     Int                @default(0)
+  createdBy      String?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime
+  deletedAt      DateTime?
+  order_items    order_items[]
+  variants       product_variants[]
+  category       categories?        @relation(fields: [categoryId], references: [id])
 
   @@index([categoryId])
   @@index([createdBy])
   @@index([slug])
   @@index([status])
+  @@index([isFeatured])
+  @@index([orderCount])
 }
 
 model product_variants {

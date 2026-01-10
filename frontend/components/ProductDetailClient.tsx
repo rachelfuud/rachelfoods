@@ -87,8 +87,8 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
 
             <div className="mb-6">
                 <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg font-semibold ${isAvailable
-                        ? 'bg-green-50 text-green-700 border border-green-200'
-                        : 'bg-red-50 text-red-700 border border-red-200'
+                    ? 'bg-green-50 text-green-700 border border-green-200'
+                    : 'bg-red-50 text-red-700 border border-red-200'
                     }`}>
                     {isAvailable ? (
                         <>✓ In Stock ({currentStock} available)</>
@@ -131,6 +131,37 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                     >
                         View Cart
                     </Link>
+                </div>
+            )}
+
+            {product.supportsRefill && (
+                <div className="mt-8 p-6 bg-gradient-to-br from-primary/5 to-secondary/5 rounded-lg border border-primary/20">
+                    <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                        🔄 Refill Made Easy
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <div className="text-2xl mb-2">1️⃣</div>
+                            <h4 className="font-semibold mb-1">Buy Once</h4>
+                            <p className="text-sm text-foreground/70">
+                                Order this product now
+                            </p>
+                        </div>
+                        <div>
+                            <div className="text-2xl mb-2">2️⃣</div>
+                            <h4 className="font-semibold mb-1">Refill Anytime</h4>
+                            <p className="text-sm text-foreground/70">
+                                Reorder with one click from your orders
+                            </p>
+                        </div>
+                        <div>
+                            <div className="text-2xl mb-2">3️⃣</div>
+                            <h4 className="font-semibold mb-1">Save Time</h4>
+                            <p className="text-sm text-foreground/70">
+                                Skip re-selection and checkout faster
+                            </p>
+                        </div>
+                    </div>
                 </div>
             )}
 

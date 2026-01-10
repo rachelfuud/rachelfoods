@@ -412,6 +412,20 @@ export class ProductService {
                 OR: [
                     { name: { contains: query, mode: 'insensitive' } },
                     { description: { contains: query, mode: 'insensitive' } },
+                    {
+                        category: {
+                            name: { contains: query, mode: 'insensitive' }
+                        }
+                    },
+                    {
+                        variants: {
+                            some: {
+                                name: { contains: query, mode: 'insensitive' },
+                                isActive: true,
+                                deletedAt: null,
+                            }
+                        }
+                    }
                 ],
             },
             include: {
@@ -422,8 +436,89 @@ export class ProductService {
                         slug: true,
                     },
                 },
+                variants: {
+                    where: {
+                        isActive: true,
+                        deletedAt: null,
+                    },
+                    orderBy: [
+                        { isDefault: 'desc' },
+                        { createdAt: 'asc' },
+                    ],
+                },
             },
             orderBy: [{ name: 'asc' }],
+        });
+
+        return this.transformProducts(products);
+    }
+
+    /**
+     * Find featured products
+     */
+    async findFeatured() {
+        const products = await this.prisma.products.findMany({
+            where: {
+                deletedAt: null,
+                status: 'ACTIVE',
+                isFeatured: true,
+            },
+            include: {
+                category: {
+                    select: {
+                        id: true,
+                        name: true,
+                        slug: true,
+                    },
+                },
+                variants: {
+                    where: {
+                        isActive: true,
+                        deletedAt: null,
+                    },
+                    orderBy: [
+                        { isDefault: 'desc' },
+                        { createdAt: 'asc' },
+                    ],
+                },
+            },
+            orderBy: [{ name: 'asc' }],
+            take: 8,
+        });
+
+        return this.transformProducts(products);
+    }
+
+    /**
+     * Find popular products (by order count)
+     */
+    async findPopular(limit = 6) {
+        const products = await this.prisma.products.findMany({
+            where: {
+                deletedAt: null,
+                status: 'ACTIVE',
+            },
+            include: {
+                category: {
+                    select: {
+                        id: true,
+                        name: true,
+                        slug: true,
+                    },
+                },
+                variants: {
+                    where: {
+                        isActive: true,
+                        deletedAt: null,
+                    },
+                    orderBy: [
+                        { isDefault: 'desc' },
+                        { createdAt: 'asc' },
+                    ],
+                },
+            },
+            orderBy: [{ orderCount: 'desc' }, { name: 'asc' }],
+            take: limit,
         });
 
         return this.transformProducts(products);

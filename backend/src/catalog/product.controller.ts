@@ -103,6 +103,17 @@ export class ProductController {
         return this.productService.findAll(includeDisabled ?? false, includeArchived ?? false);
     }
 
+    @Get('featured')
+    findFeatured() {
+        return this.productService.findFeatured();
+    }
+
+    @Get('popular')
+    findPopular(@Query('limit') limit?: string) {
+        const limitNum = limit ? parseInt(limit, 10) : 6;
+        return this.productService.findPopular(limitNum);
+    }
+
     @Get('search')
     search(
         @Query('q') query: string,

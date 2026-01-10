@@ -59,6 +59,24 @@ export const api = {
         return res.json();
     },
 
+    getFeaturedProducts: async () => {
+        const res = await fetch(`${API_BASE}/products/featured`, { cache: 'no-store' });
+        if (!res.ok) throw new Error('Failed to fetch featured products');
+        return res.json();
+    },
+
+    getPopularProducts: async (limit = 6) => {
+        const res = await fetch(`${API_BASE}/products/popular?limit=${limit}`, { cache: 'no-store' });
+        if (!res.ok) throw new Error('Failed to fetch popular products');
+        return res.json();
+    },
+
+    searchProducts: async (query: string) => {
+        const res = await fetch(`${API_BASE}/products/search?q=${encodeURIComponent(query)}`, { cache: 'no-store' });
+        if (!res.ok) throw new Error('Failed to search products');
+        return res.json();
+    },
+
     // Orders (requires auth)
     getOrders: async (token: string) => {
         const res = await fetch(`${API_BASE}/orders`, {

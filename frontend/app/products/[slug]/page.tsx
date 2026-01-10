@@ -12,14 +12,20 @@ export default async function ProductPage({
     params: { slug: string };
 }) {
     let product: Product | null = null;
+    let errorOccurred = false;
+
+    console.log('[ProductPage] Fetching product with slug:', params.slug);
 
     try {
         product = await api.getProduct(params.slug);
+        console.log('[ProductPage] Product fetched successfully:', product?.name);
+        console.log('[ProductPage] Product has variants:', product?.variants?.length || 0);
     } catch (error) {
-        console.error('Failed to load product:', error);
+        console.error('[ProductPage] Failed to load product:', error);
+        errorOccurred = true;
     }
 
-    if (!product) {
+    if (!product || errorOccurred) {
         return (
             <div className="min-h-screen flex flex-col">
                 <Header />

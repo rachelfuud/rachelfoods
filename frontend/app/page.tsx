@@ -8,16 +8,20 @@ import { Product } from '@/lib/types';
 import Image from 'next/image';
 
 export default async function Home() {
-  // Fetch products for featured section
-  let products: Product[] = [];
+  // Fetch featured and popular products
+  let featuredProducts: Product[] = [];
+  let popularProducts: Product[] = [];
+
   try {
-    products = await api.getProducts();
+    const [featured, popular] = await Promise.all([
+      api.getFeaturedProducts(),
+      api.getPopularProducts()
+    ]);
+    featuredProducts = featured;
+    popularProducts = popular;
   } catch (error) {
     console.error('Failed to load products:', error);
   }
-
-  // Get first 6 products as featured
-  const featuredProducts = products.slice(0, 6);
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -29,11 +33,11 @@ export default async function Home() {
             <div className="flex flex-col md:flex-row items-center justify-between gap-12">
               <div className="flex-1 text-center md:text-left">
                 <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
-                  Authentic Traditional Food,{' '}
-                  <span className="text-primary">Delivered Fresh</span>
+                  Authentic Traditional Foods,{' '}
+                  <span className="text-primary">Delivered Across the U.S.</span>
                 </h1>
                 <p className="text-xl text-foreground/70 mb-8 max-w-2xl">
-                  Premium quality traditional ingredients and ready mixes delivered across the United States.
+                  Fresh, dry, and ready-to-cook essentials — shop once or refill anytime.
                   Every order confirmed by our sellers for guaranteed freshness and availability.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start mb-8">
@@ -41,13 +45,13 @@ export default async function Home() {
                     href="/catalog"
                     className="px-8 py-4 bg-primary text-white rounded-lg font-semibold hover:opacity-90 transition-opacity text-lg"
                   >
-                    Shop Now
+                    Shop Products
                   </Link>
                   <Link
-                    href="/catalog"
+                    href="#refill"
                     className="px-8 py-4 border-2 border-primary text-primary rounded-lg font-semibold hover:bg-primary/5 transition-colors text-lg"
                   >
-                    Browse Categories
+                    How Refill Works
                   </Link>
                 </div>
                 <PaymentIcons />
@@ -72,9 +76,9 @@ export default async function Home() {
           <section className="py-20 bg-background">
             <div className="container mx-auto px-4">
               <div className="text-center mb-12">
-                <h2 className="text-4xl font-bold mb-4">Popular Products</h2>
+                <h2 className="text-4xl font-bold mb-4">Featured Products</h2>
                 <p className="text-xl text-foreground/70 max-w-2xl mx-auto">
-                  Discover our most loved traditional foods and authentic ingredients
+                  Discover our handpicked selection of traditional foods and authentic ingredients
                 </p>
               </div>
 
@@ -96,8 +100,28 @@ export default async function Home() {
           </section>
         )}
 
+        {/* Popular Products Section */}
+        {popularProducts.length > 0 && (
+          <section className="py-20 bg-muted">
+            <div className="container mx-auto px-4">
+              <div className="text-center mb-12">
+                <h2 className="text-4xl font-bold mb-4">Popular Right Now</h2>
+                <p className="text-xl text-foreground/70 max-w-2xl mx-auto">
+                  See what others are ordering — our most popular products this week
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {popularProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* Refill Feature Section */}
-        <section className="py-20 bg-muted">
+        <section id="refill" className="py-20 bg-background">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
               <div className="text-6xl mb-6">🔄</div>

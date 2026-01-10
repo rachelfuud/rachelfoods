@@ -70,16 +70,23 @@ export function ProductCard({ product }: ProductCardProps) {
                     <span className="text-sm text-foreground/70">/ {product.unit}</span>
                 </div>
 
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between flex-wrap gap-2">
                     <span className={`text-sm ${isAvailable ? 'text-green-600' : 'text-red-600'}`}>
                         {isAvailable ? `${product.stock} in stock` : 'Out of stock'}
                     </span>
 
-                    {isFeatured && (
-                        <span className="text-xs bg-secondary/10 text-secondary px-2 py-1 rounded">
-                            Featured
-                        </span>
-                    )}
+                    <div className="flex items-center gap-2">
+                        {isFeatured && (
+                            <span className="text-xs bg-secondary/10 text-secondary px-2 py-1 rounded">
+                                Featured
+                            </span>
+                        )}
+                        {product.supportsRefill && (
+                            <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded flex items-center gap-1">
+                                🔄 Refill Available
+                            </span>
+                        )}
+                    </div>
                 </div>
             </div>
         </Link>

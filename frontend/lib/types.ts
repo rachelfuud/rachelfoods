@@ -52,6 +52,8 @@ export interface Product {
     unit: string;
     isAvailable: boolean;
     isFeatured: boolean;
+    supportsRefill?: boolean;
+    orderCount?: number;
     variants?: ProductVariant[];
 }
 
