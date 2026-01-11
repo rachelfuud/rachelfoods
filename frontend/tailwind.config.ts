@@ -49,10 +49,27 @@ const config: Config = {
           800: 'var(--color-accent-800)',
           900: 'var(--color-accent-900)',
         },
+        // Semantic tokens
         background: 'var(--color-background)',
         foreground: 'var(--color-foreground)',
+        surface: {
+          DEFAULT: 'var(--color-surface)',
+          elevated: 'var(--color-surface-elevated)',
+        },
         muted: 'var(--color-muted)',
         border: 'var(--color-border)',
+        // Text semantic tokens
+        text: {
+          primary: 'var(--color-text-primary)',
+          secondary: 'var(--color-text-secondary)',
+          tertiary: 'var(--color-text-tertiary)',
+          inverse: 'var(--color-text-inverse)',
+        },
+        // State colors
+        success: 'var(--color-success)',
+        error: 'var(--color-error)',
+        warning: 'var(--color-warning)',
+        info: 'var(--color-info)',
       },
     },
   },
