@@ -218,6 +218,62 @@ npm run test:e2e       # End-to-end tests
 - Update tests for bug fixes
 - Test edge cases and error handling
 
+## Critical Areas (Require Extra Scrutiny)
+
+These modules handle financial transactions and require rigorous review:
+
+### Payment Processing (`backend/src/payments`)
+
+- **Real money operations**: All changes must prevent double-charging, lost payments
+- **Webhook security**: NEVER skip Stripe signature verification
+- **Idempotency**: Check for existing PaymentIntents before creating new ones
+- **Error handling**: Payment failures must be logged and user-friendly
+
+### Wallet System (`backend/src/wallet`)
+
+- **Balance integrity**: All operations wrapped in database transactions (`prisma.$transaction()`)
+- **Audit trails**: Every credit/debit must create a wallet_transaction record
+- **Negative balance prevention**: Use database-level checks and row locking
+- **Immutability**: Never delete wallet transaction records
+
+### Inventory Management (`backend/src/kitchen-refill`)
+
+- **Oversell prevention**: Use `SELECT ... FOR UPDATE` for stock checks
+- **Reservation system**: Lock inventory during order creation, release on failure
+- **Atomic operations**: Wrap inventory updates in transactions
+- **Stock consistency**: Validate stock levels before payment processing
+
+### Refunds (`backend/src/refunds`)
+
+- **Duplicate prevention**: Check for existing refunds before processing
+- **Wallet credit**: Must be atomic with refund record creation
+- **Order status sync**: Update order payment status when refund completes
+- **Stripe reconciliation**: Handle webhook events for refund completion
+
+## Non-Negotiable Rules
+
+❌ **NEVER**:
+
+- Modify wallet balance without creating a transaction record
+- Skip webhook signature verification for Stripe events
+- Use `any` type for payment, wallet, or financial data structures
+- Deploy database migrations without testing rollback procedures
+- Expose stack traces, database errors, or sensitive data in API responses
+- Allow concurrent payment attempts for the same order (use idempotency keys)
+- Delete audit trail records (wallet transactions, payment logs, refund history)
+- Bypass authentication or authorization guards for convenience
+
+✅ **ALWAYS**:
+
+- Wrap multi-step financial operations in `prisma.$transaction()`
+- Validate all DTOs with `class-validator` decorators
+- Log all financial operations with structured logging (Winston)
+- Check for existing records before creating duplicates (payments, refunds)
+- Use row-level database locking for inventory updates
+- Include correlation IDs in logs for request tracing
+- Test payment flows with Stripe test cards before deploying
+- Document breaking changes in migration notes
+
 ## Database Migrations
 
 When making schema changes:
