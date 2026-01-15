@@ -5,9 +5,10 @@ import { AdminOrderController } from './admin-order.controller';
 import { AdminOrderService } from './admin-order.service';
 import { SystemMetricsController } from './system-metrics.controller';
 import { PrismaModule } from '../prisma/prisma.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-    imports: [PrismaModule],
+    imports: [PrismaModule, AuthModule],
     controllers: [
         AdminProductController,
         AdminOrderController,
