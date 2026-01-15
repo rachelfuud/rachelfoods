@@ -136,7 +136,7 @@ describe('ThemeService', () => {
         it('should ensure only one active theme exists', async () => {
             const newActiveTheme = { ...mockTheme, id: 'theme-2' };
 
-            jest.spyOn(prisma, '$transaction').mockImplementation(async (callback) => {
+            jest.spyOn(prisma, '$transaction').mockImplementation(async (callback: any) => {
                 return callback(prisma);
             });
             jest.spyOn(prisma.theme_config, 'updateMany').mockResolvedValue({ count: 1 });

@@ -18,8 +18,8 @@ describe('WalletService - Balance Operations', () => {
     let service: WalletService;
     let prisma: PrismaService;
 
-    const mockPrisma = {
-        wallets: {
+    const mockPrisma: any = {
+        store_credit_wallets: {
             findUnique: jest.fn(),
             update: jest.fn(),
             create: jest.fn(),
@@ -28,7 +28,7 @@ describe('WalletService - Balance Operations', () => {
             create: jest.fn(),
             findMany: jest.fn(),
         },
-        $transaction: jest.fn((callback) => callback(mockPrisma)),
+        $transaction: jest.fn((callback: any) => callback(mockPrisma)),
     };
 
     beforeEach(async () => {
@@ -57,8 +57,8 @@ describe('WalletService - Balance Operations', () => {
                 balance: new Decimal(100.0),
             };
 
-            mockPrisma.wallets.findUnique.mockResolvedValue(wallet);
-            mockPrisma.wallets.update.mockResolvedValue({
+            mockPrisma.store_credit_wallets.findUnique.mockResolvedValue(wallet);
+            mockPrisma.store_credit_wallets.update.mockResolvedValue({
                 ...wallet,
                 balance: new Decimal(75.0), // 100 - 25
             });
@@ -71,18 +71,17 @@ describe('WalletService - Balance Operations', () => {
             });
 
             // Act
-            const result = await service.debit('user-1', 25.0, 'Order payment');
+            const result = await service.debitWallet('user-1', 25.0, 'ORDER_PAYMENT');
 
             // Assert
-            expect(mockPrisma.wallets.update).toHaveBeenCalledWith({
-                where: { userId: 'user-1' },
+            expect(mockPrisma.store_credit_wallets.update).toHaveBeenCalledWith({
+                where: { id: 'wallet-1' },
                 data: {
-                    balance: {
-                        decrement: 25.0,
-                    },
+                    balance: expect.any(Object), // Decimal object
+                    updatedAt: expect.any(Date),
                 },
             });
-            expect(result.balance.toNumber()).toBe(75.0);
+            expect(result.newBalance).toBe(75.0);
         });
 
         it('should reject debit when insufficient funds', async () => {
@@ -93,15 +92,15 @@ describe('WalletService - Balance Operations', () => {
                 balance: new Decimal(10.0), // Only $10 available
             };
 
-            mockPrisma.wallets.findUnique.mockResolvedValue(wallet);
+            mockPrisma.store_credit_wallets.findUnique.mockResolvedValue(wallet);
 
             // Act & Assert
             await expect(
-                service.debit('user-1', 50.0, 'Order payment')
+                service.debitWallet('user-1', 50.0, 'ORDER_PAYMENT')
             ).rejects.toThrow('Insufficient wallet balance');
 
             // No wallet mutation should occur
-            expect(mockPrisma.wallets.update).not.toHaveBeenCalled();
+            expect(mockPrisma.store_credit_wallets.update).not.toHaveBeenCalled();
             expect(mockPrisma.wallet_transactions.create).not.toHaveBeenCalled();
         });
 
@@ -113,11 +112,11 @@ describe('WalletService - Balance Operations', () => {
                 balance: new Decimal(0),
             };
 
-            mockPrisma.wallets.findUnique.mockResolvedValue(wallet);
+            mockPrisma.store_credit_wallets.findUnique.mockResolvedValue(wallet);
 
             // Act & Assert
             await expect(
-                service.debit('user-1', 10.0, 'Order payment')
+                service.debitWallet('user-1', 10.0, 'ORDER_PAYMENT')
             ).rejects.toThrow('Insufficient wallet balance');
         });
 
@@ -129,8 +128,8 @@ describe('WalletService - Balance Operations', () => {
                 balance: new Decimal(50.0),
             };
 
-            mockPrisma.wallets.findUnique.mockResolvedValue(wallet);
-            mockPrisma.wallets.update.mockResolvedValue({
+            mockPrisma.store_credit_wallets.findUnique.mockResolvedValue(wallet);
+            mockPrisma.store_credit_wallets.update.mockResolvedValue({
                 ...wallet,
                 balance: new Decimal(0), // Exact match
             });
@@ -143,11 +142,11 @@ describe('WalletService - Balance Operations', () => {
             });
 
             // Act
-            const result = await service.debit('user-1', 50.0, 'Full balance use');
+            const result = await service.debitWallet('user-1', 50.0, 'ORDER_PAYMENT');
 
             // Assert
-            expect(result.balance.toNumber()).toBe(0);
-            expect(mockPrisma.wallets.update).toHaveBeenCalled();
+            expect(result.newBalance).toBe(0);
+            expect(mockPrisma.store_credit_wallets.update).toHaveBeenCalled();
         });
     });
 
@@ -160,8 +159,8 @@ describe('WalletService - Balance Operations', () => {
                 balance: new Decimal(50.0),
             };
 
-            mockPrisma.wallets.findUnique.mockResolvedValue(wallet);
-            mockPrisma.wallets.update.mockResolvedValue({
+            mockPrisma.store_credit_wallets.findUnique.mockResolvedValue(wallet);
+            mockPrisma.store_credit_wallets.update.mockResolvedValue({
                 ...wallet,
                 balance: new Decimal(75.0), // 50 + 25
             });
@@ -175,18 +174,17 @@ describe('WalletService - Balance Operations', () => {
             });
 
             // Act
-            const result = await service.credit('user-1', 25.0, 'Refund for order ORD-123');
+            const result = await service.creditWallet('user-1', 25.0, 'REFUND');
 
             // Assert
-            expect(mockPrisma.wallets.update).toHaveBeenCalledWith({
-                where: { userId: 'user-1' },
+            expect(mockPrisma.store_credit_wallets.update).toHaveBeenCalledWith({
+                where: { id: 'wallet-1' },
                 data: {
-                    balance: {
-                        increment: 25.0,
-                    },
+                    balance: expect.any(Object), // Decimal object
+                    updatedAt: expect.any(Date),
                 },
             });
-            expect(result.balance.toNumber()).toBe(75.0);
+            expect(result.newBalance).toBe(75.0);
         });
 
         it('should credit wallet when balance is zero', async () => {
@@ -197,8 +195,8 @@ describe('WalletService - Balance Operations', () => {
                 balance: new Decimal(0),
             };
 
-            mockPrisma.wallets.findUnique.mockResolvedValue(wallet);
-            mockPrisma.wallets.update.mockResolvedValue({
+            mockPrisma.store_credit_wallets.findUnique.mockResolvedValue(wallet);
+            mockPrisma.store_credit_wallets.update.mockResolvedValue({
                 ...wallet,
                 balance: new Decimal(30.0),
             });
@@ -211,16 +209,16 @@ describe('WalletService - Balance Operations', () => {
             });
 
             // Act
-            const result = await service.credit('user-1', 30.0, 'Refund');
+            const result = await service.creditWallet('user-1', 30.0, 'REFUND');
 
             // Assert
-            expect(result.balance.toNumber()).toBe(30.0);
+            expect(result.newBalance).toBe(30.0);
         });
 
         it('should create wallet if not exists during credit', async () => {
             // Arrange
-            mockPrisma.wallets.findUnique.mockResolvedValue(null);
-            mockPrisma.wallets.create.mockResolvedValue({
+            mockPrisma.store_credit_wallets.findUnique.mockResolvedValue(null);
+            mockPrisma.store_credit_wallets.create.mockResolvedValue({
                 id: 'wallet-new',
                 userId: 'user-new',
                 balance: new Decimal(20.0),
@@ -234,16 +232,17 @@ describe('WalletService - Balance Operations', () => {
             });
 
             // Act
-            const result = await service.credit('user-new', 20.0, 'Initial credit');
+            const result = await service.creditWallet('user-new', 20.0, 'ADMIN');
 
             // Assert
-            expect(mockPrisma.wallets.create).toHaveBeenCalledWith({
+            expect(mockPrisma.store_credit_wallets.create).toHaveBeenCalledWith({
                 data: {
                     userId: 'user-new',
-                    balance: 20.0,
+                    balance: expect.any(Object), // Decimal object
+                    updatedAt: expect.any(Date),
                 },
             });
-            expect(result.balance.toNumber()).toBe(20.0);
+            expect(result.newBalance).toBe(20.0);
         });
     });
 
@@ -256,15 +255,15 @@ describe('WalletService - Balance Operations', () => {
                 balance: new Decimal(5.0),
             };
 
-            mockPrisma.wallets.findUnique.mockResolvedValue(wallet);
+            mockPrisma.store_credit_wallets.findUnique.mockResolvedValue(wallet);
 
             // Act & Assert
             await expect(
-                service.debit('user-1', 10.0, 'Attempted overdraft')
+                service.debitWallet('user-1', 10.0, 'ORDER_PAYMENT')
             ).rejects.toThrow('Insufficient wallet balance');
 
             // No database mutation
-            expect(mockPrisma.wallets.update).not.toHaveBeenCalled();
+            expect(mockPrisma.store_credit_wallets.update).not.toHaveBeenCalled();
         });
 
         it('should validate balance before debit operation', async () => {
@@ -275,21 +274,21 @@ describe('WalletService - Balance Operations', () => {
                 balance: new Decimal(100.0),
             };
 
-            mockPrisma.wallets.findUnique.mockResolvedValue(wallet);
+            mockPrisma.store_credit_wallets.findUnique.mockResolvedValue(wallet);
 
             // First check: sufficient funds
-            const validDebit = service.debit('user-1', 50.0, 'Valid payment');
+            const validDebit = service.debitWallet('user-1', 50.0, 'ORDER_PAYMENT');
 
             // Should not throw
             await expect(validDebit).resolves.toBeDefined();
 
             // Second check: would cause negative balance
-            mockPrisma.wallets.findUnique.mockResolvedValue({
+            mockPrisma.store_credit_wallets.findUnique.mockResolvedValue({
                 ...wallet,
                 balance: new Decimal(10.0),
             });
 
-            const invalidDebit = service.debit('user-1', 50.0, 'Invalid payment');
+            const invalidDebit = service.debitWallet('user-1', 50.0, 'ORDER_PAYMENT');
 
             // Should throw
             await expect(invalidDebit).rejects.toThrow();
@@ -305,15 +304,15 @@ describe('WalletService - Balance Operations', () => {
                 balance: new Decimal(20.0),
             };
 
-            mockPrisma.wallets.findUnique.mockResolvedValue(wallet);
+            mockPrisma.store_credit_wallets.findUnique.mockResolvedValue(wallet);
 
-            // Simulate transaction rollback on failure
-            let walletUpdateCalled = false;
-            let transactionCreateCalled = false;
+            // Track if operations were attempted (to verify atomicity)
+            let walletUpdateAttempted = false;
+            let transactionCreateAttempted = false;
 
-            mockPrisma.$transaction.mockImplementation(async (callback) => {
-                mockPrisma.wallets.update.mockImplementation(() => {
-                    walletUpdateCalled = true;
+            mockPrisma.$transaction.mockImplementation(async (callback: any) => {
+                mockPrisma.store_credit_wallets.update.mockImplementation(() => {
+                    walletUpdateAttempted = true;
                     return Promise.resolve({
                         ...wallet,
                         balance: new Decimal(35.0),
@@ -321,7 +320,7 @@ describe('WalletService - Balance Operations', () => {
                 });
 
                 mockPrisma.wallet_transactions.create.mockImplementation(() => {
-                    transactionCreateCalled = true;
+                    transactionCreateAttempted = true;
                     // Simulate failure
                     throw new Error('Transaction log failed');
                 });
@@ -329,21 +328,18 @@ describe('WalletService - Balance Operations', () => {
                 try {
                     return await callback(mockPrisma);
                 } catch (error) {
-                    // Rollback - reset flags
-                    walletUpdateCalled = false;
-                    transactionCreateCalled = false;
+                    // In real scenario, database handles rollback
                     throw error;
                 }
             });
 
             // Act & Assert
             await expect(
-                service.credit('user-1', 15.0, 'Refund')
+                service.creditWallet('user-1', 15.0, 'REFUND')
             ).rejects.toThrow('Transaction log failed');
 
-            // Both operations should be rolled back
-            // In real scenario, database handles rollback
-            expect(walletUpdateCalled || transactionCreateCalled).toBe(true);
+            // Verify that operations were attempted within transaction
+            expect(walletUpdateAttempted || transactionCreateAttempted).toBe(true);
         });
     });
 
@@ -356,10 +352,13 @@ describe('WalletService - Balance Operations', () => {
                 balance: new Decimal(100.0),
             };
 
-            mockPrisma.wallets.findUnique.mockResolvedValue(wallet);
+            // Reset transaction mock to default behavior
+            mockPrisma.$transaction.mockImplementation((callback: any) => callback(mockPrisma));
+
+            mockPrisma.store_credit_wallets.findUnique.mockResolvedValue(wallet);
 
             const transactions: any[] = [];
-            mockPrisma.wallet_transactions.create.mockImplementation((args) => {
+            mockPrisma.wallet_transactions.create.mockImplementation((args: any) => {
                 const txn = {
                     id: `txn-${transactions.length + 1}`,
                     ...args.data,
@@ -369,7 +368,7 @@ describe('WalletService - Balance Operations', () => {
                 return Promise.resolve(txn);
             });
 
-            mockPrisma.wallets.update.mockImplementation((args) => {
+            mockPrisma.store_credit_wallets.update.mockImplementation((args: any) => {
                 return Promise.resolve({
                     ...wallet,
                     balance: new Decimal(50.0),
@@ -377,8 +376,8 @@ describe('WalletService - Balance Operations', () => {
             });
 
             // Act - Multiple operations
-            await service.debit('user-1', 25.0, 'Payment 1');
-            await service.debit('user-1', 25.0, 'Payment 2');
+            await service.debitWallet('user-1', 25.0, 'ORDER_PAYMENT');
+            await service.debitWallet('user-1', 25.0, 'ORDER_PAYMENT');
 
             // Assert - Both transactions recorded
             expect(transactions).toHaveLength(2);
@@ -425,13 +424,13 @@ describe('WalletService - Balance Operations', () => {
             expect(expectedBalance).toBe(120);
 
             // Wallet balance should match this calculation
-            mockPrisma.wallets.findUnique.mockResolvedValue({
+            mockPrisma.store_credit_wallets.findUnique.mockResolvedValue({
                 ...wallet,
                 balance: new Decimal(expectedBalance),
             });
 
             const result = await service.getBalance('user-1');
-            expect(result.toNumber()).toBe(expectedBalance);
+            expect(result).toBe(expectedBalance);
         });
     });
 
@@ -444,10 +443,10 @@ describe('WalletService - Balance Operations', () => {
                 balance: new Decimal(50.0),
             };
 
-            mockPrisma.wallets.findUnique.mockResolvedValue(wallet);
+            mockPrisma.store_credit_wallets.findUnique.mockResolvedValue(wallet);
 
             // First debit succeeds
-            mockPrisma.wallets.update.mockResolvedValueOnce({
+            mockPrisma.store_credit_wallets.update.mockResolvedValueOnce({
                 ...wallet,
                 balance: new Decimal(25.0), // 50 - 25
             });
@@ -459,17 +458,17 @@ describe('WalletService - Balance Operations', () => {
             });
 
             // Act - First operation
-            await service.debit('user-1', 25.0, 'Payment 1');
+            await service.debitWallet('user-1', 25.0, 'ORDER_PAYMENT');
 
             // Second concurrent debit should see updated balance
-            mockPrisma.wallets.findUnique.mockResolvedValue({
+            mockPrisma.store_credit_wallets.findUnique.mockResolvedValue({
                 ...wallet,
                 balance: new Decimal(25.0), // Updated
             });
 
             // Act & Assert - Second operation
             await expect(
-                service.debit('user-1', 40.0, 'Payment 2')
+                service.debitWallet('user-1', 40.0, 'ORDER_PAYMENT')
             ).rejects.toThrow('Insufficient wallet balance');
         });
     });
@@ -477,11 +476,11 @@ describe('WalletService - Balance Operations', () => {
     describe('Error Handling', () => {
         it('should throw NotFoundException for non-existent wallet on debit', async () => {
             // Arrange
-            mockPrisma.wallets.findUnique.mockResolvedValue(null);
+            mockPrisma.store_credit_wallets.findUnique.mockResolvedValue(null);
 
             // Act & Assert
             await expect(
-                service.debit('user-nonexistent', 10.0, 'Payment')
+                service.debitWallet('user-nonexistent', 10.0, 'ORDER_PAYMENT')
             ).rejects.toThrow(NotFoundException);
         });
 
@@ -493,12 +492,12 @@ describe('WalletService - Balance Operations', () => {
                 balance: new Decimal(100.0),
             };
 
-            mockPrisma.wallets.findUnique.mockResolvedValue(wallet);
+            mockPrisma.store_credit_wallets.findUnique.mockResolvedValue(wallet);
 
             // Act & Assert
             await expect(
-                service.debit('user-1', -10.0, 'Invalid negative')
-            ).rejects.toThrow('Amount must be positive');
+                service.debitWallet('user-1', -10.0, 'ORDER_PAYMENT')
+            ).rejects.toThrow('Debit amount must be positive');
         });
 
         it('should reject zero amount operations', async () => {
@@ -509,12 +508,12 @@ describe('WalletService - Balance Operations', () => {
                 balance: new Decimal(100.0),
             };
 
-            mockPrisma.wallets.findUnique.mockResolvedValue(wallet);
+            mockPrisma.store_credit_wallets.findUnique.mockResolvedValue(wallet);
 
             // Act & Assert
             await expect(
-                service.debit('user-1', 0, 'Zero amount')
-            ).rejects.toThrow('Amount must be greater than zero');
+                service.debitWallet('user-1', 0, 'ORDER_PAYMENT')
+            ).rejects.toThrow('Debit amount must be positive');
         });
     });
 });
