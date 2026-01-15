@@ -54,6 +54,20 @@ export class ProductController {
         return this.productService.enable(id);
     }
 
+    @Patch(':id/publish')
+    @UseGuards(JwtAuthGuard, PermissionsGuard)
+    @Permissions('product.update')
+    publishProduct(@Param('id') id: string) {
+        return this.productService.publishProduct(id);
+    }
+
+    @Get(':id/diagnostics')
+    @UseGuards(JwtAuthGuard, PermissionsGuard)
+    @Permissions('product.view')
+    getVisibilityDiagnostics(@Param('id') id: string) {
+        return this.productService.getProductVisibilityDiagnostics(id);
+    }
+
     @Patch(':id/archive')
     @UseGuards(JwtAuthGuard, PermissionsGuard)
     @Permissions('product.delete')
