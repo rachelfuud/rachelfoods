@@ -159,8 +159,8 @@ describe('OrderService - Inventory Safety', () => {
                 weight: new Decimal(1.0),
                 stock: 100,
                 status: 'ACTIVE',
-                perishable: false, category: { id: 'cat-1', name: 'Test Category' },
-                variants: [], category: { id: 'cat-1', name: 'Test Category' },
+                perishable: false,
+                category: { id: 'cat-1', name: 'Test Category' },
                 variants: [],
             };
 

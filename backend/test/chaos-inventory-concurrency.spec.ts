@@ -10,6 +10,7 @@ import { WalletService } from '../src/wallet/wallet.service';
 import { ReviewService } from '../src/reviews/review.service';
 import { BadRequestException } from '@nestjs/common';
 import { Decimal } from '@prisma/client/runtime/library';
+import { PaymentMethod } from '../src/orders/dto/create-order.dto';
 
 /**
  * PHASE 9C: Inventory Concurrency Chaos Tests
@@ -178,13 +179,14 @@ describe('CHAOS: OrderService - Inventory Concurrency & Oversell Prevention', ()
                 deliveryAddress: '123 Main St',
                 deliveryCity: 'Test City',
                 deliveryPhone: '555-1234',
+                paymentMethod: PaymentMethod.COD,
             };
 
             // Act: 3 concurrent orders for 1 item each
             const results = await Promise.allSettled([
-                service.createOrder('buyer-1', orderDto),
-                service.createOrder('buyer-2', orderDto),
-                service.createOrder('buyer-3', orderDto),
+                service.create(orderDto, 'buyer-1'),
+                service.create(orderDto, 'buyer-2'),
+                service.create(orderDto, 'buyer-3'),
             ]);
 
             // Assert: Only 2 should succeed, 1 MUST fail
@@ -218,16 +220,16 @@ describe('CHAOS: OrderService - Inventory Concurrency & Oversell Prevention', ()
 
             mockPrisma.products.findMany.mockImplementation(async (args: any) => {
                 const ids = args?.where?.id?.in || [];
-                return ids.map((id: string) => createProduct(id, stocks[id] || 0));
+                return ids.map((id: string) => createProduct(id, stocks[id as keyof typeof stocks] || 0));
             });
 
             mockPrisma.products.findUnique.mockImplementation(async (args: any) => {
-                const id = args.where.id;
+                const id = args.where.id as keyof typeof stocks;
                 return createProduct(id, stocks[id] || 0);
             });
 
             mockPrisma.products.update.mockImplementation((args: any) => {
-                const productId = args.where.id;
+                const productId = args.where.id as keyof typeof stocks;
                 const newStock = args.data.stockQuantity;
 
                 if (typeof newStock === 'object' && newStock.decrement) {
@@ -253,24 +255,27 @@ describe('CHAOS: OrderService - Inventory Concurrency & Oversell Prevention', ()
 
             // Act: Multiple concurrent orders for different products
             const results = await Promise.allSettled([
-                service.createOrder('buyer-1', {
+                service.create({
                     items: [{ productId: 'prod-a', quantity: 2 }],
                     deliveryAddress: '123 Main St',
                     deliveryCity: 'City',
                     deliveryPhone: '555-0001',
-                }),
-                service.createOrder('buyer-2', {
+                    paymentMethod: PaymentMethod.COD,
+                }, 'buyer-1'),
+                service.create({
                     items: [{ productId: 'prod-b', quantity: 1 }],
                     deliveryAddress: '456 Oak Ave',
                     deliveryCity: 'City',
                     deliveryPhone: '555-0002',
-                }),
-                service.createOrder('buyer-3', {
+                    paymentMethod: PaymentMethod.COD,
+                }, 'buyer-2'),
+                service.create({
                     items: [{ productId: 'prod-a', quantity: 3 }],
                     deliveryAddress: '789 Elm St',
                     deliveryCity: 'City',
                     deliveryPhone: '555-0003',
-                }),
+                    paymentMethod: PaymentMethod.COD,
+                }, 'buyer-3'),
             ]);
 
             // Assert: All stocks should remain non-negative
@@ -330,11 +335,12 @@ describe('CHAOS: OrderService - Inventory Concurrency & Oversell Prevention', ()
                 deliveryAddress: '123 Main St',
                 deliveryCity: 'Test City',
                 deliveryPhone: '555-1234',
+                paymentMethod: PaymentMethod.COD,
             };
 
             // Act & Assert
             await expect(
-                service.createOrder('buyer-1', orderDto)
+                service.create(orderDto, 'buyer-1')
             ).rejects.toThrow();
 
             // CRITICAL: Stock should be restored (rollback)
@@ -367,11 +373,12 @@ describe('CHAOS: OrderService - Inventory Concurrency & Oversell Prevention', ()
                 deliveryAddress: '123 Main St',
                 deliveryCity: 'Test City',
                 deliveryPhone: '555-1234',
+                paymentMethod: PaymentMethod.COD,
             };
 
             // Act & Assert
             await expect(
-                service.createOrder('buyer-1', orderDto)
+                service.create(orderDto, 'buyer-1')
             ).rejects.toThrow();
 
             // CRITICAL: order_items should NOT be created
@@ -429,11 +436,12 @@ describe('CHAOS: OrderService - Inventory Concurrency & Oversell Prevention', ()
                 deliveryAddress: '123 Main St',
                 deliveryCity: 'City',
                 deliveryPhone: '555-1234',
+                paymentMethod: PaymentMethod.COD,
             };
 
             // Act: 10 concurrent orders for 1 item each
             const attempts = Array(10).fill(null).map((_, i) =>
-                service.createOrder(`buyer-${i}`, orderDto)
+                service.create(orderDto, `buyer-${i + 1}`)
             );
 
             const results = await Promise.allSettled(attempts);
@@ -493,36 +501,41 @@ describe('CHAOS: OrderService - Inventory Concurrency & Oversell Prevention', ()
 
             // Act: Mixed order sizes (1, 3, 5, 7, 10 items)
             const results = await Promise.allSettled([
-                service.createOrder('buyer-1', {
+                service.create({
                     items: [{ productId: 'prod-1', quantity: 1 }],
                     deliveryAddress: '123 Main St',
                     deliveryCity: 'City',
                     deliveryPhone: '555-0001',
-                }),
-                service.createOrder('buyer-2', {
+                    paymentMethod: PaymentMethod.COD,
+                }, 'buyer-1'),
+                service.create({
                     items: [{ productId: 'prod-1', quantity: 3 }],
                     deliveryAddress: '456 Oak Ave',
                     deliveryCity: 'City',
                     deliveryPhone: '555-0002',
-                }),
-                service.createOrder('buyer-3', {
+                    paymentMethod: PaymentMethod.COD,
+                }, 'buyer-2'),
+                service.create({
                     items: [{ productId: 'prod-1', quantity: 5 }],
                     deliveryAddress: '789 Elm St',
                     deliveryCity: 'City',
                     deliveryPhone: '555-0003',
-                }),
-                service.createOrder('buyer-4', {
+                    paymentMethod: PaymentMethod.COD,
+                }, 'buyer-3'),
+                service.create({
                     items: [{ productId: 'prod-1', quantity: 7 }],
                     deliveryAddress: '321 Pine Rd',
                     deliveryCity: 'City',
                     deliveryPhone: '555-0004',
-                }),
-                service.createOrder('buyer-5', {
+                    paymentMethod: PaymentMethod.COD,
+                }, 'buyer-4'),
+                service.create({
                     items: [{ productId: 'prod-1', quantity: 10 }],
                     deliveryAddress: '654 Maple Ln',
                     deliveryCity: 'City',
                     deliveryPhone: '555-0005',
-                }),
+                    paymentMethod: PaymentMethod.COD,
+                }, 'buyer-5'),
             ]);
 
             // Assert: Stock should never go negative
@@ -556,11 +569,12 @@ describe('CHAOS: OrderService - Inventory Concurrency & Oversell Prevention', ()
                 deliveryAddress: '123 Main St',
                 deliveryCity: 'Test City',
                 deliveryPhone: '555-1234',
+                paymentMethod: PaymentMethod.COD,
             };
 
             // Act & Assert
             await expect(
-                service.createOrder('buyer-1', orderDto)
+                service.create(orderDto, 'buyer-1')
             ).rejects.toThrow();
         });
 
@@ -570,10 +584,11 @@ describe('CHAOS: OrderService - Inventory Concurrency & Oversell Prevention', ()
                 deliveryAddress: '123 Main St',
                 deliveryCity: 'Test City',
                 deliveryPhone: '555-1234',
+                paymentMethod: PaymentMethod.COD,
             };
 
             await expect(
-                service.createOrder('buyer-1', orderDto)
+                service.create(orderDto, 'buyer-1')
             ).rejects.toThrow();
         });
 
@@ -583,11 +598,13 @@ describe('CHAOS: OrderService - Inventory Concurrency & Oversell Prevention', ()
                 deliveryAddress: '123 Main St',
                 deliveryCity: 'Test City',
                 deliveryPhone: '555-1234',
+                paymentMethod: PaymentMethod.COD,
             };
 
             await expect(
-                service.createOrder('buyer-1', orderDto)
+                service.create(orderDto, 'buyer-1')
             ).rejects.toThrow();
         });
     });
 });
+

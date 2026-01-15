@@ -9,6 +9,7 @@ import { PromotionService } from '../src/promotion/promotion.service';
 import { WalletService } from '../src/wallet/wallet.service';
 import { ReviewService } from '../src/reviews/review.service';
 import { Decimal } from '@prisma/client/runtime/library';
+import { PaymentMethod } from '../src/orders/dto/create-order.dto';
 
 /**
  * PHASE 9C: External Service Failure Chaos Tests
@@ -174,10 +175,11 @@ describe('CHAOS: OrderService - External Service Failures', () => {
                 deliveryAddress: '123 Main St',
                 deliveryCity: 'Test City',
                 deliveryPhone: '555-1234',
+                paymentMethod: PaymentMethod.COD,
             };
 
             // Act: Create order despite email failure
-            const result = await service.createOrder('buyer-1', orderDto);
+            const result = await service.create(orderDto, 'buyer-1');
 
             // Assert: Order should be created successfully
             expect(result).toBeDefined();
@@ -231,10 +233,11 @@ describe('CHAOS: OrderService - External Service Failures', () => {
                 deliveryAddress: '456 Oak Ave',
                 deliveryCity: 'Test Town',
                 deliveryPhone: '555-5678',
+                paymentMethod: PaymentMethod.COD,
             };
 
             // Act & Assert: Should not throw
-            const result = await service.createOrder('buyer-2', orderDto);
+            const result = await service.create(orderDto, 'buyer-2');
 
             expect(result).toBeDefined();
             expect(result.id).toBe('order-456');
@@ -285,10 +288,11 @@ describe('CHAOS: OrderService - External Service Failures', () => {
                 deliveryAddress: '789 Elm St',
                 deliveryCity: 'Test Village',
                 deliveryPhone: '555-9012',
+                paymentMethod: PaymentMethod.COD,
             };
 
             // Act
-            const result = await service.createOrder('buyer-3', orderDto);
+            const result = await service.create(orderDto, 'buyer-3');
 
             // Assert: Order created despite notification failure
             expect(result).toBeDefined();
@@ -337,23 +341,25 @@ describe('CHAOS: OrderService - External Service Failures', () => {
 
             // Act: Multiple rapid orders
             const results = await Promise.all([
-                service.createOrder('buyer-4', {
+                service.create({
                     items: [{ productId: 'prod-1', quantity: 1 }],
                     deliveryAddress: '321 Pine Rd',
                     deliveryCity: 'Test City',
                     deliveryPhone: '555-3456',
-                }),
-                service.createOrder('buyer-5', {
+                    paymentMethod: PaymentMethod.COD,
+                }, 'buyer-4'),
+                service.create({
                     items: [{ productId: 'prod-1', quantity: 1 }],
                     deliveryAddress: '654 Maple Ln',
                     deliveryCity: 'Test City',
                     deliveryPhone: '555-7890',
-                }),
+                    paymentMethod: PaymentMethod.COD,
+                }, 'buyer-5'),
             ]);
 
             // Assert: Both orders should succeed
             expect(results).toHaveLength(2);
-            results.forEach(order => {
+            results.forEach((order: any) => {
                 expect(order).toBeDefined();
             });
         });
@@ -385,11 +391,12 @@ describe('CHAOS: OrderService - External Service Failures', () => {
                 deliveryAddress: '123 Remote St',
                 deliveryCity: 'Far City',
                 deliveryPhone: '555-1111',
+                paymentMethod: PaymentMethod.COD,
             };
 
             // Act & Assert: Should fail gracefully
             await expect(
-                service.createOrder('buyer-6', orderDto)
+                service.create(orderDto, 'buyer-6')
             ).rejects.toThrow();
 
             // CRITICAL: Order should NOT be created if shipping fails
@@ -419,11 +426,12 @@ describe('CHAOS: OrderService - External Service Failures', () => {
                 deliveryAddress: '999 Error Ln',
                 deliveryCity: 'Bug Town',
                 deliveryPhone: '555-9999',
+                paymentMethod: PaymentMethod.COD,
             };
 
             // Act & Assert
             await expect(
-                service.createOrder('buyer-7', orderDto)
+                service.create(orderDto, 'buyer-7')
             ).rejects.toThrow();
         });
     });
@@ -472,15 +480,16 @@ describe('CHAOS: OrderService - External Service Failures', () => {
                 deliveryAddress: '147 Event St',
                 deliveryCity: 'Test City',
                 deliveryPhone: '555-1470',
+                paymentMethod: PaymentMethod.COD,
             };
 
             // Act: Should handle gracefully (catch the error internally)
             // Note: Actual service may or may not catch this - this tests resilience
             try {
-                const result = await service.createOrder('buyer-8', orderDto);
+                const result = await service.create(orderDto, 'buyer-8');
                 // If service catches event errors, order should succeed
                 expect(result).toBeDefined();
-            } catch (error) {
+            } catch (error: any) {
                 // If service doesn't catch event errors, that's a bug
                 // This test documents expected behavior
                 expect(error.message).toContain('Event handler crashed');
@@ -533,11 +542,12 @@ describe('CHAOS: OrderService - External Service Failures', () => {
                 deliveryAddress: '258 DB St',
                 deliveryCity: 'Transaction City',
                 deliveryPhone: '555-2580',
+                paymentMethod: PaymentMethod.COD,
             };
 
             // Act & Assert
             await expect(
-                service.createOrder('buyer-9', orderDto)
+                service.create(orderDto, 'buyer-9')
             ).rejects.toThrow();
 
             // CRITICAL: Stock update should be rolled back
@@ -594,11 +604,12 @@ describe('CHAOS: OrderService - External Service Failures', () => {
                 deliveryAddress: '369 Conflict Ave',
                 deliveryCity: 'Test City',
                 deliveryPhone: '555-3690',
+                paymentMethod: PaymentMethod.COD,
             };
 
             // Act & Assert: First attempt will fail
             await expect(
-                service.createOrder('buyer-10', orderDto)
+                service.create(orderDto, 'buyer-10')
             ).rejects.toThrow('deadlock');
 
             // In production, retry logic might handle this
@@ -655,11 +666,12 @@ describe('CHAOS: OrderService - External Service Failures', () => {
                 deliveryAddress: '789 Chaos Blvd',
                 deliveryCity: 'Failure Town',
                 deliveryPhone: '555-7890',
+                paymentMethod: PaymentMethod.COD,
             };
 
             // Act: Should handle gracefully if service has proper error handling
             try {
-                const result = await service.createOrder('buyer-11', orderDto);
+                const result = await service.create(orderDto, 'buyer-11');
 
                 // CRITICAL: Core order creation should succeed despite auxiliary failures
                 expect(result).toBeDefined();
@@ -673,3 +685,4 @@ describe('CHAOS: OrderService - External Service Failures', () => {
         });
     });
 });
+

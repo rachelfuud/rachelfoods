@@ -9,19 +9,21 @@
 ## 1. 5-Minute System Walkthrough
 
 ### Business Context
+
 Rachel Foods is a Nigerian food delivery platform handling wallet-based payments, kitchen inventory management, and multi-region order fulfillment. The system processes real-money transactions where financial accuracy is non-negotiable and inventory overselling damages merchant relationships.
 
 **Scale**: Designed for 1K-10K daily active users initially, with clear scaling triggers documented for 10x and 100x growth.
 
 ### Core Invariants (Never Violated)
-| Invariant | Protection Mechanism | Validation Status |
-|-----------|---------------------|-------------------|
-| **Double-charge prevention** | Idempotent payment intents | ✅ Tested under concurrency |
-| **Wallet balance accuracy** | Atomic updates, zero-sum enforcement | ⚠️ Requires row-level locking for high concurrency |
-| **Inventory oversell prevention** | Optimistic locking with version checks | ✅ Validated in chaos tests |
-| **Refund authenticity** | Admin confirmation workflow | ✅ Prevents accidental bulk operations |
-| **Order state consistency** | Explicit state machine with guards | ✅ Invalid transitions rejected |
-| **Payment-order coupling** | Transactional boundaries prevent orphaned records | ✅ External failures handled gracefully |
+
+| Invariant                         | Protection Mechanism                              | Validation Status                                  |
+| --------------------------------- | ------------------------------------------------- | -------------------------------------------------- |
+| **Double-charge prevention**      | Idempotent payment intents                        | ✅ Tested under concurrency                        |
+| **Wallet balance accuracy**       | Atomic updates, zero-sum enforcement              | ⚠️ Requires row-level locking for high concurrency |
+| **Inventory oversell prevention** | Optimistic locking with version checks            | ✅ Validated in chaos tests                        |
+| **Refund authenticity**           | Admin confirmation workflow                       | ✅ Prevents accidental bulk operations             |
+| **Order state consistency**       | Explicit state machine with guards                | ✅ Invalid transitions rejected                    |
+| **Payment-order coupling**        | Transactional boundaries prevent orphaned records | ✅ External failures handled gracefully            |
 
 ### High-Risk Areas and Protections
 
@@ -56,12 +58,12 @@ const result = await prisma.kitchenInventory.updateMany({
   where: {
     id: inventoryId,
     currentStock: { gte: quantityNeeded },
-    version: currentVersion  // Optimistic lock
+    version: currentVersion, // Optimistic lock
   },
   data: {
     currentStock: { decrement: quantityNeeded },
-    version: { increment: 1 }
-  }
+    version: { increment: 1 },
+  },
 });
 
 if (result.count === 0) {
@@ -69,7 +71,8 @@ if (result.count === 0) {
 }
 ```
 
-**Why Not Pessimistic Locking?**  
+**Why Not Pessimistic Locking?**
+
 - Database row locks add latency and reduce throughput for low-contention scenarios
 - Optimistic approach handles 99% of cases without blocking
 - When contention increases, retry logic keeps success rate high
@@ -84,6 +87,7 @@ if (result.count === 0) {
 **Current Implementation**: Optimistic locking on `Wallet.updatedAt` field prevents stale reads.
 
 **Chaos Test Results** (12 test scenarios):
+
 - ✅ Concurrent topups: All credited correctly
 - ✅ Concurrent deductions with insufficient funds: Correctly blocked
 - ⚠️ High-frequency updates (100ms intervals): 4/12 tests showed retry exhaustion
@@ -102,12 +106,14 @@ if (result.count === 0) {
 **Design Pattern**: Confirmation workflow with explicit intent capture.
 
 **Implementation**:
+
 1. Admin initiates action (e.g., "Refund all orders for Kitchen X today")
 2. System calculates impact (e.g., "47 orders, ₦234,500 total refund")
 3. Admin confirms with explicit reason code
 4. Action executes with audit trail linking admin ID, reason, and timestamp
 
 **Protections**:
+
 - One-click destructive actions are prohibited by design
 - Audit logs are immutable (append-only)
 - Confirmation screens show concrete impact, not abstract counts
@@ -126,6 +132,7 @@ if (result.count === 0) {
 **Decision**: Monolithic architecture with modular internal structure.
 
 **Rationale**:
+
 - **Operational simplicity**: Single deployment, single database, no distributed tracing complexity
 - **Transactional integrity**: ACID guarantees within single database prevent consistency issues
 - **Development velocity**: Team can iterate rapidly without inter-service contract negotiations
@@ -140,6 +147,7 @@ if (result.count === 0) {
 **Decision**: Strong consistency for financial operations, eventual consistency for non-critical features.
 
 **Rationale**:
+
 - **Financial operations** (wallet, payments, inventory): Immediate consistency non-negotiable. Users must see accurate balances instantly.
 - **Analytics, notifications, search**: Eventual consistency acceptable. 30-second delay for updated kitchen ratings is tolerable.
 
@@ -160,6 +168,7 @@ if (result.count === 0) {
 **Known Limitation**: Under sustained high-frequency updates (>10 concurrent operations on same wallet), retry exhaustion possible.
 
 **Why Not Implemented Yet**:
+
 - Current traffic patterns show <1% of wallets receiving concurrent operations
 - Optimistic approach has 20% better throughput for low-contention cases
 - Row-level locking implementation requires 3 days dev + 2 days testing
@@ -176,6 +185,7 @@ if (result.count === 0) {
 **Known Limitation**: Multi-database transactions (future multi-region) require distributed coordination.
 
 **Why Not Implemented Yet**:
+
 - Single-region deployment means single database suffices
 - Saga pattern adds 40% complexity overhead for zero current benefit
 - Implementation cost: 6 weeks engineering time
@@ -188,6 +198,7 @@ if (result.count === 0) {
 ## 4. Failure Scenarios You Actively Tested
 
 ### Overview
+
 53 chaos tests across 4 domains validated failure handling and recovery mechanisms. Tests intentionally inject failures to validate system behavior under adverse conditions.
 
 ### Concurrency Conflicts
@@ -195,6 +206,7 @@ if (result.count === 0) {
 **Test Suite**: `wallet.chaos.test.ts`, `inventory.chaos.test.ts`
 
 **Scenarios Tested**:
+
 1. **Concurrent wallet deductions with insufficient balance**
    - Setup: Wallet with ₦5000, two simultaneous ₦4000 deduction attempts
    - Expected: One succeeds, one fails with insufficient funds error
@@ -212,6 +224,7 @@ if (result.count === 0) {
    - Engineering Note: Real-world usage patterns show 2-5 second intervals; 100ms scenario represents stress test, not expected behavior
 
 **Key Findings**:
+
 - Optimistic locking prevents data corruption under all tested scenarios
 - Retry logic successfully resolves most conflicts
 - High-frequency edge cases identified with clear scaling triggers
@@ -221,6 +234,7 @@ if (result.count === 0) {
 **Test Suite**: `payment-provider.chaos.test.ts`
 
 **Scenarios Tested**:
+
 1. **Payment succeeds remotely, webhook delivery fails**
    - Setup: Simulate network timeout after successful Paystack charge
    - Expected: System marks payment as pending, manual reconciliation available
@@ -237,6 +251,7 @@ if (result.count === 0) {
    - Result: ✅ Validated - Graceful degradation, no orphaned records
 
 **Key Findings**:
+
 - Idempotency keys work as designed
 - External failures never corrupt internal state
 - Manual reconciliation tools tested and validated
@@ -247,6 +262,7 @@ if (result.count === 0) {
 **Test Suite**: `admin-safety.chaos.test.ts`
 
 **Scenarios Tested**:
+
 1. **Rapid-fire refund submissions**
    - Setup: Admin clicks refund button 5 times rapidly
    - Expected: Only one refund processed
@@ -263,6 +279,7 @@ if (result.count === 0) {
    - Result: ✅ Validated - Optimistic locking prevents stale writes
 
 **Key Findings**:
+
 - Confirmation workflows successfully prevent accidental bulk actions
 - Audit logs capture all admin operations for accountability
 - Rate limiting works as designed
@@ -274,6 +291,7 @@ if (result.count === 0) {
 ### What Changes at 10x Traffic (10K-100K DAU)
 
 **Infrastructure Upgrades**:
+
 - **Distributed caching** (Redis): Reduce database load for frequently accessed data (kitchen menus, user profiles)
 - **Read replicas**: Offload analytics and reporting queries from primary database
 - **Message queues**: Move notification delivery and order confirmation emails to async workers
@@ -285,6 +303,7 @@ if (result.count === 0) {
 ### What Changes at 100x Traffic (100K+ DAU)
 
 **Architectural Shifts**:
+
 - **Saga pattern**: Distributed transactions for multi-database operations (multi-region support)
 - **Event sourcing**: Full audit trail with event replay for wallet operations
 - **Multi-region deployment**: Latency optimization for geographic distribution
@@ -296,6 +315,7 @@ if (result.count === 0) {
 ### What Stays the Same
 
 **Core Design Principles** (Scale-Invariant):
+
 - Financial operations remain strongly consistent (ACID guarantees)
 - Idempotency keys protect against duplicate operations
 - Audit trails maintain immutability and accountability
@@ -306,6 +326,7 @@ if (result.count === 0) {
 These patterns represent fundamental correctness requirements, not performance optimizations. Financial integrity doesn't become "optional" at scale—it becomes more critical.
 
 **Module Boundaries** (Already Scalable):
+
 - Order, Payment, Wallet, Inventory, User modules already logically separated
 - Internal interfaces defined with minimal coupling
 - Service extraction doesn't require rewrite, just deployment topology change
@@ -328,21 +349,27 @@ These patterns represent fundamental correctness requirements, not performance o
 ## Interview Tips: Using This Document
 
 ### For 5-Minute Explanations
+
 Start with Section 1. Cover business context, one core invariant (wallet accuracy or inventory oversell), and one high-risk area with its protection mechanism. Close with scaling awareness: "We know where complexity lives and when to implement it."
 
 ### For 10-Minute Deep Dives
+
 Pick one topic from Section 2 based on interviewer interest. Wallet concurrency demonstrates trade-off thinking. Inventory oversell shows optimistic vs pessimistic locking decisions. Admin safety illustrates human factors engineering.
 
 ### For Trade-off Questions
+
 Use Section 3 examples. Always structure as: Decision → Rationale → When to Reconsider → Reversibility. Avoid defensive language. Frame deferrals as intentional: "We chose simplicity for current scale with a clear upgrade path."
 
 ### For Failure Handling Questions
+
 Reference Section 4 specifics. Mention test count (53 tests) for credibility. Pick one scenario and walk through setup, expected behavior, actual result, and engineering takeaway. Emphasize proactive testing over reactive debugging.
 
 ### For Scaling Questions
+
 Use Section 5 structure: What changes, what stays the same, and why. Highlight that core correctness principles are scale-invariant. Show you understand both the technical path (specific upgrades) and the decision framework (metric-driven triggers).
 
 ### Tone Calibration
+
 - **Confident**: "We tested 53 failure scenarios across 4 domains."
 - **Calm**: "Retry exhaustion at 100ms intervals is a stress test, not a user scenario."
 - **Professional**: "Current pattern handles 99% of cases; we know the upgrade path for the remaining 1%."

@@ -11,7 +11,6 @@ import { ReviewService } from '../src/reviews/review.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { BadRequestException } from '@nestjs/common';
 import { Decimal } from '@prisma/client/runtime/library';
-import { Decimal } from '@prisma/client/runtime/library';
 
 /**
  * PHASE 9A: Order Creation Tests
