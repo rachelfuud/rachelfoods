@@ -1,6 +1,6 @@
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
-import { ProductCard } from '@/components/ProductCard';
+import { ProductGrid } from '@/components/ProductGrid';
 import { api } from '@/lib/api';
 import { Product, Category } from '@/lib/types';
 import Link from 'next/link';
@@ -84,29 +84,7 @@ export default async function CatalogPage({
                 </div>
 
                 {/* Products Grid */}
-                {products.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        {products.map((product: Product) => (
-                            <ProductCard key={product.id} product={product} />
-                        ))}
-                    </div>
-                ) : (
-                    <div className="text-center py-20">
-                        <div className="text-6xl mb-4">🍽️</div>
-                        <h3 className="text-2xl font-bold mb-2">No products found</h3>
-                        <p className="text-foreground/70 mb-6">
-                            {params.category
-                                ? 'No products in this category yet'
-                                : 'Products will be displayed here once added by the seller'}
-                        </p>
-                        <Link
-                            href="/catalog"
-                            className="inline-block px-6 py-3 bg-primary text-white rounded-lg hover:opacity-90 transition-opacity"
-                        >
-                            View All Products
-                        </Link>
-                    </div>
-                )}
+                <ProductGrid products={products} />
             </main>
 
             <Footer />

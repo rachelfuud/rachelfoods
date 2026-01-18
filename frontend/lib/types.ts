@@ -38,6 +38,8 @@ export interface ProductVariant {
     isActive: boolean;
 }
 
+export type ProductStatus = 'DRAFT' | 'ACTIVE' | 'DISABLED' | 'ARCHIVED';
+
 export interface Product {
     id: string;
     name: string;
@@ -55,6 +57,8 @@ export interface Product {
     supportsRefill?: boolean;
     orderCount?: number;
     variants?: ProductVariant[];
+    status?: ProductStatus;
+    totalStock?: number;
 }
 
 export interface CartItem {

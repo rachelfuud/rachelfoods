@@ -58,6 +58,14 @@ const config: Config = {
         },
         muted: 'var(--color-muted)',
         border: 'var(--color-border)',
+        // Brand semantic tokens
+        brand: {
+          primary: 'var(--color-brand-primary)',
+          accent: 'var(--color-brand-accent)',
+          muted: 'var(--color-brand-muted)',
+          surface: 'var(--color-brand-surface)',
+          highlight: 'var(--color-brand-highlight)',
+        },
         // Text semantic tokens
         text: {
           primary: 'var(--color-text-primary)',

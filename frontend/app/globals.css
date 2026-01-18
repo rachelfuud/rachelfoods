@@ -1,16 +1,16 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
   /* Tailwind v4 theme colors */
   --color-primary: #2563eb;
   --color-primary-*: initial;
-  
+
   --color-secondary: #7c3aed;
   --color-secondary-*: initial;
-  
+
   --color-accent: #f59e0b;
   --color-accent-*: initial;
-  
+
   --color-foreground: #171717;
   --color-background: #ffffff;
   --color-muted: #f3f4f6;
@@ -62,13 +62,20 @@
   --color-surface-elevated: #ffffff;
   --color-muted: #f3f4f6;
   --color-border: #e5e7eb;
-  
+
+  /* Brand semantic tokens */
+  --color-brand-primary: #2563eb;
+  --color-brand-accent: #f59e0b;
+  --color-brand-muted: #f3f4f6;
+  --color-brand-surface: #ffffff;
+  --color-brand-highlight: #fef3c7;
+
   /* Text semantic tokens */
   --color-text-primary: #171717;
   --color-text-secondary: #6b7280;
   --color-text-tertiary: #9ca3af;
   --color-text-inverse: #ffffff;
-  
+
   /* State colors */
   --color-success: #10b981;
   --color-error: #ef4444;
@@ -121,13 +128,20 @@
   --color-surface-elevated: #262626;
   --color-muted: #1f2937;
   --color-border: #374151;
-  
+
+  /* Brand semantic tokens - Dark theme */
+  --color-brand-primary: #3b82f6;
+  --color-brand-accent: #fbbf24;
+  --color-brand-muted: #1f2937;
+  --color-brand-surface: #171717;
+  --color-brand-highlight: #78350f;
+
   /* Text semantic tokens */
   --color-text-primary: #ededed;
   --color-text-secondary: #9ca3af;
   --color-text-tertiary: #6b7280;
   --color-text-inverse: #171717;
-  
+
   /* State colors - adjusted for dark */
   --color-success: #34d399;
   --color-error: #f87171;
@@ -139,34 +153,78 @@ body {
   color: var(--color-foreground);
   background: var(--color-background);
   font-family: Arial, Helvetica, sans-serif;
-  transition: background-color 0.3s, color 0.3s;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
 }
 
 /* Custom utility classes for theme colors */
-.text-primary { color: var(--color-primary) !important; }
-.text-secondary { color: var(--color-secondary) !important; }
-.text-accent { color: var(--color-accent) !important; }
-.text-foreground { color: var(--color-foreground) !important; }
-.text-foreground\/70 { color: rgb(from var(--color-foreground) r g b / 0.7) !important; }
-.text-foreground\/60 { color: rgb(from var(--color-foreground) r g b / 0.6) !important; }
+.text-primary {
+  color: var(--color-primary) !important;
+}
+.text-secondary {
+  color: var(--color-secondary) !important;
+}
+.text-accent {
+  color: var(--color-accent) !important;
+}
+.text-foreground {
+  color: var(--color-foreground) !important;
+}
+.text-foreground\/70 {
+  color: rgb(from var(--color-foreground) r g b / 0.7) !important;
+}
+.text-foreground\/60 {
+  color: rgb(from var(--color-foreground) r g b / 0.6) !important;
+}
 
-.bg-primary { background-color: var(--color-primary) !important; }
-.bg-secondary { background-color: var(--color-secondary) !important; }
-.bg-accent { background-color: var(--color-accent) !important; }
-.bg-background { background-color: var(--color-background) !important; }
-.bg-muted { background-color: var(--color-muted) !important; }
+.bg-primary {
+  background-color: var(--color-primary) !important;
+}
+.bg-secondary {
+  background-color: var(--color-secondary) !important;
+}
+.bg-accent {
+  background-color: var(--color-accent) !important;
+}
+.bg-background {
+  background-color: var(--color-background) !important;
+}
+.bg-muted {
+  background-color: var(--color-muted) !important;
+}
 
-.border-primary { border-color: var(--color-primary) !important; }
-.border-border { border-color: var(--color-border) !important; }
+.border-primary {
+  border-color: var(--color-primary) !important;
+}
+.border-border {
+  border-color: var(--color-border) !important;
+}
 
-.hover\:text-primary:hover { color: var(--color-primary) !important; }
-.hover\:bg-muted:hover { background-color: var(--color-muted) !important; }
-.hover\:bg-primary\/5:hover { background-color: rgba(from var(--color-primary) r g b / 0.05) !important; }
+.hover\:text-primary:hover {
+  color: var(--color-primary) !important;
+}
+.hover\:bg-muted:hover {
+  background-color: var(--color-muted) !important;
+}
+.hover\:bg-primary\/5:hover {
+  background-color: rgba(from var(--color-primary) r g b / 0.05) !important;
+}
 
 /* Gradient backgrounds with primary/secondary/accent */
-.from-primary\/10 { --tw-gradient-from: rgba(from var(--color-primary) r g b / 0.1) !important; --tw-gradient-to: rgba(from var(--color-primary) r g b / 0); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to); }
-.via-secondary\/10 { --tw-gradient-to: rgba(from var(--color-secondary) r g b / 0); --tw-gradient-stops: var(--tw-gradient-from), rgba(from var(--color-secondary) r g b / 0.1), var(--tw-gradient-to); }
-.to-accent\/10 { --tw-gradient-to: rgba(from var(--color-accent) r g b / 0.1); }
+.from-primary\/10 {
+  --tw-gradient-from: rgba(from var(--color-primary) r g b / 0.1) !important;
+  --tw-gradient-to: rgba(from var(--color-primary) r g b / 0);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+.via-secondary\/10 {
+  --tw-gradient-to: rgba(from var(--color-secondary) r g b / 0);
+  --tw-gradient-stops:
+    var(--tw-gradient-from), rgba(from var(--color-secondary) r g b / 0.1), var(--tw-gradient-to);
+}
+.to-accent\/10 {
+  --tw-gradient-to: rgba(from var(--color-accent) r g b / 0.1);
+}
 
 body {
   color: var(--color-foreground);
