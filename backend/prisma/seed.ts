@@ -1,4 +1,4 @@
-import { PrismaClient, Prisma } from '@prisma/client';
+import { PrismaClient, Prisma, ProductStatus } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -282,17 +282,17 @@ async function main() {
     // 5. Create sample categories
     console.log('\n📁 Creating sample categories...');
     const sampleCategories = [
-        { name: 'Vegetables', slug: 'vegetables', description: 'Fresh and dry vegetables' },
-        { name: 'Grains & Legumes', slug: 'grains', description: 'Rice, beans, and pulses' },
-        { name: 'Spices & Seasonings', slug: 'spices', description: 'Traditional spices and seasonings' },
-        { name: 'Oils & Condiments', slug: 'oils', description: 'Cooking oils and sauces' },
-        { name: 'Snacks', slug: 'snacks', description: 'Traditional snacks and treats' },
+        { id: crypto.randomUUID(), name: 'Vegetables', slug: 'vegetables', description: 'Fresh and dry vegetables', updatedAt: new Date() },
+        { id: crypto.randomUUID(), name: 'Grains & Legumes', slug: 'grains', description: 'Rice, beans, and pulses', updatedAt: new Date() },
+        { id: crypto.randomUUID(), name: 'Spices & Seasonings', slug: 'spices', description: 'Traditional spices and seasonings', updatedAt: new Date() },
+        { id: crypto.randomUUID(), name: 'Oils & Condiments', slug: 'oils', description: 'Cooking oils and sauces', updatedAt: new Date() },
+        { id: crypto.randomUUID(), name: 'Snacks', slug: 'snacks', description: 'Traditional snacks and treats', updatedAt: new Date() },
     ];
 
     const createdCategories: Record<string, any> = {};
     for (const category of sampleCategories) {
         const upsertedCategory = await prisma.categories.upsert({
-            where: { slug: category.slug },
+            where: { id: category.id },
             update: category,
             create: category,
         });
@@ -449,8 +449,18 @@ async function main() {
         if (!existing) {
             await prisma.products.create({
                 data: {
-                    ...product,
                     id: crypto.randomUUID(),
+                    name: product.name,
+                    slug: product.slug,
+                    description: product.description,
+                    price: product.price,
+                    stock: product.stock,
+                    unit: product.unit,
+                    weight: product.weight,
+                    categoryId: product.categoryId,
+                    imageUrl: product.imageUrl,
+                    isFeatured: product.isFeatured,
+                    status: product.status as ProductStatus,
                     updatedAt: new Date(),
                 },
             });

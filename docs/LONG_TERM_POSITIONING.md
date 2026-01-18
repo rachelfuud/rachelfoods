@@ -27,6 +27,7 @@
 **What It Is**: You remain hands-on technical. You own systems, write code, design architecture. No management responsibilities.
 
 **Day-to-Day**:
+
 - Design and implement complex systems
 - Deep technical work (chaos testing, architectural decisions, operational planning)
 - Mentor junior engineers informally
@@ -35,12 +36,14 @@
 **Compensation Range**: $140K-180K salary, or $100-130/hour contract
 
 **Appeal**:
+
 - Stay technical (no management meetings)
 - Deep work focus (flow states, building)
 - Clear output (you ship systems)
 - Work-life boundary (clock out when done)
 
 **Trade-Offs**:
+
 - Limited scope (you own your system, not company direction)
 - Compensation ceiling (caps around $180K-200K for IC roles)
 - Less influence (you advise, don't decide company strategy)
@@ -54,6 +57,7 @@
 **What It Is**: Senior technical leadership without direct reports. You own technical direction across multiple systems or company-wide.
 
 **Day-to-Day**:
+
 - Architectural decisions spanning multiple teams
 - Technical strategy (which problems to solve, how to solve them)
 - Mentoring senior engineers
@@ -63,12 +67,14 @@
 **Compensation Range**: $180K-250K+ salary, or $130-200+/hour contract
 
 **Appeal**:
+
 - High technical influence (you shape company technical direction)
 - Variety (work across systems, not just one)
 - Mentor impact (help senior engineers grow)
 - Compensation ceiling is higher (can reach $300K+ at large companies)
 
 **Trade-Offs**:
+
 - Less hands-on (more design, less implementation)
 - More meetings (coordination across teams)
 - Politics (navigating organizational dynamics)
@@ -83,6 +89,7 @@
 **What It Is**: Lead team of engineers. You're responsible for hiring, performance management, team delivery, and people development.
 
 **Day-to-Day**:
+
 - 1:1s with direct reports
 - Hiring interviews and onboarding
 - Performance reviews and career development
@@ -93,12 +100,14 @@
 **Compensation Range**: $150K-220K+ salary
 
 **Appeal**:
+
 - People impact (help engineers grow, build high-performing teams)
 - Organizational influence (shape team culture, processes)
 - Leadership skills (communication, delegation, conflict resolution)
 - Career progression (Director → VP → CTO path)
 
 **Trade-Offs**:
+
 - Limited hands-on technical work (you enable others, not build yourself)
 - People problems (conflict, underperformance, turnover)
 - Meeting-heavy (little deep work time)
@@ -115,6 +124,7 @@
 **What It Is**: Independent consultant. Clients hire you for specific expertise (architecture design, system audit, failure prevention, technical due diligence).
 
 **Day-to-Day**:
+
 - Short-term engagements (2 weeks - 6 months)
 - Problem-solving work (diagnose issues, design solutions, sometimes implement)
 - Client communication (explaining technical decisions to non-technical stakeholders)
@@ -124,12 +134,14 @@
 **Compensation Range**: $130-250+/hour, varies by engagement
 
 **Appeal**:
+
 - Maximum autonomy (you choose clients, projects, schedule)
 - Variety (different industries, problems, companies)
 - High earning potential (good consultants make $200K-500K+)
 - Learning (each project exposes you to new domains)
 
 **Trade-Offs**:
+
 - Income volatility (gaps between projects)
 - Business overhead (proposals, contracts, invoicing, taxes)
 - No team (solo work, less collaboration)
@@ -146,6 +158,7 @@
 **What It Is**: Join early-stage startup as technical co-founder or early engineer. You build product, own technical direction, and have equity upside.
 
 **Day-to-Day**:
+
 - Full-stack ownership (you build everything early on)
 - Product decisions (what to build, not just how)
 - Hiring (as company grows, you build team)
@@ -154,12 +167,14 @@
 **Compensation Range**: Below-market salary ($80K-120K) + equity (0.5%-10% depending on stage)
 
 **Appeal**:
+
 - Equity upside (if startup succeeds, equity worth $X00K-$XM+)
 - Product ownership (you shape what gets built)
 - Learning velocity (intense, fast-paced environment)
 - Mission (if you care about startup's problem)
 
 **Trade-Offs**:
+
 - High risk (90% of startups fail, equity often worth $0)
 - Low salary (below market for 2-5+ years)
 - Long hours (expectation of hustle, boundaries are weak)
@@ -218,17 +233,20 @@
 ### Your Current Trajectory (Based on Rachel Foods)
 
 **Strengths**:
+
 - Systems thinking (chaos testing, failure modes, operational planning)
 - Documented decision-making (architectural decisions, trade-offs)
 - Ownership mindset (testing, documentation, operations)
 - Depth over breadth (backend focus, not generalist)
 
 **Natural Paths**:
+
 1. **Senior IC**: Rachel Foods is perfect proof. You can stay hands-on, deepen technical expertise.
 2. **Staff/Principal**: 2-3 more projects, you have enough breadth to own technical direction across systems.
 3. **Technical Consulting**: Rachel Foods is strong portfolio piece. Add 2-3 client projects, you're positioned to consult.
 
 **Weak Fit**:
+
 - **Management**: No evidence of team leadership, people development, or process optimization in Rachel Foods.
 - **Startup**: Rachel Foods emphasizes rigor over speed. Startups often prioritize speed over rigor (cultural mismatch).
 
@@ -243,6 +261,7 @@
 **Goal**: Get 2-3 professional projects (client or employer) to complement Rachel Foods.
 
 **Actions**:
+
 - Accept roles/clients in high-stakes domains (fintech, healthcare, e-commerce)
 - Deliver with same rigor as Rachel Foods (chaos testing, documentation, operations)
 - Get testimonials and references
@@ -257,6 +276,7 @@
 **Goal**: Be known for specific expertise (financial systems, chaos testing, backend correctness).
 
 **Actions**:
+
 - Complete 3-4 more projects (total 5-7 professional projects)
 - Raise rates to $100-120/hour
 - Write 2-3 LinkedIn posts referencing learnings from projects
@@ -271,18 +291,21 @@
 **Decision Point**: After 2 years of professional work, evaluate which path excites you.
 
 **Option A: Stay Senior IC**:
+
 - Continue hands-on work
 - Deepen expertise in specific domain (fintech, healthcare)
 - Increase rates to $120-150/hour
 - Maintain work-life balance
 
 **Option B: Pursue Staff/Principal**:
+
 - Apply to Staff/Principal roles at mid-large companies
 - Emphasize breadth (6-8 projects across domains)
 - Target $180K-220K salary
 - Accept more coordination/meeting work
 
 **Option C: Shift to Consulting**:
+
 - Formalize consulting practice (LLC, contracts, marketing)
 - Target 3-5 clients per year at $150-200/hour
 - Build consulting portfolio (case studies, testimonials)
@@ -297,6 +320,7 @@
 ### Scenario A: Senior IC Path
 
 **Year 5 Outcome**:
+
 - Senior IC at mid-large company, $160K-180K salary
 - Or senior contract engineer, $120-150/hour, stable client base
 - 10+ projects in portfolio
@@ -311,6 +335,7 @@
 ### Scenario B: Staff/Principal Path
 
 **Year 5 Outcome**:
+
 - Staff Engineer at large company, $200K-250K salary
 - Own technical direction across multiple teams
 - Mentor 5-10 senior engineers
@@ -325,6 +350,7 @@
 ### Scenario C: Technical Consulting Path
 
 **Year 5 Outcome**:
+
 - Independent consultant, $200K-400K annual income (varies by projects)
 - 4-6 clients per year, short-term engagements
 - Portfolio of 12-15 projects
@@ -339,6 +365,7 @@
 ### Scenario D: Hybrid Path
 
 **Year 5 Outcome**:
+
 - Senior IC at company (stable income, benefits)
 - Side consulting (1-2 small projects per year, extra $30K-50K)
 - Best of both worlds: stability + autonomy
@@ -362,6 +389,7 @@
 **Is**: Sustainable career where you enjoy the work, maintain health/relationships, and feel competent.
 
 **How to Measure**:
+
 1. **Enjoyment**: Do you look forward to Mondays? Or dread them?
 2. **Health**: Are you sleeping well? Exercising? Low stress?
 3. **Relationships**: Do you have time for family/friends? Or is work consuming everything?
@@ -461,6 +489,7 @@
 ### Category 1: Low-Stakes, Low-Learning Work
 
 **Examples**:
+
 - Marketing websites
 - CRUD applications with no complexity
 - Internal tools with no technical challenge
@@ -474,6 +503,7 @@
 ### Category 2: Pure Execution Roles with No Authority
 
 **Examples**:
+
 - Agency work implementing client specs with no input
 - Large company roles where senior architect makes all decisions
 - Offshore team augmentation (you're just extra hands)
@@ -487,6 +517,7 @@
 ### Category 3: Toxic Cultures
 
 **Examples**:
+
 - Blame-focused (failures are always someone's fault)
 - Micromanagement (constant surveillance, no trust)
 - Unrealistic expectations (ship perfect system in 2 weeks)
@@ -500,6 +531,7 @@
 ### Category 4: "Passionate Hustler" Roles
 
 **Examples**:
+
 - Startups looking for "rockstar ninja who loves coding 24/7"
 - Roles with unlimited scope ("we all wear many hats")
 - Equity-only or below-market salary with vague promises
@@ -513,6 +545,7 @@
 ### Category 5: Roles That Reset Your Positioning
 
 **Examples**:
+
 - Frontend work when you're positioning as backend specialist
 - Generalist roles when you're building depth
 - Low-quality clients who don't value rigor
@@ -544,6 +577,7 @@
 **Capability #1: Systems Thinking**
 
 **Transfers To**:
+
 - Senior IC (you design systems)
 - Staff/Principal (you design across multiple systems)
 - Consulting (clients hire you for architecture design)
@@ -555,6 +589,7 @@
 **Capability #2: Documented Decision-Making**
 
 **Transfers To**:
+
 - Senior IC (you document your decisions)
 - Staff/Principal (you explain decisions to stakeholders)
 - Consulting (deliverable is often decision documentation)
@@ -566,6 +601,7 @@
 **Capability #3: Proactive Failure Prevention**
 
 **Transfers To**:
+
 - Senior IC (you test your systems rigorously)
 - Staff/Principal (you define testing standards)
 - Consulting (clients hire you to prevent failures)
@@ -577,6 +613,7 @@
 **Capability #4: Communication**
 
 **Transfers To**:
+
 - Senior IC (you explain technical decisions to team)
 - Staff/Principal (you explain strategy to executives)
 - Consulting (you explain recommendations to clients)

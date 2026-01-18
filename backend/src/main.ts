@@ -40,7 +40,7 @@ async function bootstrap() {
 
   // Global prefix removed - controllers already have 'api/' prefix
   app.useGlobalFilters(new GlobalExceptionFilter());
-  await app.listen(3001);
-  console.log(`Application is running on: ${await app.getUrl()}`);
+  await app.listen(3001, '0.0.0.0');
+  console.log(`Application is running on: http://localhost:3001`);
 }
 bootstrap();
