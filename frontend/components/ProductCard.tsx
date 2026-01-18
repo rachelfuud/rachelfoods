@@ -84,22 +84,33 @@ export const ProductCard = React.memo(function ProductCard({ product }: ProductC
                     {product.name}
                 </h3>
 
+                {product.supportsRefill && (
+                    <div className="text-xs text-brand-accent/70 dark:text-brand-accent/60 mb-2 font-medium">
+                        Refill available
+                    </div>
+                )}
+
                 {product.description && (
                     <p className="text-sm text-text-secondary mb-3 line-clamp-2">
                         {product.description}
                     </p>
                 )}
 
-                <div className="flex items-baseline gap-2 mb-3">
-                    <span className="text-3xl font-bold bg-linear-to-r from-brand-primary to-primary-600 dark:from-primary-400 dark:to-primary-600 bg-clip-text text-transparent">
-                        {formatCurrency(price)}
-                    </span>
-                    {hasDiscount && comparePrice && (
-                        <span className="text-sm text-text-tertiary line-through">
-                            {formatCurrency(comparePrice)}
+                <div className="mb-3">
+                    <div className="flex items-baseline gap-2 mb-1">
+                        <span className="text-3xl font-bold bg-linear-to-r from-brand-primary to-primary-600 dark:from-primary-400 dark:to-primary-600 bg-clip-text text-transparent">
+                            {formatCurrency(price)}
                         </span>
-                    )}
-                    <span className="text-sm text-text-secondary">/ {product.unit}</span>
+                        {hasDiscount && comparePrice && (
+                            <span className="text-sm text-text-tertiary line-through">
+                                {formatCurrency(comparePrice)}
+                            </span>
+                        )}
+                        <span className="text-sm text-text-secondary">/ {product.unit}</span>
+                    </div>
+                    <div className="text-xs text-text-tertiary">
+                        Secure checkout · No hidden fees
+                    </div>
                 </div>
 
                 <div className="flex items-center justify-between flex-wrap gap-2 mb-3">

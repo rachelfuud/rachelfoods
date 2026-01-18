@@ -90,6 +90,34 @@ export default async function Home() {
           </div>
         </section>
 
+        {/* Quick Product Preview - Compact Grid */}
+        {newArrivals.length > 0 && (
+          <section className="py-16 bg-background">
+            <div className="container mx-auto px-4">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl font-bold mb-2">Shop Our Products</h2>
+                <p className="text-text-secondary">Fresh ingredients and authentic flavors</p>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                {newArrivals.slice(0, 4).map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+              <div className="text-center">
+                <Link
+                  href="/catalog"
+                  className="inline-flex items-center gap-2 px-6 py-3 border-2 border-primary-500 text-primary-600 dark:text-primary-400 rounded-lg font-semibold hover:bg-primary-50 dark:hover:bg-primary-950 transition-all"
+                >
+                  <span>View All Products</span>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* Refill Your Kitchen Section - ALWAYS VISIBLE */}
         <RefillHero />
 
