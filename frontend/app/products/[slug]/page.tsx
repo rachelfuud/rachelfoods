@@ -20,6 +20,14 @@ export default async function ProductPage({
         product = await api.getProduct(params.slug);
         console.log('[ProductPage] Product fetched successfully:', product?.name);
         console.log('[ProductPage] Product has variants:', product?.variants?.length || 0);
+
+        // Buyers should not see DRAFT, DISABLED, or ARCHIVED products
+        // Only ACTIVE products are visible to public buyers
+        // (Admin users should use admin panel to view non-active products)
+        if (product && product.status && product.status !== 'ACTIVE') {
+            console.log('[ProductPage] Product status is not ACTIVE:', product.status);
+            product = null;
+        }
     } catch (error) {
         console.error('[ProductPage] Failed to load product:', error);
         errorOccurred = true;

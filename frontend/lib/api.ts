@@ -45,10 +45,15 @@ export const api = {
 
     // Products
     getProducts: async (categorySlug?: string) => {
-        const url = categorySlug
-            ? `${API_BASE}/categories/${categorySlug}/products`
-            : `${API_BASE}/products`;
-        const res = await fetch(url, { next: { revalidate: 60 } });
+        if (categorySlug) {
+            // Fetch category with its products (already filtered to ACTIVE by backend)
+            const res = await fetch(`${API_BASE}/categories/slug/${categorySlug}`, { next: { revalidate: 60 } });
+            if (!res.ok) throw new Error('Failed to fetch category products');
+            const category = await res.json();
+            return category.products || [];
+        }
+        // Fetch all products (backend returns ACTIVE only by default)
+        const res = await fetch(`${API_BASE}/products`, { next: { revalidate: 60 } });
         if (!res.ok) throw new Error('Failed to fetch products');
         return res.json();
     },
