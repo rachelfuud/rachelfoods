@@ -45,13 +45,13 @@ export default async function Home() {
 
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="bg-gradient-to-br from-primary-50 via-secondary-50 to-accent-50 dark:from-primary-950 dark:via-secondary-950 dark:to-accent-950 py-24">
+        <section className="bg-linear-to-br from-primary-50 via-secondary-50 to-accent-50 dark:from-primary-950 dark:via-secondary-950 dark:to-accent-950 py-24">
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row items-center justify-between gap-12">
               <div className="flex-1 text-center md:text-left">
                 <h1 className="text-5xl md:text-7xl font-extrabold mb-6 leading-tight">
                   Authentic Traditional Foods,{' '}
-                  <span className="bg-gradient-to-r from-primary-600 to-secondary-600 dark:from-primary-400 dark:to-secondary-400 bg-clip-text text-transparent">
+                  <span className="bg-linear-to-r from-primary-600 to-secondary-600 dark:from-primary-400 dark:to-secondary-400 bg-clip-text text-transparent">
                     Delivered Across the U.S.
                   </span>
                 </h1>
@@ -62,7 +62,7 @@ export default async function Home() {
                 <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start mb-10">
                   <Link
                     href="/catalog"
-                    className="px-10 py-5 bg-gradient-to-r from-primary-600 to-primary-700 dark:from-primary-500 dark:to-primary-600 text-white rounded-2xl font-bold hover:shadow-2xl hover:scale-105 transition-all duration-300 text-lg"
+                    className="px-10 py-5 bg-linear-to-r from-primary-600 to-primary-700 dark:from-primary-500 dark:to-primary-600 text-white rounded-2xl font-bold hover:shadow-2xl hover:scale-105 transition-all duration-300 text-lg"
                   >
                     Shop Products
                   </Link>
@@ -77,7 +77,7 @@ export default async function Home() {
               </div>
 
               <div className="flex-1 flex justify-center">
-                <div className="relative w-72 h-72 md:w-[28rem] md:h-[28rem] rounded-full bg-gradient-to-br from-brand-accent/20 to-brand-primary/20 p-8 shadow-2xl">
+                <div className="relative w-72 h-72 md:w-md md:h-112 rounded-full bg-linear-to-br from-brand-accent/20 to-brand-primary/20 p-8 shadow-2xl">
                   <Image
                     src="/logo.png"
                     alt="RachelFoods"
@@ -95,14 +95,14 @@ export default async function Home() {
 
         {/* Featured Products Section - Priority 1 */}
         {featuredProducts.length > 0 ? (
-          <section className="py-24 bg-gradient-to-b from-background to-brand-muted/30 dark:from-background dark:to-surface">
+          <section className="py-24 bg-linear-to-b from-background to-brand-muted/30 dark:from-background dark:to-surface">
             <div className="container mx-auto px-4">
               <div className="text-center mb-16">
-                <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-secondary-100 to-secondary-200 dark:from-secondary-900/30 dark:to-secondary-800/20 rounded-full mb-6">
+                <div className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-secondary-100 to-secondary-200 dark:from-secondary-900/30 dark:to-secondary-800/20 rounded-full mb-6">
                   <span className="text-2xl">⭐</span>
                   <span className="font-bold text-secondary-700 dark:text-secondary-400">Handpicked for You</span>
                 </div>
-                <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary-600 to-secondary-600 dark:from-primary-400 dark:to-secondary-400 bg-clip-text text-transparent">
+                <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-linear-to-r from-primary-600 to-secondary-600 dark:from-primary-400 dark:to-secondary-400 bg-clip-text text-transparent">
                   Featured Products
                 </h2>
                 <p className="text-xl text-text-secondary max-w-2xl mx-auto">
@@ -119,7 +119,7 @@ export default async function Home() {
               <div className="text-center">
                 <Link
                   href="/catalog"
-                  className="inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-primary-600 to-primary-700 dark:from-primary-500 dark:to-primary-600 text-white rounded-2xl font-bold hover:shadow-2xl hover:scale-105 transition-all duration-300"
+                  className="inline-flex items-center gap-3 px-10 py-5 bg-linear-to-r from-primary-600 to-primary-700 dark:from-primary-500 dark:to-primary-600 text-white rounded-2xl font-bold hover:shadow-2xl hover:scale-105 transition-all duration-300"
                 >
                   <span>View All Products</span>
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -130,81 +130,85 @@ export default async function Home() {
             </div>
           </section>
         ) : popularProducts.length > 0 ? (
-          {/* Fallback to Popular if no Featured */ }
-          < section className="py-24 bg-gradient-to-b from-background to-brand-muted/30 dark:from-background dark:to-surface">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-accent-100 to-accent-200 dark:from-accent-900/30 dark:to-accent-800/20 rounded-full mb-6">
-              <span className="text-2xl">🔥</span>
-              <span className="font-bold text-accent-700 dark:text-accent-400">Trending Now</span>
-            </div>
-            <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-accent-600 to-primary-600 dark:from-accent-400 dark:to-primary-400 bg-clip-text text-transparent">
-              Popular Products
-            </h2>
-            <p className="text-xl text-text-secondary max-w-2xl mx-auto">
-              See what others are ordering — our most popular products this week
-            </p>
-          </div>
+          <>
+            {/* Fallback to Popular if no Featured */}
+            <section className="py-24 bg-linear-to-b from-background to-brand-muted/30 dark:from-background dark:to-surface">
+              <div className="container mx-auto px-4">
+                <div className="text-center mb-16">
+                  <div className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-accent-100 to-accent-200 dark:from-accent-900/30 dark:to-accent-800/20 rounded-full mb-6">
+                    <span className="text-2xl">🔥</span>
+                    <span className="font-bold text-accent-700 dark:text-accent-400">Trending Now</span>
+                  </div>
+                  <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-linear-to-r from-accent-600 to-primary-600 dark:from-accent-400 dark:to-primary-400 bg-clip-text text-transparent">
+                    Popular Products
+                  </h2>
+                  <p className="text-xl text-text-secondary max-w-2xl mx-auto">
+                    See what others are ordering — our most popular products this week
+                  </p>
+                </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-            {popularProducts.slice(0, 6).map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+                  {popularProducts.slice(0, 6).map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </div>
 
-          <div className="text-center">
-            <Link
-              href="/catalog"
-              className="inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-accent-600 to-accent-700 dark:from-accent-500 dark:to-accent-600 text-white rounded-2xl font-bold hover:shadow-2xl hover:scale-105 transition-all duration-300"
-            >
-              <span>View All Products</span>
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </Link>
-          </div>
-        </div>
-      </section>
+                <div className="text-center">
+                  <Link
+                    href="/catalog"
+                    className="inline-flex items-center gap-3 px-10 py-5 bg-linear-to-r from-accent-600 to-accent-700 dark:from-accent-500 dark:to-accent-600 text-white rounded-2xl font-bold hover:shadow-2xl hover:scale-105 transition-all duration-300"
+                  >
+                    <span>View All Products</span>
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                  </Link>
+                </div>
+              </div>
+            </section>
+          </>
         ) : newArrivals.length > 0 ? (
-      {/* Final Fallback to New Arrivals */}
-      <section className="py-24 bg-gradient-to-b from-background to-brand-muted/30 dark:from-background dark:to-surface">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-100 to-primary-200 dark:from-primary-900/30 dark:to-primary-800/20 rounded-full mb-6">
-              <span className="text-2xl">✨</span>
-              <span className="font-bold text-primary-700 dark:text-primary-400">Just Added</span>
-            </div>
-            <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary-600 to-secondary-600 dark:from-primary-400 dark:to-secondary-400 bg-clip-text text-transparent">
-              New Arrivals
-            </h2>
-            <p className="text-xl text-text-secondary max-w-2xl mx-auto">
-              Browse our latest additions to the catalog
-            </p>
-          </div>
+          <>
+            {/* Final Fallback to New Arrivals */}
+            <section className="py-24 bg-linear-to-b from-background to-brand-muted/30 dark:from-background dark:to-surface">
+              <div className="container mx-auto px-4">
+                <div className="text-center mb-16">
+                  <div className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-primary-100 to-primary-200 dark:from-primary-900/30 dark:to-primary-800/20 rounded-full mb-6">
+                    <span className="text-2xl">✨</span>
+                    <span className="font-bold text-primary-700 dark:text-primary-400">Just Added</span>
+                  </div>
+                  <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-linear-to-r from-primary-600 to-secondary-600 dark:from-primary-400 dark:to-secondary-400 bg-clip-text text-transparent">
+                    New Arrivals
+                  </h2>
+                  <p className="text-xl text-text-secondary max-w-2xl mx-auto">
+                    Browse our latest additions to the catalog
+                  </p>
+                </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-            {newArrivals.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+                  {newArrivals.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </div>
 
-          <div className="text-center">
-            <Link
-              href="/catalog"
-              className="inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-primary-600 to-secondary-600 dark:from-primary-500 dark:to-secondary-500 text-white rounded-2xl font-bold hover:shadow-2xl hover:scale-105 transition-all duration-300"
-            >
-              <span>View All Products</span>
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </Link>
-          </div>
-        </div>
-      </section>
+                <div className="text-center">
+                  <Link
+                    href="/catalog"
+                    className="inline-flex items-center gap-3 px-10 py-5 bg-linear-to-r from-primary-600 to-secondary-600 dark:from-primary-500 dark:to-secondary-500 text-white rounded-2xl font-bold hover:shadow-2xl hover:scale-105 transition-all duration-300"
+                  >
+                    <span>View All Products</span>
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                  </Link>
+                </div>
+              </div>
+            </section>
+          </>
         ) : null}
 
         {/* CTA Section */}
-        <section className="py-24 bg-gradient-to-r from-primary-600 via-secondary-600 to-accent-600 dark:from-primary-700 dark:via-secondary-700 dark:to-accent-700 text-white">
+        <section className="py-24 bg-linear-to-r from-primary-600 via-secondary-600 to-accent-600 dark:from-primary-700 dark:via-secondary-700 dark:to-accent-700 text-white">
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-5xl md:text-6xl font-bold mb-8">Ready to Get Started?</h2>
             <p className="text-xl md:text-2xl mb-12 max-w-3xl mx-auto opacity-95 leading-relaxed">
