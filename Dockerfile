@@ -1,16 +1,17 @@
-# Dockerize Backend (Future)
-FROM node:18-alpine AS backend-builder
+# Dockerize Backend
+FROM node:20-alpine AS backend-builder
 WORKDIR /app
 COPY backend/package*.json ./
 RUN npm ci
 COPY backend/ ./
 RUN npm run build
+RUN npx prisma generate
 
-# Dockerize Frontend (Future)
-FROM node:18-alpine AS frontend-builder
+# Dockerize Frontend
+FROM node:20-alpine AS frontend-builder
 WORKDIR /app
 COPY frontend/package*.json ./
-RUN npm ci
+RUN npm install
 COPY frontend/ ./
 RUN npm run build
 
