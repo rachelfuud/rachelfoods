@@ -8,6 +8,8 @@ RUN npm ci
 
 COPY . .
 
+RUN ls -la && ls -la prisma/ || echo "Prisma folder not found"
+
 RUN npx prisma generate
 
 RUN npm run build
