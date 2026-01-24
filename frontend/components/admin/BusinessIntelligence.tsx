@@ -34,9 +34,7 @@ export function BusinessIntelligence() {
             const token = localStorage.getItem('token');
             if (!token) return;
 
-            const API_BASE = process.env.NODE_ENV === 'production'
-                ? 'https://rachelfood-backend.onrender.com/api'
-                : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api');
+            const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
 
             // Fetch admin products to analyze top sellers
             const productsRes = await fetch(`${API_BASE}/admin/products`, {

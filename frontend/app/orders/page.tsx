@@ -5,18 +5,42 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { formatCurrency } from '@/lib/currency';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Order } from '@/lib/types';
 import BuyAgainButton from '@/components/BuyAgainButton';
+import { api } from '@/lib/api';
 
 export default function OrdersPage() {
+    const router = useRouter();
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        // TODO: Fetch orders from backend with auth token
-        setLoading(false);
-        setOrders([]);
-    }, []);
+        const fetchOrders = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    router.push('/login');
+                    return;
+                }
+
+                const ordersData = await api.getOrders(token);
+                setOrders(ordersData);
+            } catch (err: any) {
+                console.error('Failed to fetch orders:', err);
+                if (err.message.includes('auth')) {
+                    router.push('/login');
+                } else {
+                    setError('Failed to load orders. Please try again.');
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchOrders();
+    }, [router]);
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -24,6 +48,12 @@ export default function OrdersPage() {
 
             <main className="flex-1 container mx-auto px-4 py-8">
                 <h1 className="text-4xl font-bold mb-8">My Orders</h1>
+
+                {error && (
+                    <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded text-red-600">
+                        {error}
+                    </div>
+                )}
 
                 {loading ? (
                     <div className="text-center py-20">

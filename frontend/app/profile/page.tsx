@@ -1,11 +1,79 @@
 'use client';
 
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { useTheme } from '@/components/ThemeProvider';
+import { api } from '@/lib/api';
 
 export default function ProfilePage() {
+    const router = useRouter();
     const { mode, toggleMode } = useTheme();
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [user, setUser] = useState<any>(null);
+    const [formData, setFormData] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+    });
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    router.push('/login');
+                    return;
+                }
+
+                const userData = await api.getProfile();
+                setUser(userData);
+                setFormData({
+                    firstName: userData.firstName || '',
+                    lastName: userData.lastName || '',
+                    email: userData.email || '',
+                    phone: userData.phone || '',
+                });
+            } catch (err: any) {
+                console.error('Failed to fetch profile:', err);
+                if (err.message.includes('auth')) {
+                    router.push('/login');
+                } else {
+                    setError('Failed to load profile. Please try again.');
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProfile();
+    }, [router]);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError(null);
+
+        // TODO: Implement profile update API call when backend endpoint is ready
+        console.log('Update profile:', formData);
+    };
+
+    if (loading) {
+        return (
+            <div className="min-h-screen flex flex-col">
+                <Header />
+                <main className="flex-1 container mx-auto px-4 py-8">
+                    <div className="text-center py-20">
+                        <div className="text-4xl mb-4">⏳</div>
+                        <p className="text-foreground/70">Loading profile...</p>
+                    </div>
+                </main>
+                <Footer />
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -14,44 +82,71 @@ export default function ProfilePage() {
             <main className="flex-1 container mx-auto px-4 py-8">
                 <h1 className="text-4xl font-bold mb-8">Profile</h1>
 
+                {error && (
+                    <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded text-red-600">
+                        {error}
+                    </div>
+                )}
+
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Profile Info */}
                     <div className="lg:col-span-2 space-y-6">
                         <div className="border border-border rounded-lg p-6 bg-background">
                             <h2 className="text-2xl font-bold mb-4">Personal Information</h2>
 
-                            <div className="space-y-4">
-                                <div>
-                                    <label className="block text-sm font-medium mb-2">Full Name</label>
-                                    <input
-                                        type="text"
-                                        className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background"
-                                        placeholder="John Doe"
-                                    />
+                            <form onSubmit={handleSubmit} className="space-y-4">
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium mb-2">First Name</label>
+                                        <input
+                                            type="text"
+                                            value={formData.firstName}
+                                            onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                                            className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background"
+                                            placeholder="John"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium mb-2">Last Name</label>
+                                        <input
+                                            type="text"
+                                            value={formData.lastName}
+                                            onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                                            className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background"
+                                            placeholder="Doe"
+                                        />
+                                    </div>
                                 </div>
 
                                 <div>
                                     <label className="block text-sm font-medium mb-2">Email</label>
                                     <input
                                         type="email"
-                                        className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background"
-                                        placeholder="john@example.com"
+                                        value={formData.email}
+                                        readOnly
+                                        className="w-full px-4 py-2 border border-border rounded-lg bg-foreground/5 cursor-not-allowed"
                                     />
+                                    <p className="text-xs text-foreground/60 mt-1">Email cannot be changed</p>
                                 </div>
 
                                 <div>
                                     <label className="block text-sm font-medium mb-2">Phone</label>
                                     <input
                                         type="tel"
+                                        value={formData.phone}
+                                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                                         className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background"
                                         placeholder="+1 234 567 8900"
                                     />
                                 </div>
 
-                                <button className="px-6 py-2 bg-primary text-white rounded-lg hover:opacity-90 transition-opacity">
+                                <button 
+                                    type="submit"
+                                    className="px-6 py-2 bg-primary text-white rounded-lg hover:opacity-90 transition-opacity"
+                                >
                                     Save Changes
                                 </button>
-                            </div>
+                            </form>
                         </div>
 
                         <div className="border border-border rounded-lg p-6 bg-background">
