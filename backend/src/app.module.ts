@@ -9,6 +9,7 @@ import { loggerConfig } from './common/logging/logger.config';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { SeedController } from './seed.controller';
 import { PrismaModule } from './prisma/prisma.module';
 import { CacheModule } from './cache/cache.module';
 import { AuthModule } from './auth/auth.module';
@@ -70,7 +71,7 @@ import { RefundModule } from './refunds/refund.module';
         WalletModule, // PHASE 5C: Store credit & loyalty wallet
         RefundModule, // PHASE 5C: Refund processing
     ],
-    controllers: [AppController],
+    controllers: [AppController, SeedController],
     providers: [
         AppService,
         // Apply throttler guard globally
