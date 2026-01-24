@@ -47,9 +47,9 @@ export default function RegisterPage() {
                 fullName: formData.fullName,
             });
 
-            // Store the auth token
-            if (response.access_token) {
-                localStorage.setItem('auth_token', response.access_token);
+            // Store the auth token (using accessToken from backend response)
+            if (response.accessToken) {
+                localStorage.setItem('token', response.accessToken);
                 localStorage.setItem('user', JSON.stringify(response.user));
             }
 

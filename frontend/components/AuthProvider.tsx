@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { api } from '@/lib/api';
 
 interface AuthContextType {
     user: any | null;
@@ -18,8 +19,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         // Load token from localStorage on mount
-        const savedToken = localStorage.getItem('auth_token');
-        const savedUser = localStorage.getItem('auth_user');
+        const savedToken = localStorage.getItem('token');
+        const savedUser = localStorage.getItem('user');
 
         if (savedToken && savedUser) {
             setToken(savedToken);
@@ -28,29 +29,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, []);
 
     const login = async (email: string, password: string) => {
-        // TODO: Call backend API
-        const mockUser = {
-            id: '1',
-            email,
-            fullName: 'Admin User',
-            roles: ['PLATFORM_ADMIN'],
-        };
-        const mockToken = 'mock-jwt-token';
+        try {
+            const response = await api.login({ email, password });
 
-        setUser(mockUser);
-        setToken(mockToken);
-        localStorage.setItem('auth_token', mockToken);
-        localStorage.setItem('auth_user', JSON.stringify(mockUser));
+            setUser(response.user);
+            setToken(response.accessToken);
+            localStorage.setItem('token', response.accessToken);
+            localStorage.setItem('user', JSON.stringify(response.user));
+        } catch (error) {
+            console.error('Login failed:', error);
+            throw error;
+        }
     };
 
     const logout = () => {
         setUser(null);
         setToken(null);
-        localStorage.removeItem('auth_token');
-        localStorage.removeItem('auth_user');
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
     };
 
-    const isAdmin = user?.roles?.includes('PLATFORM_ADMIN') || false;
+    // Check if user has admin or staff role
+    const isAdmin = user?.roles?.some((role: any) =>
+        ['ADMIN', 'STAFF', 'PLATFORM_ADMIN'].includes(role.name || role)
+    ) || false;
 
     return (
         <AuthContext.Provider value={{ user, token, login, logout, isAdmin }}>

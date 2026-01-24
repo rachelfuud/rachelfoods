@@ -1,0 +1,83 @@
+# DigitalOcean App Platform Configuration
+name: rachelfoods-backend
+region: nyc
+
+# Database
+databases:
+  - name: rachelfoods-db
+    engine: PG  # Use MYSQL if you prefer MySQL
+    version: "16"  # PostgreSQL 16, or "8" for MySQL 8
+    production: false  # Set to true for production
+    cluster_name: rachelfoods-db-cluster
+
+# Backend Service
+services:
+  - name: api
+    github:
+      repo: rachelfuud/rachelfoods  # Your GitHub repo
+      branch: main
+      deploy_on_push: true
+    source_dir: /backend
+    
+    build_command: npm ci --production && npm run build && npx prisma generate
+    run_command: npx prisma migrate deploy && node dist/src/main.js
+    
+    environment_slug: node-js
+    instance_count: 1
+    instance_size_slug: basic-xxs  # $5/month
+    
+    http_port: 3001
+    
+    routes:
+      - path: /api
+    
+    envs:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "3001"
+      - key: DATABASE_URL
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+        # Will be auto-populated by DigitalOcean database
+      - key: JWT_SECRET
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+      - key: JWT_EXPIRATION
+        value: "7d"
+      - key: STRIPE_SECRET_KEY
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+      - key: STRIPE_WEBHOOK_SECRET
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+      - key: EMAIL_PROVIDER
+        value: "console"
+      - key: ADMIN_EMAIL
+        value: "admin@rachelfoods.com"
+      - key: ADMIN_PASSWORD
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+
+# Frontend Service (Optional - or use Vercel)
+  - name: web
+    github:
+      repo: rachelfuud/rachelfoods
+      branch: main
+      deploy_on_push: true
+    source_dir: /frontend
+    
+    build_command: npm ci && npm run build
+    
+    environment_slug: node-js
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    
+    http_port: 3000
+    
+    routes:
+      - path: /
+    
+    envs:
+      - key: NEXT_PUBLIC_API_BASE
+        value: ${api.PUBLIC_URL}/api  # Auto-links to backend

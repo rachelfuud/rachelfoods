@@ -1,6 +1,4 @@
-const API_BASE = process.env.NODE_ENV === 'production'
-    ? 'https://rachelfood-backend.onrender.com/api'
-    : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api');
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
 
 // Debug: log the API URL being used
 if (typeof window !== 'undefined') {

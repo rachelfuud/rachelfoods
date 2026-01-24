@@ -1,23 +1,66 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import Link from 'next/link';
+import { api } from '@/lib/api';
 
 export default function LoginPage() {
+    const router = useRouter();
     const [isLogin, setIsLogin] = useState(true);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [fullName, setFullName] = useState('');
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
+        setLoading(true);
 
-        // TODO: Implement authentication with backend
-        console.log(isLogin ? 'Login' : 'Register', { email, password, fullName });
+        try {
+            if (isLogin) {
+                // Login
+                const response = await api.login({ email, password });
+
+                // Store token in localStorage
+                if (response.accessToken) {
+                    localStorage.setItem('token', response.accessToken);
+                    localStorage.setItem('user', JSON.stringify(response.user));
+                }
+
+                // Redirect to home or dashboard
+                router.push('/');
+            } else {
+                // Register - split fullName into firstName and lastName
+                const nameParts = fullName.trim().split(' ');
+                const firstName = nameParts[0] || '';
+                const lastName = nameParts.slice(1).join(' ') || nameParts[0] || '';
+
+                const response = await api.register({
+                    email,
+                    password,
+                    fullName,
+                });
+
+                // Store token in localStorage
+                if (response.accessToken) {
+                    localStorage.setItem('token', response.accessToken);
+                    localStorage.setItem('user', JSON.stringify(response.user));
+                }
+
+                // Redirect to home
+                router.push('/');
+            }
+        } catch (err: any) {
+            console.error('Authentication error:', err);
+            setError(err.message || 'Authentication failed. Please try again.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -84,9 +127,10 @@ export default function LoginPage() {
 
                             <button
                                 type="submit"
-                                className="w-full py-3 bg-primary text-white rounded-lg font-semibold hover:opacity-90 transition-opacity"
+                                disabled={loading}
+                                className="w-full py-3 bg-primary text-white rounded-lg font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                {isLogin ? 'Login' : 'Sign Up'}
+                                {loading ? 'Please wait...' : (isLogin ? 'Login' : 'Sign Up')}
                             </button>
                         </form>
 
