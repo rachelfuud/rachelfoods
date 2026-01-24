@@ -5,6 +5,7 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { api } from '@/lib/api';
 
 export default function RegisterPage() {
     const router = useRouter();
@@ -34,16 +35,29 @@ export default function RegisterPage() {
         setLoading(true);
 
         try {
-            // TODO: Implement registration with backend API
-            console.log('Register:', formData);
+            // Split full name into first and last name
+            const nameParts = formData.fullName.trim().split(' ');
+            const firstName = nameParts[0] || '';
+            const lastName = nameParts.slice(1).join(' ') || '';
 
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            // Call the registration API
+            const response = await api.register({
+                email: formData.email,
+                password: formData.password,
+                fullName: formData.fullName,
+            });
 
-            // Redirect to login on success
-            router.push('/login?registered=true');
-        } catch (err) {
-            setError('Registration failed. Please try again.');
+            // Store the auth token
+            if (response.access_token) {
+                localStorage.setItem('auth_token', response.access_token);
+                localStorage.setItem('user', JSON.stringify(response.user));
+            }
+
+            // Redirect to home or profile page on success
+            router.push('/?registered=true');
+        } catch (err: any) {
+            console.error('Registration error:', err);
+            setError(err.message || 'Registration failed. Please try again.');
         } finally {
             setLoading(false);
         }
