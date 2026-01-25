@@ -40,7 +40,12 @@ async function bootstrap() {
 
   // Global prefix removed - controllers already have 'api/' prefix
   app.useGlobalFilters(new GlobalExceptionFilter());
-  await app.listen(3001, '0.0.0.0');
-  console.log(`Application is running on: http://localhost:3001`);
+
+  const port = process.env.PORT || 3001;
+  await app.listen(port, '0.0.0.0');
+  console.log(`Application is running on port ${port}`);
 }
-bootstrap();
+bootstrap().catch((error) => {
+  console.error('Failed to start application:', error);
+  process.exit(1);
+});
