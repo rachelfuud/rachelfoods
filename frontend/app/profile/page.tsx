@@ -140,7 +140,7 @@ export default function ProfilePage() {
                                     />
                                 </div>
 
-                                <button 
+                                <button
                                     type="submit"
                                     className="px-6 py-2 bg-primary text-white rounded-lg hover:opacity-90 transition-opacity"
                                 >
