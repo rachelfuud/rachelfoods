@@ -16,7 +16,7 @@ async function bootstrap() {
     ? [
       'https://rachelfoods.com',
       'https://www.rachelfoods.com',
-      // Add your production frontend URL here
+      'https://frontend-production-1660.up.railway.app', // Railway frontend
     ]
     : [
       'http://localhost:3000',
