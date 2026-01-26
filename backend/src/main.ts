@@ -3,7 +3,12 @@ import { AppModule } from './app.module';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 import { json } from 'express';
 
+console.log('=== STARTING APPLICATION ===');
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('PORT:', process.env.PORT);
+
 async function bootstrap() {
+  console.log('Bootstrap function called...');
   const app = await NestFactory.create(AppModule, {
     rawBody: true, // Enable raw body for Stripe webhooks
   });
@@ -42,10 +47,16 @@ async function bootstrap() {
   app.useGlobalFilters(new GlobalExceptionFilter());
 
   const port = process.env.PORT || 3001;
+  console.log(`Attempting to listen on port ${port}...`);
   await app.listen(port, '0.0.0.0');
-  console.log(`Application is running on port ${port}`);
+  console.log(`=== APPLICATION STARTED SUCCESSFULLY ON PORT ${port} ===`);
 }
+
+console.log('Calling bootstrap()...');
 bootstrap().catch((error) => {
-  console.error('Failed to start application:', error);
+  console.error('=== BOOTSTRAP FAILED ===');
+  console.error('Error:', error);
+  console.error('Stack:', error.stack);
   process.exit(1);
 });
+console.log('Bootstrap call initiated.');
