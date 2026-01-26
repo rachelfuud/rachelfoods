@@ -43,8 +43,8 @@ export default async function CatalogPage({
                 {/* Categories */}
                 {categories.length > 0 && (
                     <div className="mb-8">
-                        <h2 className="text-2xl font-bold mb-4">Categories</h2>
-                        <div className="flex flex-wrap gap-3">
+                        <h2 className="text-2xl font-bold mb-4 text-center">Categories</h2>
+                        <div className="flex flex-wrap gap-3 justify-center">
                             <Link
                                 href="/catalog"
                                 className={`px-4 py-2 rounded-lg border transition-colors ${!params.category
@@ -70,18 +70,7 @@ export default async function CatalogPage({
                     </div>
                 )}
 
-                {/* Filters */}
-                <div className="mb-8 flex gap-4">
-                    <Link
-                        href="/catalog?featured=true"
-                        className={`px-4 py-2 rounded-lg border transition-colors ${params.featured === 'true'
-                            ? 'bg-secondary text-white border-secondary'
-                            : 'border-border hover:border-secondary'
-                            }`}
-                    >
-                        ⭐ Featured Only
-                    </Link>
-                </div>
+
 
                 {/* Products Grid */}
                 <ProductGrid products={products} />

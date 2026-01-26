@@ -137,7 +137,7 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
             {product.supportsRefill && (
                 <div className="mt-8 p-6 bg-linear-to-br from-primary/5 to-secondary/5 rounded-lg border border-primary/20">
                     <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                        🔄 Refill Made Easy
+                        🔄 Kitchen Refill Made Easy
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>

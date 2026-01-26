@@ -13,7 +13,7 @@ export default function AboutPage() {
                     <div className="container mx-auto px-4 text-center">
                         <h1 className="text-5xl font-bold mb-6">About RachelFoods</h1>
                         <p className="text-xl text-foreground/70 max-w-3xl mx-auto">
-                            Your trusted source for authentic, fresh traditional foods delivered with care.
+                            Your trusted source for authentic, fresh local foods delivered with care.
                         </p>
                     </div>
                 </section>

@@ -84,20 +84,14 @@ export const ProductCard = React.memo(function ProductCard({ product }: ProductC
                     {product.name}
                 </h3>
 
-                {product.supportsRefill && (
-                    <div className="text-xs text-brand-accent/70 dark:text-brand-accent/60 mb-2 font-medium">
-                        Refill available
-                    </div>
-                )}
-
                 {product.description && (
                     <p className="text-sm text-text-secondary mb-3 line-clamp-2">
                         {product.description}
                     </p>
                 )}
 
-                <div className="mb-3">
-                    <div className="flex items-baseline gap-2 mb-1">
+                <div className="mb-3 text-center">
+                    <div className="flex items-baseline gap-2 mb-1 justify-center">
                         <span className="text-3xl font-bold bg-linear-to-r from-brand-primary to-primary-600 dark:from-primary-400 dark:to-primary-600 bg-clip-text text-transparent">
                             {formatCurrency(price)}
                         </span>
@@ -106,15 +100,15 @@ export const ProductCard = React.memo(function ProductCard({ product }: ProductC
                                 {formatCurrency(comparePrice)}
                             </span>
                         )}
-                        <span className="text-sm text-text-secondary">/ {product.unit}</span>
+                        <span className="text-sm text-foreground/70 dark:text-foreground/60">/ {product.unit}</span>
                     </div>
-                    <div className="text-xs text-text-tertiary">
+                    <div className="text-xs text-foreground/60 dark:text-foreground/50">
                         Secure checkout · No hidden fees
                     </div>
                 </div>
 
-                <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
-                    <span className={`text-sm font-semibold px-3 py-1 rounded-full ${isOutOfStock ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'}`}>
+                <div className="flex items-center justify-center flex-wrap gap-2 mb-3">
+                    <span className={`text-sm font-semibold px-3 py-1 rounded-full ${isOutOfStock ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' : 'bg-secondary-100 text-secondary-700 dark:bg-secondary-900/30 dark:text-secondary-400'}`}>
                         {isOutOfStock ? 'Out of stock' : `${totalStock} in stock`}
                     </span>
 
@@ -124,28 +118,9 @@ export const ProductCard = React.memo(function ProductCard({ product }: ProductC
                                 {status}
                             </span>
                         )}
-                        {isFeatured && (
-                            <span className="text-xs bg-linear-to-r from-secondary-100 to-secondary-200 dark:from-secondary-900/30 dark:to-secondary-800/20 text-secondary-700 dark:text-secondary-400 px-3 py-1.5 rounded-full font-semibold border border-secondary-300 dark:border-secondary-700">
-                                ⭐ Featured
-                            </span>
-                        )}
+
                     </div>
                 </div>
-
-                {/* Kitchen Refill CTA */}
-                {product.supportsRefill && !isOutOfStock && (
-                    <div className="mt-4 pt-4 border-t-2 border-dashed border-brand-accent/30">
-                        <div className="flex items-center gap-3 p-3 rounded-xl bg-linear-to-r from-accent-50 to-accent-100 dark:from-accent-900/20 dark:to-accent-800/10 border border-accent-200 dark:border-accent-800 group-hover:shadow-md transition-shadow">
-                            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-linear-to-br from-accent-400 to-accent-600 dark:from-accent-600 dark:to-accent-700 shadow-md">
-                                <span className="text-xl">🔄</span>
-                            </div>
-                            <div className="flex-1">
-                                <div className="text-sm font-bold text-accent-700 dark:text-accent-400">Refill Available</div>
-                                <div className="text-xs text-accent-600 dark:text-accent-500">Quick reorder anytime</div>
-                            </div>
-                        </div>
-                    </div>
-                )}
             </div>
         </Link>
     );
