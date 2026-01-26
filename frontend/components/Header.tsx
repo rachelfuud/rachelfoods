@@ -131,6 +131,13 @@ export function Header() {
                         {user && (
                             <>
                                 <Link
+                                    href="/kitchen-refill"
+                                    className={`hover:text-primary transition-colors flex items-center gap-1 ${isActive('/kitchen-refill') ? 'text-primary font-semibold' : 'text-foreground'
+                                        }`}
+                                >
+                                    <span>🔄</span> Kitchen Refill
+                                </Link>
+                                <Link
                                     href="/orders"
                                     className={`hover:text-primary transition-colors ${isActive('/orders') ? 'text-primary font-semibold' : 'text-foreground'
                                         }`}

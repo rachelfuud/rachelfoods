@@ -66,6 +66,7 @@ export function Footer() {
                         <div>
                             <h4 className="font-semibold mb-4">Account</h4>
                             <ul className="space-y-2 text-sm">
+                                <li><Link href="/kitchen-refill" className="hover:text-primary transition-colors flex items-center gap-1"><span>🔄</span> Kitchen Refill</Link></li>
                                 <li><Link href="/orders" className="hover:text-primary transition-colors">My Orders</Link></li>
                                 <li><Link href="/profile" className="hover:text-primary transition-colors">Profile</Link></li>
                             </ul>
