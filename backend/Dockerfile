@@ -25,4 +25,4 @@ COPY --from=base /app/prisma ./prisma
 
 EXPOSE 3001
 
-CMD ["sh", "-c", "npm run start:prod 2>&1"]
+CMD ["sh", "-c", "npx prisma migrate deploy && npm run start:prod"]
