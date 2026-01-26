@@ -9,15 +9,18 @@ import Link from 'next/link';
 export default async function ProductPage({
     params,
 }: {
-    params: { slug: string };
+    params: Promise<{ slug: string }>;
 }) {
+    // Next.js 15+: params is now a Promise
+    const { slug } = await params;
+    
     let product: Product | null = null;
     let errorOccurred = false;
 
-    console.log('[ProductPage] Fetching product with slug:', params.slug);
+    console.log('[ProductPage] Fetching product with slug:', slug);
 
     try {
-        product = await api.getProduct(params.slug);
+        product = await api.getProduct(slug);
         console.log('[ProductPage] Product fetched successfully:', product?.name);
         console.log('[ProductPage] Product has variants:', product?.variants?.length || 0);
 

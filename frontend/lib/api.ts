@@ -1,8 +1,12 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+// Construct API base URL - append /api if using environment variable
+const API_BASE = process.env.NEXT_PUBLIC_API_URL
+    ? `${process.env.NEXT_PUBLIC_API_URL}/api`
+    : 'http://localhost:3001/api';
 
 // Debug: log the API URL being used
 if (typeof window !== 'undefined') {
     console.log('API_BASE:', API_BASE);
+    console.log('NEXT_PUBLIC_API_URL:', process.env.NEXT_PUBLIC_API_URL);
 }
 
 export const api = {
