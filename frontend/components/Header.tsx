@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTheme } from './ThemeProvider';
+import { useAuth } from './AuthProvider';
 import Image from 'next/image';
 import { useState, useEffect, useRef } from 'react';
 import { api } from '@/lib/api';
@@ -12,6 +13,7 @@ export function Header() {
     const pathname = usePathname();
     const router = useRouter();
     const { mode, toggleMode } = useTheme();
+    const { user, logout } = useAuth();
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState<Product[]>([]);
     const [showSearchDropdown, setShowSearchDropdown] = useState(false);
@@ -126,20 +128,24 @@ export function Header() {
                         >
                             Catalog
                         </Link>
-                        <Link
-                            href="/orders"
-                            className={`hover:text-primary transition-colors ${isActive('/orders') ? 'text-primary font-semibold' : 'text-foreground'
-                                }`}
-                        >
-                            Orders
-                        </Link>
-                        <Link
-                            href="/profile"
-                            className={`hover:text-primary transition-colors ${isActive('/profile') ? 'text-primary font-semibold' : 'text-foreground'
-                                }`}
-                        >
-                            Profile
-                        </Link>
+                        {user && (
+                            <>
+                                <Link
+                                    href="/orders"
+                                    className={`hover:text-primary transition-colors ${isActive('/orders') ? 'text-primary font-semibold' : 'text-foreground'
+                                        }`}
+                                >
+                                    Orders
+                                </Link>
+                                <Link
+                                    href="/profile"
+                                    className={`hover:text-primary transition-colors ${isActive('/profile') ? 'text-primary font-semibold' : 'text-foreground'
+                                        }`}
+                                >
+                                    Profile
+                                </Link>
+                            </>
+                        )}
                     </div>
 
                     <div className="flex items-center gap-4">
@@ -158,19 +164,33 @@ export function Header() {
                             🛒
                         </Link>
 
-                        <Link
-                            href="/register"
-                            className="px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary hover:text-white transition-all"
-                        >
-                            Register
-                        </Link>
+                        {user ? (
+                            <>
+                                <span className="text-sm text-foreground/70">Welcome, {user.fullName || user.email}</span>
+                                <button
+                                    onClick={logout}
+                                    className="px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary hover:text-white transition-all"
+                                >
+                                    Logout
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <Link
+                                    href="/register"
+                                    className="px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary hover:text-white transition-all"
+                                >
+                                    Register
+                                </Link>
 
-                        <Link
-                            href="/login"
-                            className="px-4 py-2 bg-primary text-white rounded-lg hover:opacity-90 transition-opacity"
-                        >
-                            Login
-                        </Link>
+                                <Link
+                                    href="/login"
+                                    className="px-4 py-2 bg-primary text-white rounded-lg hover:opacity-90 transition-opacity"
+                                >
+                                    Login
+                                </Link>
+                            </>
+                        )}
                     </div>
                 </div>
             </nav>

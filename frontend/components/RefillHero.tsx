@@ -34,7 +34,7 @@ export function RefillHero() {
 
                             {/* Subtitle */}
                             <p className="text-xl md:text-2xl text-text-secondary dark:text-text-secondary mb-8 max-w-2xl mx-auto leading-relaxed">
-                                Never run out of your essentials. Instantly reorder your favorite ingredients
+                                Never run out of your essentials. Instantly reorder your favorite foods
                                 with one click — saving you time and keeping your pantry stocked.
                             </p>
 

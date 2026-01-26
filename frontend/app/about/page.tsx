@@ -13,7 +13,7 @@ export default function AboutPage() {
                     <div className="container mx-auto px-4 text-center">
                         <h1 className="text-5xl font-bold mb-6">About RachelFoods</h1>
                         <p className="text-xl text-foreground/70 max-w-3xl mx-auto">
-                            Your trusted source for authentic, fresh ingredients delivered with care.
+                            Your trusted source for authentic, fresh traditional foods delivered with care.
                         </p>
                     </div>
                 </section>
@@ -27,7 +27,7 @@ export default function AboutPage() {
                                 <p>
                                     RachelFoods was founded with a simple mission: to make authentic,
                                     high-quality food products accessible to everyone in the United States.
-                                    We believe that great food starts with great ingredients.
+                                    We believe that great food starts with quality products and authentic recipes.
                                 </p>
                                 <p>
                                     What sets us apart is our unique seller confirmation workflow. Unlike
@@ -153,7 +153,7 @@ export default function AboutPage() {
                         </p>
                         <Link
                             href="/catalog"
-                            className="inline-block px-8 py-4 bg-white text-primary rounded-lg font-semibold hover:bg-gray-100 transition-colors text-lg"
+                            className="inline-block px-8 py-4 bg-secondary-100 dark:bg-secondary-900/30 text-secondary-700 dark:text-secondary-300 border-2 border-secondary-300 dark:border-secondary-700 rounded-lg font-semibold hover:bg-secondary-200 dark:hover:bg-secondary-800/40 transition-colors text-lg"
                         >
                             Start Shopping
                         </Link>

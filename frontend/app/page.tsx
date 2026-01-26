@@ -96,7 +96,7 @@ export default async function Home() {
             <div className="container mx-auto px-4">
               <div className="text-center mb-8">
                 <h2 className="text-3xl font-bold mb-2">Shop Our Products</h2>
-                <p className="text-text-secondary">Fresh ingredients and authentic flavors</p>
+                <p className="text-text-secondary">Fresh traditional foods and authentic flavors</p>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 {newArrivals.slice(0, 4).map((product) => (
@@ -134,7 +134,7 @@ export default async function Home() {
                   Featured Products
                 </h2>
                 <p className="text-xl text-text-secondary max-w-2xl mx-auto">
-                  Discover our handpicked selection of traditional foods and authentic ingredients
+                  Discover our handpicked selection of traditional foods and quality products
                 </p>
               </div>
 
