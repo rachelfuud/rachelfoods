@@ -34,7 +34,10 @@ export function BusinessIntelligence() {
             const token = localStorage.getItem('token');
             if (!token) return;
 
-            const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+            // Use centralized api.ts instead of direct env access to prevent path duplication
+            const API_BASE = process.env.NEXT_PUBLIC_API_URL
+                ? `${process.env.NEXT_PUBLIC_API_URL}/api`
+                : 'http://localhost:3001/api';
 
             // Fetch admin products to analyze top sellers
             const productsRes = await fetch(`${API_BASE}/admin/products`, {

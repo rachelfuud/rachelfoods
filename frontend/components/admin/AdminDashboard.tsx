@@ -61,7 +61,10 @@ export function AdminDashboard() {
                 return;
             }
 
-            const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+            // Use same pattern as lib/api.ts to prevent path duplication
+            const API_BASE = process.env.NEXT_PUBLIC_API_URL
+                ? `${process.env.NEXT_PUBLIC_API_URL}/api`
+                : 'http://localhost:3001/api';
 
             const [healthRes, metricsRes] = await Promise.all([
                 fetch(`${API_BASE}/admin/system/health`, {

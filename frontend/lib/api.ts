@@ -1,4 +1,22 @@
-// Construct API base URL - append /api if using environment variable
+/**
+ * CRITICAL: PATH CONSTRUCTION PATTERN
+ * 
+ * NEXT_PUBLIC_API_URL should NEVER include the /api suffix.
+ * This file automatically appends /api to construct the full API base URL.
+ * 
+ * ✅ CORRECT:   NEXT_PUBLIC_API_URL=https://backend.example.com
+ * ❌ INCORRECT: NEXT_PUBLIC_API_URL=https://backend.example.com/api
+ * 
+ * Failing to follow this pattern results in double /api/api/ paths.
+ * 
+ * Files that must follow this pattern:
+ * - .env.production
+ * - .env.local
+ * - .env.example
+ * - .env.local.example
+ * - next.config.js (env fallback)
+ * - Any component using NEXT_PUBLIC_API_URL directly
+ */
 const API_BASE = process.env.NEXT_PUBLIC_API_URL
     ? `${process.env.NEXT_PUBLIC_API_URL}/api`
     : 'http://localhost:3001/api';

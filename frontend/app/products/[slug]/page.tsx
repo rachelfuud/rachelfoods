@@ -13,7 +13,7 @@ export default async function ProductPage({
 }) {
     // Next.js 15+: params is now a Promise
     const { slug } = await params;
-    
+
     let product: Product | null = null;
     let errorOccurred = false;
 
