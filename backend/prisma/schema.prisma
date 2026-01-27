@@ -1036,3 +1036,22 @@ enum WalletTransactionSource {
   PROMO // Promotional credit
   ORDER_PAYMENT // Wallet used for order payment
 }
+
+// Hero Slideshow Management
+model hero_slides {
+  id         String   @id @default(uuid())
+  title      String
+  subtitle   String
+  imageUrl   String
+  linkUrl    String?
+  buttonText String   @default("Shop Now")
+  order      Int      @default(0)
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  createdBy  String?
+  updatedBy  String?
+
+  @@index([order])
+  @@index([isActive])
+}
