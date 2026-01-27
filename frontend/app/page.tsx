@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { HeroSlideshow } from '@/components/HeroSlideshow';
 import { PaymentIcons } from '@/components/PaymentIcons';
 import { ProductCard } from '@/components/ProductCard';
 import { api } from '@/lib/api';
@@ -43,51 +44,8 @@ export default async function Home() {
       <Header />
 
       <main className="flex-1">
-        {/* Hero Section */}
-        <section className="bg-linear-to-br from-primary-50 via-secondary-50 to-accent-50 dark:from-primary-950 dark:via-secondary-950 dark:to-accent-950 py-24">
-          <div className="container mx-auto px-4">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-12">
-              <div className="flex-1 text-center md:text-left">
-                <h1 className="text-5xl md:text-7xl font-extrabold mb-6 leading-tight">
-                  Authentic Local Foods,{' '}
-                  <span className="bg-linear-to-r from-primary-600 to-secondary-600 dark:from-primary-400 dark:to-secondary-400 bg-clip-text text-transparent">
-                    Delivered Across the U.S.
-                  </span>
-                </h1>
-                <p className="text-xl md:text-2xl text-text-secondary mb-10 max-w-2xl leading-relaxed">
-                  Fresh, dry, and ready-to-cook essentials — shop once or refill anytime.
-                  Every order confirmed by our sellers for guaranteed freshness and availability.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start mb-10">
-                  <Link
-                    href="/catalog"
-                    className="px-10 py-5 bg-linear-to-r from-primary-600 to-primary-700 dark:from-primary-500 dark:to-primary-600 text-white rounded-2xl font-bold hover:shadow-2xl hover:scale-105 transition-all duration-300 text-lg"
-                  >
-                    Shop Products
-                  </Link>
-                  <Link
-                    href="#refill"
-                    className="px-10 py-5 border-3 border-primary-600 dark:border-primary-500 text-primary-700 dark:text-primary-400 rounded-2xl font-bold hover:bg-primary-50 dark:hover:bg-primary-950 transition-all duration-300 text-lg"
-                  >
-                    How Refill Works
-                  </Link>
-                </div>
-                <PaymentIcons />
-              </div>
-
-              <div className="flex-1 flex justify-center">
-                <div className="relative w-72 h-72 md:w-md md:h-112 rounded-full bg-linear-to-br from-brand-accent/20 to-brand-primary/20 p-8 shadow-2xl">
-                  <Image
-                    src="/logo.png"
-                    alt="RachelFoods"
-                    fill
-                    className="object-contain drop-shadow-2xl"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* Hero Slideshow */}
+        <HeroSlideshow />
 
         {/* Quick Product Preview - Compact Grid */}
         {newArrivals.length > 0 && (

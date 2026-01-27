@@ -92,7 +92,7 @@ export const ProductCard = React.memo(function ProductCard({ product }: ProductC
 
                 <div className="mb-3 text-center">
                     <div className="flex items-baseline gap-2 mb-1 justify-center">
-                        <span className="text-3xl font-bold bg-linear-to-r from-brand-primary to-primary-600 dark:from-primary-400 dark:to-primary-600 bg-clip-text text-transparent">
+                        <span className="text-3xl font-bold text-primary-600 dark:text-primary-400">
                             {formatCurrency(price)}
                         </span>
                         {hasDiscount && comparePrice && (

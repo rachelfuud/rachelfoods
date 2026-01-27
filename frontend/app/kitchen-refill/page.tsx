@@ -26,14 +26,9 @@ export default function KitchenRefillPage() {
     const [cart, setCart] = useState<Map<string, number>>(new Map());
 
     useEffect(() => {
-        // Redirect to login if not authenticated
-        if (!user) {
-            router.push('/login?redirect=/kitchen-refill');
-            return;
-        }
-
+        // Kitchen Refill is now public - no auth required
         loadRefillData();
-    }, [user, router]);
+    }, []);
 
     async function loadRefillData() {
         try {
@@ -147,8 +142,8 @@ export default function KitchenRefillPage() {
 
         return (
             <div className={`border-2 rounded-xl p-4 mb-4 transition-all ${inCart
-                    ? 'border-primary bg-primary-50 dark:bg-primary-950/20'
-                    : 'border-border bg-background hover:border-primary/50'
+                ? 'border-primary bg-primary-50 dark:bg-primary-950/20'
+                : 'border-border bg-background hover:border-primary/50'
                 }`}>
                 <div className="flex items-center gap-4">
                     {/* Checkbox */}
@@ -168,7 +163,7 @@ export default function KitchenRefillPage() {
                     </div>
 
                     {/* Thumbnail */}
-                    <div className="flex-shrink-0 w-20 h-20 relative rounded-lg overflow-hidden bg-muted">
+                    <div className="shrink-0 w-20 h-20 relative rounded-lg overflow-hidden bg-muted">
                         {product.imageUrl ? (
                             <Image
                                 src={product.imageUrl}
@@ -202,8 +197,8 @@ export default function KitchenRefillPage() {
                                 </span>
                             )}
                             <span className={`text-xs px-2 py-1 rounded-full ${product.totalStock > 0
-                                    ? 'bg-secondary-100 text-secondary-700 dark:bg-secondary-900/30 dark:text-secondary-400'
-                                    : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                                ? 'bg-secondary-100 text-secondary-700 dark:bg-secondary-900/30 dark:text-secondary-400'
+                                : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
                                 }`}>
                                 {product.totalStock > 0 ? `${product.totalStock} in stock` : 'Out of stock'}
                             </span>
@@ -211,7 +206,7 @@ export default function KitchenRefillPage() {
                     </div>
 
                     {/* Quantity Controls */}
-                    <div className="flex-shrink-0 flex items-center gap-3">
+                    <div className="shrink-0 flex items-center gap-3">
                         <div className="flex items-center gap-2 border-2 border-border rounded-lg">
                             <button
                                 onClick={() => handleQuantityChange(product.id, Math.max(0, quantity - 1))}
@@ -258,8 +253,8 @@ export default function KitchenRefillPage() {
 
         return (
             <div className={`border-2 rounded-xl p-4 transition-all ${inCart
-                    ? 'border-primary bg-primary-50 dark:bg-primary-950/20'
-                    : 'border-border bg-background hover:border-primary/50'
+                ? 'border-primary bg-primary-50 dark:bg-primary-950/20'
+                : 'border-border bg-background hover:border-primary/50'
                 }`}>
                 {/* Checkbox at top */}
                 <div className="flex justify-between items-start mb-3">
@@ -395,8 +390,8 @@ export default function KitchenRefillPage() {
                             <button
                                 onClick={() => setViewMode('list')}
                                 className={`px-4 py-2 rounded transition-colors ${viewMode === 'list'
-                                        ? 'bg-primary text-white'
-                                        : 'hover:bg-muted'
+                                    ? 'bg-primary text-white'
+                                    : 'hover:bg-muted'
                                     }`}
                             >
                                 📋 List
@@ -404,8 +399,8 @@ export default function KitchenRefillPage() {
                             <button
                                 onClick={() => setViewMode('grid')}
                                 className={`px-4 py-2 rounded transition-colors ${viewMode === 'grid'
-                                        ? 'bg-primary text-white'
-                                        : 'hover:bg-muted'
+                                    ? 'bg-primary text-white'
+                                    : 'hover:bg-muted'
                                     }`}
                             >
                                 ⊞ Grid

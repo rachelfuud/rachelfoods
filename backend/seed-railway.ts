@@ -5,9 +5,159 @@ import { randomUUID } from 'crypto';
 const prisma = new PrismaClient();
 
 async function main() {
-    console.log('🌱 Starting Railway database seed with correct products...\n');
+    console.log('🌱 Starting comprehensive Railway database seed...\n');
 
-    // 1. Create Admin User
+    // 1. Create Roles (RBAC)
+    console.log('🔐 Creating roles...');
+
+    const adminRole = await prisma.roles.upsert({
+        where: { slug: 'admin' },
+        update: {},
+        create: {
+            id: randomUUID(),
+            name: 'Admin',
+            slug: 'admin',
+            description: 'Full system access with all permissions',
+            isActive: true,
+        },
+    });
+    console.log(`  ✓ ${adminRole.name}`);
+
+    const staffRole = await prisma.roles.upsert({
+        where: { slug: 'staff' },
+        update: {},
+        create: {
+            id: randomUUID(),
+            name: 'Staff',
+            slug: 'staff',
+            description: 'Limited admin access for staff members',
+            isActive: true,
+        },
+    });
+    console.log(`  ✓ ${staffRole.name}`);
+
+    const buyerRole = await prisma.roles.upsert({
+        where: { slug: 'buyer' },
+        update: {},
+        create: {
+            id: randomUUID(),
+            name: 'Buyer',
+            slug: 'buyer',
+            description: 'Customer who can purchase products',
+            isActive: true,
+        },
+    });
+    console.log(`  ✓ ${buyerRole.name}\n`);
+
+    // 2. Create Permissions
+    console.log('🔑 Creating permissions...');
+
+    const permissions = [
+        { action: 'CREATE', resource: 'products', description: 'Create new products' },
+        { action: 'UPDATE', resource: 'products', description: 'Update existing products' },
+        { action: 'DELETE', resource: 'products', description: 'Delete products' },
+        { action: 'VIEW', resource: 'products', description: 'View products' },
+        { action: 'CREATE', resource: 'orders', description: 'Create orders' },
+        { action: 'UPDATE', resource: 'orders', description: 'Update order status' },
+        { action: 'DELETE', resource: 'orders', description: 'Cancel orders' },
+        { action: 'VIEW', resource: 'orders', description: 'View orders' },
+        { action: 'CREATE', resource: 'users', description: 'Create users' },
+        { action: 'UPDATE', resource: 'users', description: 'Update users' },
+        { action: 'DELETE', resource: 'users', description: 'Delete users' },
+        { action: 'VIEW', resource: 'users', description: 'View users' },
+        { action: 'VIEW', resource: 'analytics', description: 'View business analytics' },
+        { action: 'MANAGE', resource: 'coupons', description: 'Manage promotional coupons' },
+        { action: 'MANAGE', resource: 'wallet', description: 'Manage customer wallets' },
+        { action: 'PROCESS', resource: 'refunds', description: 'Process refunds' },
+    ];
+
+    const createdPermissions = [];
+    for (const perm of permissions) {
+        const permission = await prisma.permissions.upsert({
+            where: {
+                action_resource: {
+                    action: perm.action,
+                    resource: perm.resource,
+                },
+            },
+            update: {},
+            create: {
+                id: randomUUID(),
+                action: perm.action,
+                resource: perm.resource,
+                description: perm.description,
+            },
+        });
+        createdPermissions.push(permission);
+    }
+    console.log(`  ✓ Created ${createdPermissions.length} permissions\n`);
+
+    // 3. Assign Permissions to Roles
+    console.log('🔗 Assigning permissions to roles...');
+
+    // Admin gets all permissions
+    for (const permission of createdPermissions) {
+        await prisma.role_permissions.upsert({
+            where: {
+                roleId_permissionId: {
+                    roleId: adminRole.id,
+                    permissionId: permission.id,
+                },
+            },
+            update: {},
+            create: {
+                id: randomUUID(),
+                roleId: adminRole.id,
+                permissionId: permission.id,
+            },
+        });
+    }
+    console.log(`  ✓ Admin: All permissions (${createdPermissions.length})`);
+
+    // Staff gets limited permissions (no delete)
+    const staffPermissions = createdPermissions.filter(p => p.action !== 'DELETE');
+    for (const permission of staffPermissions) {
+        await prisma.role_permissions.upsert({
+            where: {
+                roleId_permissionId: {
+                    roleId: staffRole.id,
+                    permissionId: permission.id,
+                },
+            },
+            update: {},
+            create: {
+                id: randomUUID(),
+                roleId: staffRole.id,
+                permissionId: permission.id,
+            },
+        });
+    }
+    console.log(`  ✓ Staff: ${staffPermissions.length} permissions`);
+
+    // Buyer gets only view and create order permissions
+    const buyerPermissions = createdPermissions.filter(p =>
+        (p.resource === 'products' && p.action === 'VIEW') ||
+        (p.resource === 'orders' && (p.action === 'CREATE' || p.action === 'VIEW'))
+    );
+    for (const permission of buyerPermissions) {
+        await prisma.role_permissions.upsert({
+            where: {
+                roleId_permissionId: {
+                    roleId: buyerRole.id,
+                    permissionId: permission.id,
+                },
+            },
+            update: {},
+            create: {
+                id: randomUUID(),
+                roleId: buyerRole.id,
+                permissionId: permission.id,
+            },
+        });
+    }
+    console.log(`  ✓ Buyer: ${buyerPermissions.length} permissions\n`);
+
+    // 4. Create Admin User
     console.log('👤 Creating admin user...');
     const hashedPassword = await bcrypt.hash('Admin123!', 10);
 
@@ -24,9 +174,61 @@ async function main() {
             updatedAt: new Date(),
         },
     });
-    console.log(`✓ Admin created: ${admin.email}\n`);
+    console.log(`✓ Admin created: ${admin.email}`);
 
-    // 2. Create Categories
+    // 5. Assign Admin Role to Admin User
+    await prisma.user_roles.upsert({
+        where: {
+            userId_roleId: {
+                userId: admin.id,
+                roleId: adminRole.id,
+            },
+        },
+        update: {},
+        create: {
+            id: randomUUID(),
+            userId: admin.id,
+            roleId: adminRole.id,
+        },
+    });
+    console.log(`✓ Admin role assigned to admin user\n`);
+
+    // 6. Create Platform Fee Config
+    console.log('💰 Creating platform fee configuration...');
+
+    await prisma.platform_fee_config.upsert({
+        where: { id: 'default-fee' },
+        update: {},
+        create: {
+            id: 'default-fee',
+            name: 'Default Platform Fee',
+            description: 'Standard 5% platform fee on all orders',
+            feeType: 'PERCENTAGE',
+            feeValue: 5.00,
+            isActive: true,
+            updatedAt: new Date(),
+        },
+    });
+    console.log(`  ✓ Default platform fee (5%)\n`);
+
+    // 7. Create Theme Config
+    console.log('🎨 Creating theme configuration...');
+
+    await prisma.theme_config.upsert({
+        where: { id: 'default-theme' },
+        update: {},
+        create: {
+            id: 'default-theme',
+            primaryColor: '#16a34a',
+            secondaryColor: '#ea580c',
+            accentColor: '#dc2626',
+            defaultMode: 'light',
+            isActive: true,
+        },
+    });
+    console.log(`  ✓ Default theme configuration\n`);
+
+    // 8. Create Categories
     console.log('📁 Creating categories...');
 
     const grainsStaples = await prisma.categories.upsert({
@@ -369,19 +571,104 @@ async function main() {
     });
     console.log('  ✓ Ewa Aganyin Mix\n');
 
-    // 4. Summary
+    // 9. Create Product Variants (Optional - for products with size/weight options)
+    console.log('📦 Creating product variants...');
+
+    // Fufu variants (different pack sizes)
+    const fufu = await prisma.products.findUnique({ where: { slug: 'fufu' } });
+    if (fufu) {
+        await prisma.product_variants.upsert({
+            where: { id: 'fufu-small' },
+            update: {},
+            create: {
+                id: 'fufu-small',
+                productId: fufu.id,
+                name: 'Small Pack (3 pieces)',
+                sku: 'FUFU-SM-3',
+                price: 600,
+                stock: 200,
+                isActive: true,
+                updatedAt: new Date(),
+            },
+        });
+
+        await prisma.product_variants.upsert({
+            where: { id: 'fufu-large' },
+            update: {},
+            create: {
+                id: 'fufu-large',
+                productId: fufu.id,
+                name: 'Large Pack (10 pieces)',
+                sku: 'FUFU-LG-10',
+                price: 1800,
+                stock: 100,
+                isActive: true,
+                updatedAt: new Date(),
+            },
+        });
+        console.log(`  ✓ Fufu variants (2)`);
+    }
+
+    // Catfish variants (different weights)
+    const catfish = await prisma.products.findUnique({ where: { slug: 'catfish' } });
+    if (catfish) {
+        await prisma.product_variants.upsert({
+            where: { id: 'catfish-500g' },
+            update: {},
+            create: {
+                id: 'catfish-500g',
+                productId: catfish.id,
+                name: '500g Pack',
+                sku: 'CATFISH-500G',
+                price: 1500,
+                stock: 150,
+                isActive: true,
+                updatedAt: new Date(),
+            },
+        });
+
+        await prisma.product_variants.upsert({
+            where: { id: 'catfish-1kg' },
+            update: {},
+            create: {
+                id: 'catfish-1kg',
+                productId: catfish.id,
+                name: '1kg Pack',
+                sku: 'CATFISH-1KG',
+                price: 2800,
+                stock: 150,
+                isActive: true,
+                updatedAt: new Date(),
+            },
+        });
+        console.log(`  ✓ Cat Fish variants (2)\n`);
+    }
+
+    // 10. Summary
     const totalCategories = await prisma.categories.count();
     const totalProducts = await prisma.products.count();
     const totalUsers = await prisma.users.count();
+    const totalRoles = await prisma.roles.count();
+    const totalPermissions = await prisma.permissions.count();
+    const totalVariants = await prisma.product_variants.count();
 
     console.log('✅ Seeding complete!\n');
     console.log('📊 Summary:');
+    console.log(`   Roles: ${totalRoles}`);
+    console.log(`   Permissions: ${totalPermissions}`);
     console.log(`   Categories: ${totalCategories}`);
     console.log(`   Products: ${totalProducts}`);
+    console.log(`   Product Variants: ${totalVariants}`);
     console.log(`   Users: ${totalUsers}`);
+    console.log(`   Platform Fee Config: 1`);
+    console.log(`   Theme Config: 1`);
     console.log('\n🔑 Admin Login:');
     console.log('   Email: admin@rachelfoods.com');
     console.log('   Password: Admin123!');
+    console.log('\n🎯 Roles Available:');
+    console.log('   - Admin (full access)');
+    console.log('   - Staff (limited admin access)');
+    console.log('   - Buyer (customer access)');
 }
 
 main()
