@@ -25,7 +25,8 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
     // Use variant price/stock if available, otherwise fall back to product
     const currentPrice = selectedVariant?.price ?? product.price;
     const currentStock = selectedVariant?.stock ?? product.stock;
-    const isAvailable = product.isAvailable && (selectedVariant ? selectedVariant.stock > 0 : currentStock > 0);
+    // Fix: Check stock > 0 directly, don't rely on isAvailable flag which may be false
+    const isAvailable = selectedVariant ? selectedVariant.stock > 0 : currentStock > 0;
 
     const hasDiscount = product.compareAtPrice && product.compareAtPrice > currentPrice;
     const discountPercent = hasDiscount

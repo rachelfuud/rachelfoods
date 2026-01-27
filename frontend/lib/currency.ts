@@ -12,8 +12,8 @@ const currencyFormatter = new Intl.NumberFormat('en-US', {
 
 /**
  * Formats a numeric amount as USD currency
- * @param amount - The numeric amount to format
- * @returns Formatted currency string (e.g., "$1,200.00")
+ * @param amount - The numeric amount in cents to format
+ * @returns Formatted currency string (e.g., "$12.00")
  */
 export function formatCurrency(amount: number | string): string {
     const numericAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
@@ -22,5 +22,8 @@ export function formatCurrency(amount: number | string): string {
         return '$0.00';
     }
 
-    return currencyFormatter.format(numericAmount);
+    // Convert cents to dollars by dividing by 100
+    const amountInDollars = numericAmount / 100;
+
+    return currencyFormatter.format(amountInDollars);
 }

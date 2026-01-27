@@ -80,12 +80,12 @@ export const ProductCard = React.memo(function ProductCard({ product }: ProductC
                     </div>
                 )}
 
-                <h3 className="font-bold text-lg mb-2 group-hover:text-brand-primary dark:group-hover:text-primary-400 transition-colors">
+                <h3 className="font-bold text-lg mb-2 text-center group-hover:text-brand-primary dark:group-hover:text-primary-400 transition-colors">
                     {product.name}
                 </h3>
 
                 {product.description && (
-                    <p className="text-sm text-text-secondary mb-3 line-clamp-2">
+                    <p className="text-sm text-text-secondary mb-3 line-clamp-2 text-center">
                         {product.description}
                     </p>
                 )}
