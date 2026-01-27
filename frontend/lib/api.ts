@@ -535,4 +535,60 @@ export const api = {
         if (!res.ok) throw new Error('Failed to delete address');
         return res.json();
     },
+
+    // Generic HTTP methods for flexibility
+    get: async (path: string) => {
+        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+        const headers: HeadersInit = {};
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+        
+        const res = await fetch(`${API_BASE}${path}`, {
+            method: 'GET',
+            headers,
+            cache: 'no-store',
+        });
+        if (!res.ok) throw new Error(`GET ${path} failed`);
+        return res.json();
+    },
+
+    post: async (path: string, data?: any) => {
+        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+        const headers: HeadersInit = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+        
+        const res = await fetch(`${API_BASE}${path}`, {
+            method: 'POST',
+            headers,
+            body: data ? JSON.stringify(data) : undefined,
+        });
+        if (!res.ok) throw new Error(`POST ${path} failed`);
+        return res.json();
+    },
+
+    put: async (path: string, data?: any) => {
+        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+        const headers: HeadersInit = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+        
+        const res = await fetch(`${API_BASE}${path}`, {
+            method: 'PUT',
+            headers,
+            body: data ? JSON.stringify(data) : undefined,
+        });
+        if (!res.ok) throw new Error(`PUT ${path} failed`);
+        return res.json();
+    },
+
+    delete: async (path: string) => {
+        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+        const headers: HeadersInit = {};
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+        
+        const res = await fetch(`${API_BASE}${path}`, {
+            method: 'DELETE',
+            headers,
+        });
+        if (!res.ok) throw new Error(`DELETE ${path} failed`);
+        return res.json();
+    },
 };

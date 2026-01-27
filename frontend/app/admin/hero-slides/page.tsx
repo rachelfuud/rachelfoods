@@ -271,7 +271,7 @@ export default function AdminHeroSlidesPage() {
                                     className="border rounded-lg p-4 hover:shadow-md transition-shadow"
                                 >
                                     <div className="flex gap-4">
-                                        <div className="relative w-32 h-20 flex-shrink-0 rounded overflow-hidden">
+                                        <div className="relative w-32 h-20 shrink-0 rounded overflow-hidden">
                                             <Image
                                                 src={slide.imageUrl}
                                                 alt={slide.title}
@@ -335,7 +335,7 @@ export default function AdminHeroSlidesPage() {
             {/* Preview Section */}
             <div className="mt-8 bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
                 <h2 className="text-xl font-semibold mb-4">Live Preview</h2>
-                <div className="relative w-full h-[300px] rounded-lg overflow-hidden">
+                <div className="relative w-full h-75 rounded-lg overflow-hidden">
                     {slides.filter(s => s.isActive).length > 0 ? (
                         <div className="relative w-full h-full">
                             <Image

@@ -88,7 +88,7 @@ export function HeroSlideshow() {
 
     if (isLoading) {
         return (
-            <div className="relative w-full h-[400px] md:h-[500px] lg:h-[600px] bg-muted animate-pulse">
+            <div className="relative w-full h-100 md:h-125 lg:h-150 bg-muted animate-pulse">
                 <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-muted-foreground">Loading...</div>
                 </div>
@@ -97,7 +97,7 @@ export function HeroSlideshow() {
     }
 
     return (
-        <div className="relative w-full h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden bg-muted">
+        <div className="relative w-full h-100 md:h-125 lg:h-150 overflow-hidden bg-muted">
             {/* Slides */}
             <div className="relative w-full h-full">
                 {slides.map((slide, index) => (
@@ -142,7 +142,7 @@ export function HeroSlideshow() {
                 aria-label="Previous slide"
             >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="width" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
             </button>
             <button

@@ -147,7 +147,7 @@ export default function KitchenRefillPage() {
                 }`}>
                 <div className="flex items-center gap-4">
                     {/* Checkbox */}
-                    <div className="flex-shrink-0">
+                    <div className="shrink-0">
                         <input
                             type="checkbox"
                             checked={inCart}
