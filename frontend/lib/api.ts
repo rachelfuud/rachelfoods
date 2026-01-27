@@ -541,7 +541,7 @@ export const api = {
         const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
         const headers: HeadersInit = {};
         if (token) headers['Authorization'] = `Bearer ${token}`;
-        
+
         const res = await fetch(`${API_BASE}${path}`, {
             method: 'GET',
             headers,
@@ -555,7 +555,7 @@ export const api = {
         const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
         const headers: HeadersInit = { 'Content-Type': 'application/json' };
         if (token) headers['Authorization'] = `Bearer ${token}`;
-        
+
         const res = await fetch(`${API_BASE}${path}`, {
             method: 'POST',
             headers,
@@ -569,7 +569,7 @@ export const api = {
         const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
         const headers: HeadersInit = { 'Content-Type': 'application/json' };
         if (token) headers['Authorization'] = `Bearer ${token}`;
-        
+
         const res = await fetch(`${API_BASE}${path}`, {
             method: 'PUT',
             headers,
@@ -583,7 +583,7 @@ export const api = {
         const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
         const headers: HeadersInit = {};
         if (token) headers['Authorization'] = `Bearer ${token}`;
-        
+
         const res = await fetch(`${API_BASE}${path}`, {
             method: 'DELETE',
             headers,

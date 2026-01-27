@@ -196,11 +196,11 @@ export default function KitchenRefillPage() {
                                     Last ordered: {new Date(product.lastOrderedDate).toLocaleDateString()}
                                 </span>
                             )}
-                            <span className={`text-xs px-2 py-1 rounded-full ${product.totalStock > 0
+                            <span className={`text-xs px-2 py-1 rounded-full ${(product.totalStock ?? 0) > 0
                                 ? 'bg-secondary-100 text-secondary-700 dark:bg-secondary-900/30 dark:text-secondary-400'
                                 : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
                                 }`}>
-                                {product.totalStock > 0 ? `${product.totalStock} in stock` : 'Out of stock'}
+                                {(product.totalStock ?? 0) > 0 ? `${product.totalStock} in stock` : 'Out of stock'}
                             </span>
                         </div>
                     </div>
