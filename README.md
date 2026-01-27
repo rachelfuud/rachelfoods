@@ -380,18 +380,20 @@ This repository demonstrates:
 
 ### Phase 8+ Roadmap
 
-- [ ] JWT refresh tokens (improve UX, reduce forced re-login)
+- [x] **JWT refresh tokens** - ✅ IMPLEMENTED (improves UX, reduces forced re-login)
+- [x] **Audit logging** - ✅ IMPLEMENTED (tracks all admin actions for compliance)
 - [ ] Redis caching (replace in-memory for multi-instance support)
 - [ ] Test suite (unit tests, integration tests, e2e tests)
 - [ ] Query optimization (pagination, N+1 query fixes, database indexes)
 - [ ] 2FA for admin accounts (enhanced security)
-- [ ] Audit logging (track all admin actions for compliance)
 - [ ] CDN integration (static asset optimization)
 - [ ] Advanced rate limiting (IP-based + user-based)
 - [ ] Stripe Connect (multi-vendor payouts)
 - [ ] Real-time order updates (WebSocket integration)
 - [ ] Push notifications (mobile app support)
 - [ ] Multi-language support (i18n)
+
+**Latest Implementation**: See [Phase 8 Documentation](./docs/PHASE_8_IMPLEMENTATION.md) for JWT refresh tokens and audit logging details.
 
 See [Project Overview](./docs/PROJECT_OVERVIEW.md) for detailed future phase planning.
 

@@ -33,6 +33,7 @@ import { NotificationModule } from './notifications/notification.module';
 import { PromotionModule } from './promotion/promotion.module';
 import { WalletModule } from './wallet/wallet.module';
 import { RefundModule } from './refunds/refund.module';
+import { AuditModule } from './audit/audit.module';
 
 @Module({
     imports: [
@@ -70,6 +71,7 @@ import { RefundModule } from './refunds/refund.module';
         PromotionModule, // PHASE 5B: Coupon management
         WalletModule, // PHASE 5C: Store credit & loyalty wallet
         RefundModule, // PHASE 5C: Refund processing
+        AuditModule, // PHASE 8: Audit logging for compliance
     ],
     controllers: [AppController, SeedController],
     providers: [

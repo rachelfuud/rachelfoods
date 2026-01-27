@@ -120,17 +120,23 @@ export class AuthService {
             throw new UnauthorizedException('Invalid credentials');
         }
 
-        // Update last login
+        // Generate tokens
+        const accessToken = await this.generateToken(user.id, user.email);
+        const refreshToken = await this.generateRefreshToken();
+
+        // Update user with refresh token and last login
         await this.prisma.users.update({
             where: { id: user.id },
-            data: { lastLogin: new Date() },
+            data: {
+                lastLogin: new Date(),
+                refreshToken,
+                refreshTokenExpiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+            },
         });
-
-        // Generate JWT token
-        const accessToken = await this.generateToken(user.id, user.email);
 
         return {
             accessToken,
+            refreshToken,
             user: {
                 id: user.id,
                 email: user.email,
@@ -139,6 +145,62 @@ export class AuthService {
                 status: user.status,
             },
         };
+    }
+
+    /**
+     * Refresh access token using refresh token
+     */
+    async refreshAccessToken(refreshToken: string): Promise<AuthResponse> {
+        // Find user by refresh token
+        const user = await this.prisma.users.findFirst({
+            where: {
+                refreshToken,
+                refreshTokenExpiresAt: { gte: new Date() },
+                status: 'ACTIVE',
+            },
+        });
+
+        if (!user) {
+            throw new UnauthorizedException('Invalid or expired refresh token');
+        }
+
+        // Generate new access token
+        const accessToken = await this.generateToken(user.id, user.email);
+
+        // Optionally rotate refresh token for added security
+        const newRefreshToken = await this.generateRefreshToken();
+        await this.prisma.users.update({
+            where: { id: user.id },
+            data: {
+                refreshToken: newRefreshToken,
+                refreshTokenExpiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+            },
+        });
+
+        return {
+            accessToken,
+            refreshToken: newRefreshToken,
+            user: {
+                id: user.id,
+                email: user.email,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                status: user.status,
+            },
+        };
+    }
+
+    /**
+     * Logout user by invalidating refresh token
+     */
+    async logout(userId: string): Promise<void> {
+        await this.prisma.users.update({
+            where: { id: userId },
+            data: {
+                refreshToken: null,
+                refreshTokenExpiresAt: null,
+            },
+        });
     }
 
     /**
@@ -190,6 +252,13 @@ export class AuthService {
         };
 
         return this.jwtService.sign(payload);
+    }
+
+    /**
+     * Generate refresh token (random string)
+     */
+    private async generateRefreshToken(): Promise<string> {
+        return crypto.randomUUID() + '-' + crypto.randomUUID();
     }
 
     /**

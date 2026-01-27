@@ -508,6 +508,8 @@ model users {
   phone                                     String?
   role                                      UserRole              @default(CUSTOMER)
   status                                    UserStatus            @default(ACTIVE)
+  refreshToken                              String?               @unique
+  refreshTokenExpiresAt                     DateTime?
   createdAt                                 DateTime              @default(now())
   updatedAt                                 DateTime
   lastLogin                                 DateTime?
@@ -523,10 +525,12 @@ model users {
   refillProfiles                            refill_profiles[]
   addresses                                 addresses[]
   adminNotifications                        admin_notifications[]
+  auditLogs                                 audit_logs[]
 
   @@index([email])
   @@index([status])
   @@index([role])
+  @@index([refreshToken])
 }
 
 model wallets {
@@ -553,6 +557,25 @@ model wallets {
   @@index([userId])
   @@index([walletCode])
   @@index([walletType])
+}
+
+model audit_logs {
+  id        String   @id
+  userId    String?
+  userEmail String?
+  action    String
+  entity    String
+  entityId  String?
+  changes   Json?
+  ip        String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  users     users?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([action])
+  @@index([entity])
+  @@index([createdAt])
 }
 
 enum CategoryStatus {
