@@ -18,7 +18,7 @@ async function main() {
         {
             title: 'Fresh Traditional Foods',
             subtitle: 'Authentic Nigerian ingredients delivered to your door',
-            imageUrl: '/images/hero-1.svg',
+            imageUrl: '/images/hero-1.jpg',
             linkUrl: '/catalog',
             buttonText: 'Shop Now',
             order: 0,
@@ -29,7 +29,7 @@ async function main() {
         {
             title: 'Premium Quality Ingredients',
             subtitle: 'Handpicked spices and ingredients from trusted sources',
-            imageUrl: '/images/hero-2.svg',
+            imageUrl: '/images/hero-2.jpg',
             linkUrl: '/catalog',
             buttonText: 'Browse Collection',
             order: 1,
@@ -40,7 +40,7 @@ async function main() {
         {
             title: 'Fast & Reliable Delivery',
             subtitle: 'Get your favorite traditional foods delivered in 24-48 hours',
-            imageUrl: '/images/hero-3.svg',
+            imageUrl: '/images/hero-3.jpg',
             linkUrl: '/catalog',
             buttonText: 'Order Now',
             order: 2,

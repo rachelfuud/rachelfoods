@@ -1,0 +1,52 @@
+<svg width="1920" height="600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="bg1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff6b35;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f7931e;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1920" height="600" fill="url(#bg1)"/>
+  
+  <!-- Decorative pattern -->
+  <circle cx="150" cy="150" r="80" fill="white" opacity="0.1"/>
+  <circle cx="1800" cy="450" r="120" fill="white" opacity="0.1"/>
+  <circle cx="1650" cy="100" r="60" fill="white" opacity="0.15"/>
+  
+  <!-- Main content area -->
+  <g transform="translate(200, 150)">
+    <!-- Text content -->
+    <text x="0" y="0" font-family="Arial, sans-serif" font-size="72" font-weight="bold" fill="white" filter="url(#shadow)">
+      Authentic Traditional Foods
+    </text>
+    <text x="0" y="80" font-family="Arial, sans-serif" font-size="36" fill="white" opacity="0.95">
+      Fresh from Local Kitchens to Your Table
+    </text>
+    <text x="0" y="140" font-family="Arial, sans-serif" font-size="28" fill="white" opacity="0.9">
+      Order now and enjoy traditional flavors made with love
+    </text>
+    
+    <!-- CTA Button -->
+    <g transform="translate(0, 200)">
+      <rect width="280" height="70" rx="35" fill="white" filter="url(#shadow)"/>
+      <text x="140" y="48" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#ff6b35" text-anchor="middle">
+        Shop Now
+      </text>
+    </g>
+  </g>
+  
+  <!-- Food icons -->
+  <g transform="translate(1400, 200)">
+    <circle cx="0" cy="0" r="100" fill="white" opacity="0.2"/>
+    <text x="0" y="30" font-size="120" text-anchor="middle">🍲</text>
+  </g>
+  <g transform="translate(1550, 400)">
+    <circle cx="0" cy="0" r="70" fill="white" opacity="0.15"/>
+    <text x="0" y="20" font-size="80" text-anchor="middle">🥘</text>
+  </g>
+</svg>
