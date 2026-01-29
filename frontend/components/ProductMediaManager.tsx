@@ -57,8 +57,8 @@ export function ProductMediaManager({ productId, readonly = false }: ProductMedi
         setLoading(true);
         try {
             const [imagesData, videosData] = await Promise.all([
-                api.get(`/admin/products/${productId}/media/images`),
-                api.get(`/admin/products/${productId}/media/videos`),
+                api.get(`/api/admin/products/${productId}/media/images`),
+                api.get(`/api/admin/products/${productId}/media/videos`),
             ]);
             setImages(imagesData);
             setVideos(videosData);
@@ -72,7 +72,7 @@ export function ProductMediaManager({ productId, readonly = false }: ProductMedi
     const handleAddImage = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await api.post(`/admin/products/${productId}/media/images`, {
+            await api.post(`/api/admin/products/${productId}/media/images`, {
                 images: [imageForm],
             });
             setImageForm({ url: '', altText: '', isPrimary: false });
@@ -86,7 +86,7 @@ export function ProductMediaManager({ productId, readonly = false }: ProductMedi
     const handleDeleteImage = async (imageId: string) => {
         if (!confirm('Delete this image?')) return;
         try {
-            await api.delete(`/admin/products/${productId}/media/images/${imageId}`);
+            await api.delete(`/api/admin/products/${productId}/media/images/${imageId}`);
             loadMedia();
         } catch (error) {
             console.error('Failed to delete image:', error);
@@ -96,7 +96,7 @@ export function ProductMediaManager({ productId, readonly = false }: ProductMedi
 
     const handleSetPrimaryImage = async (imageId: string) => {
         try {
-            await api.put(`/admin/products/${productId}/media/images/${imageId}`, {
+            await api.put(`/api/admin/products/${productId}/media/images/${imageId}`, {
                 isPrimary: true,
             });
             loadMedia();
@@ -109,7 +109,7 @@ export function ProductMediaManager({ productId, readonly = false }: ProductMedi
     const handleAddVideo = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await api.post(`/admin/products/${productId}/media/videos`, {
+            await api.post(`/api/admin/products/${productId}/media/videos`, {
                 videos: [videoForm],
             });
             setVideoForm({ url: '', title: '', description: '', thumbnail: '', duration: 0 });
@@ -123,7 +123,7 @@ export function ProductMediaManager({ productId, readonly = false }: ProductMedi
     const handleDeleteVideo = async (videoId: string) => {
         if (!confirm('Delete this video?')) return;
         try {
-            await api.delete(`/admin/products/${productId}/media/videos/${videoId}`);
+            await api.delete(`/api/admin/products/${productId}/media/videos/${videoId}`);
             loadMedia();
         } catch (error) {
             console.error('Failed to delete video:', error);

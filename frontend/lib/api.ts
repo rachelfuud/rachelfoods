@@ -567,12 +567,19 @@ export const api = {
     },
 
     // Generic HTTP methods for flexibility
+    // NOTE: Paths passed to these methods should START WITH /api/
+    // Example: api.get('/api/admin/products') NOT api.get('/admin/products')
     get: async (path: string) => {
         const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
         const headers: HeadersInit = {};
         if (token) headers['Authorization'] = `Bearer ${token}`;
 
-        const res = await fetch(`${API_BASE}${path}`, {
+        // Construct URL: if path starts with /api, use it directly; otherwise prepend API_BASE
+        const url = path.startsWith('/api/')
+            ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}${path}`
+            : `${API_BASE}${path}`;
+
+        const res = await fetch(url, {
             method: 'GET',
             headers,
             cache: 'no-store',
@@ -586,7 +593,12 @@ export const api = {
         const headers: HeadersInit = { 'Content-Type': 'application/json' };
         if (token) headers['Authorization'] = `Bearer ${token}`;
 
-        const res = await fetch(`${API_BASE}${path}`, {
+        // Construct URL: if path starts with /api, use it directly; otherwise prepend API_BASE
+        const url = path.startsWith('/api/')
+            ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}${path}`
+            : `${API_BASE}${path}`;
+
+        const res = await fetch(url, {
             method: 'POST',
             headers,
             body: data ? JSON.stringify(data) : undefined,
@@ -600,7 +612,12 @@ export const api = {
         const headers: HeadersInit = { 'Content-Type': 'application/json' };
         if (token) headers['Authorization'] = `Bearer ${token}`;
 
-        const res = await fetch(`${API_BASE}${path}`, {
+        // Construct URL: if path starts with /api, use it directly; otherwise prepend API_BASE
+        const url = path.startsWith('/api/')
+            ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}${path}`
+            : `${API_BASE}${path}`;
+
+        const res = await fetch(url, {
             method: 'PUT',
             headers,
             body: data ? JSON.stringify(data) : undefined,
@@ -614,7 +631,12 @@ export const api = {
         const headers: HeadersInit = {};
         if (token) headers['Authorization'] = `Bearer ${token}`;
 
-        const res = await fetch(`${API_BASE}${path}`, {
+        // Construct URL: if path starts with /api, use it directly; otherwise prepend API_BASE
+        const url = path.startsWith('/api/')
+            ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}${path}`
+            : `${API_BASE}${path}`;
+
+        const res = await fetch(url, {
             method: 'DELETE',
             headers,
         });
