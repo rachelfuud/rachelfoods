@@ -4,10 +4,12 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
 import Image from 'next/image';
+import { useState } from 'react';
 
 export function AdminNav() {
     const pathname = usePathname();
     const { logout } = useAuth();
+    const [cmsOpen, setCmsOpen] = useState(pathname.startsWith('/admin/cms'));
 
     const isActive = (path: string) => {
         if (path === '/admin') return pathname === '/admin';
@@ -21,6 +23,13 @@ export function AdminNav() {
         { path: '/admin/alerts', label: 'Alerts', icon: '⚠️' },
         { path: '/admin/governance', label: 'Governance', icon: '🛡️' },
         { path: '/admin/theme', label: 'Theme', icon: '🎨' },
+    ];
+
+    const cmsItems = [
+        { path: '/admin/cms/header', label: 'Header', icon: '🔝' },
+        { path: '/admin/cms/footer', label: 'Footer', icon: '🔻' },
+        { path: '/admin/cms/pages', label: 'Pages', icon: '📄' },
+        { path: '/admin/cms/media', label: 'Media Library', icon: '🖼️' },
     ];
 
     return (
@@ -50,32 +59,53 @@ export function AdminNav() {
                             key={item.path}
                             href={item.path}
                             className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${isActive(item.path)
-                                    ? 'bg-primary text-white'
-                                    : 'hover:bg-muted text-foreground'
+                                ? 'bg-primary text-white'
+                                : 'hover:bg-muted text-foreground'
                                 }`}
                         >
                             <span className="text-xl">{item.icon}</span>
                             <span className="font-medium">{item.label}</span>
                         </Link>
                     ))}
-                </div>
-            </nav>
 
-            {/* Footer */}
-            <div className="p-4 border-t border-border">
-                <Link
-                    href="/"
-                    className="block mb-2 px-4 py-2 text-center rounded-lg border border-border hover:bg-muted transition-colors text-sm"
-                >
-                    ← Back to Site
-                </Link>
-                <button
-                    onClick={logout}
-                    className="w-full px-4 py-2 text-center rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-colors text-sm font-medium"
-                >
-                    Logout
+                    {/* CMS Section with Submenu */}
+                    <div className="mt-2">
+                        <button
+                            onClick={() => setCmsOpen(!cmsOpen)}
+                            className={`w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg transition-colors ${isActive('/admin/cms')
+                                ? 'bg-primary/10 text-primary'
+                                : 'hover:bg-muted text-foreground'
+                                }`}
+                        >
+                            <div className="flex items-center gap-3">
+                                <span className="text-xl">📝</span>
+                                <span className="font-medium">CMS</span>
+                            </div>
+                            <span className={`transition-transform ${cmsOpen ? 'rotate-180' : ''}`}>
+                                ▼
+                            </span>
+                        </button>
+
+                        {cmsOpen && (
+                            <div className="mt-1 ml-4 pl-4 border-l-2 border-border space-y-1">
+                                {cmsItems.map((item) => (
+                                    <Link
+                                        key={item.path}
+                                        href={item.path}
+                                        className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-colors text-sm ${pathname === item.path
+                                            ? 'bg-primary text-white'
+                                            : 'hover:bg-muted text-foreground'
+                                            }`}
+                                    >
+                                        <span>{item.icon}</span>
+                                        <span>{item.label}</span>
+                                    </Link>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 </button>
-            </div>
         </div>
+        </div >
     );
 }
