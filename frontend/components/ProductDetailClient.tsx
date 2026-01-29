@@ -6,12 +6,15 @@ import { formatCurrency } from '@/lib/currency';
 import VariantSelector from './VariantSelector';
 import Link from 'next/link';
 import { PaymentIcons } from './PaymentIcons';
+import { useCart } from '@/contexts/CartContext';
 
 interface ProductDetailClientProps {
     product: Product;
 }
 
 export function ProductDetailClient({ product }: ProductDetailClientProps) {
+    const { addToCart } = useCart();
+
     // Select default variant or first active variant
     const defaultVariant = product.variants?.find(v => v.isDefault && v.isActive) ||
         product.variants?.find(v => v.isActive);
@@ -19,6 +22,7 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
     const [selectedVariantId, setSelectedVariantId] = useState<string>(
         defaultVariant?.id || ''
     );
+    const [quantity, setQuantity] = useState<number>(1);
 
     const selectedVariant = product.variants?.find(v => v.id === selectedVariantId);
 
@@ -33,30 +37,25 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
         ? Math.round(((product.compareAtPrice! - currentPrice) / product.compareAtPrice!) * 100)
         : 0;
 
+    const handleQuantityChange = (delta: number) => {
+        setQuantity((prev) => {
+            const newQty = prev + delta;
+            if (newQty < 1) return 1;
+            if (newQty > currentStock) return currentStock;
+            return newQty;
+        });
+    };
+
     const handleAddToCart = () => {
-        const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        addToCart({
+            productId: product.id,
+            variantId: selectedVariantId || null,
+            product: product,
+            variant: selectedVariant || null,
+        }, quantity);
 
-        // Use variant ID if available
-        const cartKey = selectedVariantId || product.id;
-        const existingItem = cart.find((item: any) =>
-            selectedVariantId ? item.variantId === selectedVariantId : item.productId === product.id
-        );
-
-        if (existingItem) {
-            existingItem.quantity += 1;
-        } else {
-            cart.push({
-                productId: product.id,
-                variantId: selectedVariantId || null,
-                product: product,
-                variant: selectedVariant || null,
-                quantity: 1,
-            });
-        }
-
-        localStorage.setItem('cart', JSON.stringify(cart));
-        window.dispatchEvent(new Event('cartUpdated'));
-        alert('Added to cart!');
+        // Reset quantity to 1 after adding
+        setQuantity(1);
     };
 
     return (
@@ -119,11 +118,46 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
 
             {isAvailable && (
                 <div className="space-y-4">
+                    {/* Quantity Controls */}
+                    <div className="flex items-center gap-4">
+                        <label className="font-semibold text-foreground">Quantity:</label>
+                        <div className="flex items-center border-2 border-primary/20 rounded-lg overflow-hidden">
+                            <button
+                                onClick={() => handleQuantityChange(-1)}
+                                disabled={quantity <= 1}
+                                className="px-4 py-2 bg-primary/5 hover:bg-primary/10 disabled:opacity-40 disabled:cursor-not-allowed font-bold text-primary transition-colors"
+                            >
+                                −
+                            </button>
+                            <input
+                                type="number"
+                                min="1"
+                                max={currentStock}
+                                value={quantity}
+                                onChange={(e) => {
+                                    const val = parseInt(e.target.value) || 1;
+                                    setQuantity(Math.max(1, Math.min(val, currentStock)));
+                                }}
+                                className="w-16 px-2 py-2 text-center font-semibold border-l border-r border-primary/20 focus:outline-none focus:ring-2 focus:ring-primary/20"
+                            />
+                            <button
+                                onClick={() => handleQuantityChange(1)}
+                                disabled={quantity >= currentStock}
+                                className="px-4 py-2 bg-primary/5 hover:bg-primary/10 disabled:opacity-40 disabled:cursor-not-allowed font-bold text-primary transition-colors"
+                            >
+                                +
+                            </button>
+                        </div>
+                        <span className="text-sm text-foreground/60">
+                            ({currentStock} available)
+                        </span>
+                    </div>
+
                     <button
                         onClick={handleAddToCart}
                         className="w-full py-4 bg-primary text-white rounded-lg font-semibold text-lg hover:opacity-90 transition-opacity"
                     >
-                        Add to Cart
+                        Add {quantity} to Cart
                     </button>
 
                     <Link

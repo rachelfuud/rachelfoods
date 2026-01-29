@@ -19,8 +19,6 @@ export class WebhookDispatcher {
      */
     @Cron('*/30 * * * * *') // Every 30 seconds
     async processOutbox(): Promise<void> {
-        this.logger.debug({ event: 'webhook_dispatch_started' });
-
         try {
             // Fetch pending/retry-ready webhooks (batch of 50)
             const pendingDeliveries = await this.prisma.webhook_deliveries.findMany({
@@ -37,7 +35,7 @@ export class WebhookDispatcher {
             });
 
             if (pendingDeliveries.length === 0) {
-                this.logger.debug({ event: 'webhook_dispatch_no_pending' });
+                // No pending webhooks - skip verbose logging
                 return;
             }
 

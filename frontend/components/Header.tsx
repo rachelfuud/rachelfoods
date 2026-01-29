@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTheme } from './ThemeProvider';
 import { useAuth } from './AuthProvider';
+import { useCart } from '@/contexts/CartContext';
 import Image from 'next/image';
 import { useState, useEffect, useRef } from 'react';
 import { api } from '@/lib/api';
@@ -14,6 +15,7 @@ export function Header() {
     const router = useRouter();
     const { mode, toggleMode } = useTheme();
     const { user, logout } = useAuth();
+    const { itemCount } = useCart();
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState<Product[]>([]);
     const [showSearchDropdown, setShowSearchDropdown] = useState(false);
@@ -169,6 +171,11 @@ export function Header() {
                             className="relative p-2 rounded-lg hover:bg-muted transition-colors"
                         >
                             🛒
+                            {itemCount > 0 && (
+                                <span className="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-in zoom-in-50 duration-200">
+                                    {itemCount}
+                                </span>
+                            )}
                         </Link>
 
                         {user ? (

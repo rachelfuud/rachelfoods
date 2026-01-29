@@ -53,7 +53,7 @@ export function HeroSlideshow() {
     useEffect(() => {
         async function fetchSlides() {
             try {
-                const data = await api.get('/api/admin/hero-slides/public');
+                const data = await api.get('/admin/hero-slides/public');
                 if (data && data.length > 0) {
                     setSlides(data);
                 }
