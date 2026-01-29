@@ -14,8 +14,14 @@ async function bootstrap() {
     rawBody: true, // Enable raw body for Stripe webhooks
   });
 
-  // Configure JSON middleware with raw body for webhook route
-  app.use('/api/payments/webhook', json({ verify: (req: any, res, buf) => { req.rawBody = buf; } }));
+  // Configure JSON middleware with raw body ONLY for webhook route
+  app.use((req: any, res: any, next: any) => {
+    if (req.path === '/api/payments/webhook') {
+      json({ verify: (req: any, res, buf) => { req.rawBody = buf; } })(req, res, next);
+    } else {
+      next();
+    }
+  });
 
   // Enable CORS with environment-based configuration
   const allowedOrigins = process.env.NODE_ENV === 'production'
