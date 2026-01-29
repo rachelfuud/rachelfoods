@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { api } from '@/lib/api';
 import { useAuth } from '@/components/AuthProvider';
 import { useToast } from '@/components/ui/toast';
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
 export default function LoginPage() {
     const router = useRouter();
@@ -140,8 +141,9 @@ export default function LoginPage() {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full py-3 bg-primary text-white rounded-lg font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-full py-3 bg-primary text-white rounded-lg font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                             >
+                                {loading && <LoadingSpinner size="sm" className="border-t-white border-b-white" />}
                                 {loading ? 'Please wait...' : (isLogin ? 'Login' : 'Sign Up')}
                             </button>
                         </form>

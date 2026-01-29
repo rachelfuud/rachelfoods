@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { AuthProvider } from "@/components/AuthProvider";
 import { CartProvider } from "@/contexts/CartContext";
 import { ToastProvider } from "@/components/ui/toast";
+import { PageTransitionLoader } from "@/components/ui/page-transition-loader";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,6 +26,7 @@ export default function RootLayout({
           <AuthProvider>
             <ThemeProvider>
               <CartProvider>
+                <PageTransitionLoader />
                 {children}
               </CartProvider>
             </ThemeProvider>
