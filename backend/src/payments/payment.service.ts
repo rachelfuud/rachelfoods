@@ -21,7 +21,7 @@ import { Decimal } from '@prisma/client/runtime/library';
  */
 export interface InitiatePaymentDto {
     orderId: string;
-    paymentMethod: 'COD' | 'PREPAID' | 'CHECKOUT';
+    paymentMethod: 'PAYPAL' | 'COD' | 'PREPAID' | 'CHECKOUT';
     amount: Decimal;
     payerUserId: string; // Buyer user ID
     payeeUserId: string; // Seller user ID
