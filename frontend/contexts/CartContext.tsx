@@ -44,7 +44,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         window.dispatchEvent(new Event('cartUpdated'));
     }, [items]);
 
-    const itemCount = items.reduce((total, item) => total + item.quantity, 0);
+    const itemCount = items.filter(item => item.quantity > 0).reduce((total, item) => total + item.quantity, 0);
 
     const showToast = (message: string, type: 'success' | 'error' | 'info' = 'success') => {
         setToast({ message, type });
