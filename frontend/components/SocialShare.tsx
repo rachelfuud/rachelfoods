@@ -188,7 +188,7 @@ export function SocialShare({ url, title, description, imageUrl }: SocialSharePr
                             </button>
 
                             {/* Native Share (Mobile) */}
-                            {typeof navigator !== 'undefined' && navigator.share && (
+                            {typeof navigator !== 'undefined' && typeof navigator.share === 'function' && (
                                 <button
                                     onClick={handleNativeShare}
                                     className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-muted transition-colors text-left"

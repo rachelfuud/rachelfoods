@@ -104,8 +104,5 @@ export function AdminNav() {
                             </div>
                         )}
                     </div>
-                </button>
-        </div>
-        </div >
-    );
-}
+                </div>
+            </nav>
