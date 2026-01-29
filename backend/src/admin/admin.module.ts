@@ -8,6 +8,7 @@ import { HeroSlidesController } from './hero-slides.controller';
 import { HeroSlidesService } from './hero-slides.service';
 import { ProductMediaController } from './product-media.controller';
 import { ProductMediaService } from './product-media.service';
+import { MigrationsController } from './migrations.controller';
 import { PrismaModule } from '../prisma/prisma.module';
 import { AuthModule } from '../auth/auth.module';
 import { AuditModule } from '../audit/audit.module';
@@ -20,6 +21,7 @@ import { AuditModule } from '../audit/audit.module';
         SystemMetricsController,
         HeroSlidesController,
         ProductMediaController,
+        MigrationsController,
     ],
     providers: [AdminProductService, AdminOrderService, HeroSlidesService, ProductMediaService],
     exports: [AdminProductService, AdminOrderService, HeroSlidesService, ProductMediaService],
