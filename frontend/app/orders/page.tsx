@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 import { Order } from '@/lib/types';
 import BuyAgainButton from '@/components/BuyAgainButton';
 import { api } from '@/lib/api';
-import { LoadingSpinner } from '@/components/ui/loading-spinner';
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
 export default function OrdersPage() {
     const router = useRouter();
