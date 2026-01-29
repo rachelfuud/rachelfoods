@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useTheme } from './ThemeProvider';
 import { useAuth } from './AuthProvider';
 import { useCart } from '@/contexts/CartContext';
+import { useToast } from './ui/toast';
 import Image from 'next/image';
 import { useState, useEffect, useRef } from 'react';
 import { api } from '@/lib/api';
@@ -16,13 +17,23 @@ export function Header() {
     const { mode, toggleMode } = useTheme();
     const { user, logout } = useAuth();
     const { itemCount } = useCart();
+    const { showToast } = useToast();
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState<Product[]>([]);
     const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+    const [showUserMenu, setShowUserMenu] = useState(false);
     const [isSearching, setIsSearching] = useState(false);
     const searchRef = useRef<HTMLDivElement>(null);
+    const userMenuRef = useRef<HTMLDivElement>(null);
 
     const isActive = (path: string) => pathname === path;
+
+    const handleLogout = () => {
+        logout();
+        showToast('You have been logged out successfully', 'info');
+        setShowUserMenu(false);
+        router.push('/');
+    };
 
     // Debounced search
     useEffect(() => {
@@ -54,6 +65,9 @@ export function Header() {
         const handleClickOutside = (event: MouseEvent) => {
             if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
                 setShowSearchDropdown(false);
+            }
+            if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+                setShowUserMenu(false);
             }
         };
 
@@ -179,15 +193,57 @@ export function Header() {
                         </Link>
 
                         {user ? (
-                            <>
-                                <span className="text-sm text-foreground/70">Welcome, {user.fullName || user.email}</span>
+                            <div className="relative" ref={userMenuRef}>
                                 <button
-                                    onClick={logout}
-                                    className="px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary hover:text-white transition-all"
+                                    onClick={() => setShowUserMenu(!showUserMenu)}
+                                    className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted transition-colors"
                                 >
-                                    Logout
+                                    <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold">
+                                        {(user.fullName || user.email).charAt(0).toUpperCase()}
+                                    </div>
+                                    <span className="text-sm font-medium hidden md:block">
+                                        {user.fullName || user.email.split('@')[0]}
+                                    </span>
+                                    <span className="text-xs">▼</span>
                                 </button>
-                            </>
+
+                                {showUserMenu && (
+                                    <div className="absolute right-0 mt-2 w-56 bg-background border border-border rounded-lg shadow-lg py-2 animate-in slide-in-from-top-2 duration-200">
+                                        <div className="px-4 py-2 border-b border-border">
+                                            <p className="text-sm font-medium">{user.fullName || 'User'}</p>
+                                            <p className="text-xs text-muted-foreground">{user.email}</p>
+                                        </div>
+                                        <Link
+                                            href="/profile"
+                                            className="block px-4 py-2 text-sm hover:bg-muted transition-colors"
+                                            onClick={() => setShowUserMenu(false)}
+                                        >
+                                            👤 My Profile
+                                        </Link>
+                                        <Link
+                                            href="/orders"
+                                            className="block px-4 py-2 text-sm hover:bg-muted transition-colors"
+                                            onClick={() => setShowUserMenu(false)}
+                                        >
+                                            📦 My Orders
+                                        </Link>
+                                        <Link
+                                            href="/refill"
+                                            className="block px-4 py-2 text-sm hover:bg-muted transition-colors"
+                                            onClick={() => setShowUserMenu(false)}
+                                        >
+                                            🔄 Kitchen Refill
+                                        </Link>
+                                        <hr className="my-2 border-border" />
+                                        <button
+                                            onClick={handleLogout}
+                                            className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950 transition-colors"
+                                        >
+                                            🚪 Logout
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
                         ) : (
                             <>
                                 <Link

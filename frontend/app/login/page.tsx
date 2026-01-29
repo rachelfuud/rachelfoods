@@ -6,11 +6,15 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import Link from 'next/link';
 import { api } from '@/lib/api';
+import { useAuth } from '@/components/AuthProvider';
+import { useToast } from '@/components/ui/toast';
 
 export default function LoginPage() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const returnUrl = searchParams.get('returnUrl') || '/';
+    const { login: authLogin } = useAuth();
+    const { showToast } = useToast();
     const [isLogin, setIsLogin] = useState(true);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -25,23 +29,17 @@ export default function LoginPage() {
 
         try {
             if (isLogin) {
-                // Login
-                const response = await api.login({ email, password });
+                // Login using AuthProvider (updates state immediately)
+                await authLogin(email, password);
 
-                // Store token in localStorage
-                if (response.accessToken) {
-                    localStorage.setItem('token', response.accessToken);
-                    localStorage.setItem('user', JSON.stringify(response.user));
-                }
+                showToast(`Welcome back! You're now logged in.`, 'success');
 
-                // Redirect to return URL or home
-                router.push(returnUrl);
+                // Small delay to show the success state before redirect
+                setTimeout(() => {
+                    router.push(returnUrl);
+                }, 500);
             } else {
-                // Register - split fullName into firstName and lastName
-                const nameParts = fullName.trim().split(' ');
-                const firstName = nameParts[0] || '';
-                const lastName = nameParts.slice(1).join(' ') || nameParts[0] || '';
-
+                // Register
                 const response = await api.register({
                     email,
                     password,
@@ -54,12 +52,18 @@ export default function LoginPage() {
                     localStorage.setItem('user', JSON.stringify(response.user));
                 }
 
-                // Redirect to return URL or home
-                router.push(returnUrl);
+                showToast('Account created successfully! Welcome to RachelFoods!', 'success');
+
+                // Small delay to show success
+                setTimeout(() => {
+                    router.push(returnUrl);
+                }, 500);
             }
         } catch (err: any) {
             console.error('Authentication error:', err);
-            setError(err.message || 'Authentication failed. Please try again.');
+            const errorMessage = err.message || 'Authentication failed. Please try again.';
+            setError(errorMessage);
+            showToast(errorMessage, 'error');
         } finally {
             setLoading(false);
         }
