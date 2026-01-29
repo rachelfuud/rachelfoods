@@ -106,3 +106,22 @@ export function AdminNav() {
                     </div>
                 </div>
             </nav>
+
+            {/* Footer */}
+            <div className="p-4 border-t border-border">
+                <Link
+                    href="/"
+                    className="block mb-2 px-4 py-2 text-center rounded-lg border border-border hover:bg-muted transition-colors text-sm"
+                >
+                    ← Back to Site
+                </Link>
+                <button
+                    onClick={logout}
+                    className="w-full px-4 py-2 text-center rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-colors text-sm font-medium"
+                >
+                    Logout
+                </button>
+            </div>
+        </div>
+    );
+}
