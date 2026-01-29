@@ -42,6 +42,8 @@
     "@nestjs/schedule": "^6.1.0",
     "@nestjs/swagger": "^11.2.3",
     "@nestjs/throttler": "^6.5.0",
+    "@paypal/checkout-server-sdk": "^1.0.3",
+    "@paypal/paypal-server-sdk": "^2.2.0",
     "@prisma/client": "^5.22.0",
     "@types/jszip": "^3.4.0",
     "archiver": "^7.0.1",

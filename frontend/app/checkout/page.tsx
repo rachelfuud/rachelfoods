@@ -8,13 +8,14 @@ import { formatCurrency } from '@/lib/currency';
 import { useRouter } from 'next/navigation';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
+import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 import StripeCheckoutForm from '@/components/StripeCheckoutForm';
 import { api } from '@/lib/api';
 
 // Load Stripe with publishable key from environment
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
 
-type PaymentMethod = 'STRIPE' | 'COD';
+type PaymentMethod = 'PAYPAL' | 'STRIPE' | 'COD';
 
 export default function CheckoutPage() {
     const router = useRouter();
@@ -28,7 +29,7 @@ export default function CheckoutPage() {
         zipCode: '',
         notes: '',
     });
-    const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('COD');
+    const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('PAYPAL');
     const [clientSecret, setClientSecret] = useState<string | null>(null);
     const [orderId, setOrderId] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
@@ -89,6 +90,9 @@ export default function CheckoutPage() {
                 // 2. Create Stripe PaymentIntent
                 const paymentIntentData = await api.createPaymentIntent({ orderId: order.id });
                 setClientSecret(paymentIntentData.clientSecret);
+            } else if (paymentMethod === 'PAYPAL') {
+                // PayPal: Order created, PayPal button will handle payment
+                setLoading(false);
             } else {
                 // COD: Mark as awaiting confirmation and redirect
                 await api.confirmCODOrder({ orderId: order.id });
@@ -99,7 +103,9 @@ export default function CheckoutPage() {
             console.error('Order creation failed:', err);
             setError(err.message || 'Failed to create order. Please try again.');
         } finally {
-            setLoading(false);
+            if (paymentMethod !== 'PAYPAL') {
+                setLoading(false);
+            }
         }
     };
 
@@ -272,6 +278,32 @@ export default function CheckoutPage() {
                                     <h2 className="text-2xl font-bold mb-4">Payment Method</h2>
 
                                     <div className="space-y-3">
+                                        {/* PayPal - Default */}
+                                        <label className="flex items-start gap-3 p-4 border-2 border-primary rounded-lg cursor-pointer bg-primary/5">
+                                            <input
+                                                type="radio"
+                                                name="paymentMethod"
+                                                value="PAYPAL"
+                                                checked={paymentMethod === 'PAYPAL'}
+                                                onChange={() => setPaymentMethod('PAYPAL')}
+                                                className="mt-1"
+                                            />
+                                            <div className="flex-1">
+                                                <div className="font-semibold mb-1">
+                                                    PayPal <span className="text-xs bg-primary text-white px-2 py-0.5 rounded ml-2">RECOMMENDED</span>
+                                                </div>
+                                                <p className="text-sm text-foreground/70">
+                                                    Fast, secure payment via PayPal. Instant order confirmation.
+                                                </p>
+                                                <div className="mt-2">
+                                                    <svg className="h-6" viewBox="0 0 124 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M46.211 6.749h-6.839a.95.95 0 0 0-.939.802l-2.766 17.537a.57.57 0 0 0 .564.658h3.265a.95.95 0 0 0 .939-.803l.746-4.73a.95.95 0 0 1 .938-.803h2.165c4.505 0 7.105-2.18 7.784-6.5.306-1.89.013-3.375-.872-4.415-.972-1.142-2.696-1.746-4.985-1.746z" fill="#003087" />
+                                                        <path d="M47.138 13.097c-.375 2.454-2.249 2.454-4.062 2.454h-1.032l.724-4.583a.57.57 0 0 1 .563-.481h.473c1.235 0 2.4 0 3.002.704.359.42.468 1.044.332 1.906z" fill="#003087" />
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                        </label>
+
                                         <label className="flex items-start gap-3 p-4 border-2 border-border rounded-lg cursor-pointer hover:border-primary transition-colors">
                                             <input
                                                 type="radio"
@@ -325,13 +357,53 @@ export default function CheckoutPage() {
                                 </div>
                             )}
 
-                            {!clientSecret && (
+                            {/* PayPal Button */}
+                            {orderId && paymentMethod === 'PAYPAL' && (
+                                <div className="border border-primary/20 rounded-lg p-6 bg-primary/5">
+                                    <h2 className="text-2xl font-bold mb-4">Complete Payment with PayPal</h2>
+                                    <PayPalScriptProvider
+                                        options={{
+                                            clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || '',
+                                            currency: 'USD',
+                                        }}
+                                    >
+                                        <PayPalButtons
+                                            createOrder={async () => {
+                                                const response = await api.post('/api/payments/paypal/create-order', {
+                                                    orderId,
+                                                });
+                                                return response.paypalOrderId;
+                                            }}
+                                            onApprove={async (data) => {
+                                                await api.post(`/api/payments/paypal/capture/${data.orderID}`, {});
+                                                localStorage.removeItem('cart');
+                                                router.push(`/orders/${orderId}/confirmation`);
+                                            }}
+                                            onError={(err) => {
+                                                console.error('PayPal error:', err);
+                                                setError('PayPal payment failed. Please try again.');
+                                            }}
+                                            style={{
+                                                layout: 'vertical',
+                                                color: 'gold',
+                                                shape: 'rect',
+                                                label: 'paypal',
+                                            }}
+                                        />
+                                    </PayPalScriptProvider>
+                                </div>
+                            )}
+
+                            {!clientSecret && !orderId && (
                                 <button
                                     type="submit"
                                     disabled={loading}
                                     className="w-full py-3 bg-primary text-white rounded-lg font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
                                 >
-                                    {loading ? 'Processing...' : paymentMethod === 'COD' ? 'Place Order (COD)' : 'Continue to Payment'}
+                                    {loading ? 'Processing...' :
+                                        paymentMethod === 'COD' ? 'Place Order (COD)' :
+                                            paymentMethod === 'PAYPAL' ? 'Continue to PayPal' :
+                                                'Continue to Payment'}
                                 </button>
                             )}
                         </form>
@@ -356,6 +428,12 @@ export default function CheckoutPage() {
                                     <span className="font-bold text-primary">{formatCurrency(0)}</span>
                                 </div>
                             </div>
+
+                            {paymentMethod === 'PAYPAL' && (
+                                <div className="text-sm text-foreground/70 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                    <strong>PayPal:</strong> Fast and secure payment. Your order will be confirmed instantly.
+                                </div>
+                            )}
 
                             {paymentMethod === 'COD' && (
                                 <div className="text-sm text-foreground/70 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">

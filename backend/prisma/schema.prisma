@@ -670,6 +670,7 @@ enum PaymentLifecycle {
 }
 
 enum PaymentMethod {
+  PAYPAL
   COD
   PREPAID
   CHECKOUT

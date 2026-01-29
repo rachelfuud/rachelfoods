@@ -10,6 +10,8 @@ import { PaymentController } from './payment.controller';
 import { RefundController } from './refund.controller';
 import { StripePaymentService } from './stripe-payment.service';
 import { StripePaymentController } from './stripe-payment.controller';
+import { PayPalPaymentService } from './paypal-payment.service';
+import { PayPalPaymentController } from './paypal-payment.controller';
 import { AuthModule } from '../auth/auth.module';
 import { OrderModule } from '../orders/order.module';
 import { NotificationModule } from '../notifications/notification.module';
@@ -21,7 +23,12 @@ import { NotificationModule } from '../notifications/notification.module';
         forwardRef(() => OrderModule),
         NotificationModule,
     ],
-    controllers: [PaymentController, RefundController, StripePaymentController],
+    controllers: [
+        PaymentController,
+        RefundController,
+        StripePaymentController,
+        PayPalPaymentController,
+    ],
     providers: [
         LedgerService,
         WalletService,
@@ -30,6 +37,7 @@ import { NotificationModule } from '../notifications/notification.module';
         RefundService,
         PlatformWalletInitializer,
         StripePaymentService,
+        PayPalPaymentService,
     ],
     exports: [
         LedgerService,
@@ -39,6 +47,7 @@ import { NotificationModule } from '../notifications/notification.module';
         RefundService,
         PlatformWalletInitializer,
         StripePaymentService,
+        PayPalPaymentService,
     ],
 })
 export class PaymentsModule { }

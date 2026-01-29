@@ -10,7 +10,6 @@ import { useAuth } from '@/components/AuthProvider';
 import { api } from '@/lib/api';
 import { Product } from '@/lib/types';
 import { formatCurrency } from '@/lib/currency';
-import Image from 'next/image';
 
 interface RefillItem extends Product {
     lastOrderedQuantity?: number;
