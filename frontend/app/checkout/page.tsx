@@ -22,7 +22,7 @@ export default function CheckoutPage() {
         fullName: '',
         email: '',
         phone: '',
-        countryCode: '+234',
+        countryCode: '+1', // Default to US
         address: '',
         city: '',
         zipCode: '',
@@ -173,16 +173,16 @@ export default function CheckoutPage() {
                                                 className="px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background"
                                                 disabled={loading || !!clientSecret}
                                             >
-                                                <option value="+234">🇳🇬 +234</option>
-                                                <option value="+1">🇺🇸 +1</option>
-                                                <option value="+44">🇬🇧 +44</option>
-                                                <option value="+91">🇮🇳 +91</option>
-                                                <option value="+86">🇨🇳 +86</option>
-                                                <option value="+81">🇯🇵 +81</option>
-                                                <option value="+49">🇩🇪 +49</option>
-                                                <option value="+33">🇫🇷 +33</option>
-                                                <option value="+61">🇦🇺 +61</option>
-                                                <option value="+971">🇦🇪 +971</option>
+                                                <option value="+1">🇺🇸 +1 (US)</option>
+                                                <option value="+44">🇬🇧 +44 (UK)</option>
+                                                <option value="+234">🇳🇬 +234 (Nigeria)</option>
+                                                <option value="+91">🇮🇳 +91 (India)</option>
+                                                <option value="+86">🇨🇳 +86 (China)</option>
+                                                <option value="+81">🇯🇵 +81 (Japan)</option>
+                                                <option value="+49">🇩🇪 +49 (Germany)</option>
+                                                <option value="+33">🇫🇷 +33 (France)</option>
+                                                <option value="+61">🇦🇺 +61 (Australia)</option>
+                                                <option value="+971">🇦🇪 +971 (UAE)</option>
                                             </select>
                                             <input
                                                 id="phone"
