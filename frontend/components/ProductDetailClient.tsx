@@ -7,6 +7,7 @@ import VariantSelector from './VariantSelector';
 import Link from 'next/link';
 import { PaymentIcons } from './PaymentIcons';
 import { useCart } from '@/contexts/CartContext';
+import { SocialShare } from './SocialShare';
 
 interface ProductDetailClientProps {
     product: Product;
@@ -58,6 +59,11 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
         setQuantity(1);
     };
 
+    // Generate full product URL for sharing
+    const productUrl = typeof window !== 'undefined'
+        ? `${window.location.origin}/products/${product.slug}`
+        : '';
+
     return (
         <>
             <div className="flex items-center gap-3 mb-4">
@@ -71,7 +77,17 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                 </div>
             </div>
 
-            <h1 className="text-4xl font-bold mb-4">{product.name}</h1>
+            <div className="flex items-start justify-between gap-4 mb-4">
+                <h1 className="text-4xl font-bold flex-1">{product.name}</h1>
+                {productUrl && (
+                    <SocialShare
+                        url={productUrl}
+                        title={product.name}
+                        description={product.description || `Check out ${product.name} - ${formatCurrency(currentPrice)} per ${product.unit}`}
+                        imageUrl={product.imageUrl || undefined}
+                    />
+                )}
+            </div>
 
             <div className="flex items-baseline gap-3 mb-6">
                 <span className="text-4xl font-bold text-primary">

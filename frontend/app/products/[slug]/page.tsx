@@ -5,6 +5,71 @@ import { Product } from '@/lib/types';
 import { ProductDetailClient } from '@/components/ProductDetailClient';
 import Image from 'next/image';
 import Link from 'next/link';
+import type { Metadata } from 'next';
+
+export async function generateMetadata({
+    params,
+}: {
+    params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+    const { slug } = await params;
+
+    try {
+        const product = await api.getProduct(slug);
+
+        if (!product || product.status !== 'ACTIVE') {
+            return {
+                title: 'Product Not Found',
+                description: 'The product you are looking for does not exist.',
+            };
+        }
+
+        const productUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://rachelfoods.com'}/products/${product.slug}`;
+        const imageUrl = product.imageUrl || `${process.env.NEXT_PUBLIC_SITE_URL || 'https://rachelfoods.com'}/og-default.jpg`;
+
+        return {
+            title: `${product.name} | RachelFoods`,
+            description: product.description || `Buy ${product.name} - Authentic traditional food products delivered fresh to your door.`,
+            openGraph: {
+                type: 'website',
+                url: productUrl,
+                title: product.name,
+                description: product.description || `Buy ${product.name} online`,
+                images: [
+                    {
+                        url: imageUrl,
+                        width: 1200,
+                        height: 630,
+                        alt: product.name,
+                    },
+                ],
+                siteName: 'RachelFoods',
+            },
+            twitter: {
+                card: 'summary_large_image',
+                title: product.name,
+                description: product.description || `Buy ${product.name} online`,
+                images: [imageUrl],
+                creator: '@rachelfoods',
+            },
+            alternates: {
+                canonical: productUrl,
+            },
+            keywords: [
+                product.name,
+                product.category?.name || 'food',
+                'traditional food',
+                'authentic',
+                'RachelFoods',
+            ],
+        };
+    } catch (error) {
+        return {
+            title: 'Product Not Found',
+            description: 'The product you are looking for does not exist.',
+        };
+    }
+}
 
 export default async function ProductPage({
     params,
