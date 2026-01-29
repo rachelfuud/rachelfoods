@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 import { json } from 'express';
@@ -45,6 +46,18 @@ async function bootstrap() {
 
   // Global prefix removed - controllers already have 'api/' prefix
   app.useGlobalFilters(new GlobalExceptionFilter());
+
+  // Enable validation for all endpoints
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true, // Strip properties that don't have decorators
+      forbidNonWhitelisted: false, // Don't throw error for extra properties
+      transform: true, // Automatically transform payloads to DTO instances
+      transformOptions: {
+        enableImplicitConversion: true, // Convert types automatically
+      },
+    }),
+  );
 
   const port = process.env.PORT || 3001;
   console.log(`Attempting to listen on port ${port}...`);
