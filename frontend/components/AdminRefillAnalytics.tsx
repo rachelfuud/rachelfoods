@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { api } from '@/lib/api';
 
 interface RefillAnalytics {
@@ -44,7 +45,11 @@ export default function AdminRefillAnalytics() {
     }
 
     if (loading) {
-        return <div className="p-4">Loading analytics...</div>;
+        return (
+            <div className="p-4">
+                <LoadingSpinner size="md" text="Loading analytics..." centered />
+            </div>
+        );
     }
 
     if (!analytics) {

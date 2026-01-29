@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { api } from '@/lib/api';
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
 interface HeroSlide {
     id: string;

@@ -3,8 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Header } from '@/components/Header';
-import { Footer } from '@/components/Footer';
-import { useTheme } from '@/components/ThemeProvider';
+import { Footer } from '@/components/Footer'; import { PageLoader } from '@/components/ui/PageLoader'; import { useTheme } from '@/components/ThemeProvider';
 import { api } from '@/lib/api';
 
 export default function ProfilePage() {
@@ -61,18 +60,7 @@ export default function ProfilePage() {
     };
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex flex-col">
-                <Header />
-                <main className="flex-1 container mx-auto px-4 py-8">
-                    <div className="text-center py-20">
-                        <div className="text-4xl mb-4">⏳</div>
-                        <p className="text-foreground/70">Loading profile...</p>
-                    </div>
-                </main>
-                <Footer />
-            </div>
-        );
+        return <PageLoader message="Loading your profile..." icon="👤" withLayout />;
     }
 
     return (

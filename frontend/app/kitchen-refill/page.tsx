@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { PageLoader } from '@/components/ui/PageLoader';
 import { useAuth } from '@/components/AuthProvider';
 import { api } from '@/lib/api';
 import { Product } from '@/lib/types';
@@ -349,18 +351,7 @@ export default function KitchenRefillPage() {
     }
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex flex-col">
-                <Header />
-                <main className="flex-1 flex items-center justify-center">
-                    <div className="text-center">
-                        <div className="text-4xl mb-4">🔄</div>
-                        <p className="text-xl">Loading your kitchen refill...</p>
-                    </div>
-                </main>
-                <Footer />
-            </div>
-        );
+        return <PageLoader message="Loading your kitchen refill..." icon="🔄" withLayout />;
     }
 
     const totalItems = cart.size;

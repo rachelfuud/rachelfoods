@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import Image from 'next/image';
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
 interface ProductImage {
     id: string;
@@ -132,7 +133,11 @@ export function ProductMediaManager({ productId, readonly = false }: ProductMedi
     };
 
     if (loading) {
-        return <div className="p-4 text-center">Loading media...</div>;
+        return (
+            <div className="p-4 text-center">
+                <LoadingSpinner size="md" text="Loading media..." centered />
+            </div>
+        );
     }
 
     return (

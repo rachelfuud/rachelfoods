@@ -5,6 +5,7 @@ import { useAuth } from '@/components/AuthProvider';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
 import Image from 'next/image';
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
 interface HeroSlide {
     id: string;
@@ -139,7 +140,7 @@ export default function AdminHeroSlidesPage() {
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-screen">
-                <div className="text-xl">Loading...</div>
+                <LoadingSpinner size="lg" text="Loading slides..." centered />
             </div>
         );
     }
