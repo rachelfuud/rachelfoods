@@ -35,8 +35,16 @@ export class GlobalExceptionFilter implements ExceptionFilter {
             if (typeof exceptionResponse === 'string') {
                 message = exceptionResponse;
             } else if (typeof exceptionResponse === 'object') {
-                message = (exceptionResponse as any).message || message;
-                details = (exceptionResponse as any).details;
+                // Handle class-validator validation errors
+                if (Array.isArray((exceptionResponse as any).message)) {
+                    const validationErrors = (exceptionResponse as any).message;
+                    // Take the first validation error message instead of showing all
+                    message = validationErrors[0] || message;
+                    details = { validationErrors };
+                } else {
+                    message = (exceptionResponse as any).message || message;
+                    details = (exceptionResponse as any).details;
+                }
             }
 
             error = exception.constructor.name;
