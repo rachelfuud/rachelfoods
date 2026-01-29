@@ -57,6 +57,12 @@ export const ProductCard = React.memo(function ProductCard({ product }: ProductC
                             alt={product.name}
                             fill
                             className="object-cover group-hover:scale-110 transition-transform duration-500"
+                            onError={(e) => {
+                                // Fallback to placeholder if image fails to load
+                                const target = e.target as HTMLImageElement;
+                                target.style.display = 'none';
+                                target.parentElement!.innerHTML = '<div class="w-full h-full flex items-center justify-center bg-linear-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/10"><span class="text-6xl">🍽️</span></div>';
+                            }}
                         />
                         {hasDiscount && (
                             <div className="absolute top-3 right-3 bg-linear-to-r from-accent-500 to-accent-600 text-white px-3 py-2 rounded-xl text-sm font-bold shadow-lg backdrop-blur-sm">
@@ -70,8 +76,8 @@ export const ProductCard = React.memo(function ProductCard({ product }: ProductC
                         )}
                     </div>
                 ) : (
-                    <div className="relative aspect-square mb-4 rounded-xl bg-linear-to-br from-muted to-brand-muted flex items-center justify-center ring-2 ring-border">
-                        <span className="text-5xl">🍽️</span>
+                    <div className="relative aspect-square mb-4 rounded-xl bg-linear-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/10 flex items-center justify-center ring-2 ring-border">
+                        <span className="text-6xl">🍽️</span>
                         {isOutOfStock && (
                             <div className="absolute top-3 left-3 bg-linear-to-r from-red-600 to-red-700 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg backdrop-blur-sm animate-pulse">
                                 OUT OF STOCK

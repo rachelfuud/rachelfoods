@@ -21,6 +21,7 @@ The login page displays a helpful message when redirected from checkout:
 > **Please log in or create an account to complete your checkout.**
 
 Users can either:
+
 - **Log in** with existing credentials
 - **Sign up** for a new account
 
@@ -40,19 +41,19 @@ User authenticates → Redirected back to /checkout → Can complete order
 
 ```typescript
 useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-        router.push('/login?returnUrl=/checkout');
-    } else {
-        setIsAuthenticated(true);
-    }
+  const token = localStorage.getItem("token");
+  if (!token) {
+    router.push("/login?returnUrl=/checkout");
+  } else {
+    setIsAuthenticated(true);
+  }
 }, [router]);
 ```
 
 #### Login Page (`/app/login/page.tsx`)
 
 ```typescript
-const returnUrl = searchParams.get('returnUrl') || '/';
+const returnUrl = searchParams.get("returnUrl") || "/";
 // After successful auth:
 router.push(returnUrl);
 ```
@@ -62,13 +63,15 @@ router.push(returnUrl);
 Improved user-friendly error messages in `lib/api.ts`:
 
 **Before:**
+
 ```typescript
-if (!token) throw new Error('No auth token');
+if (!token) throw new Error("No auth token");
 ```
 
 **After:**
+
 ```typescript
-if (!token) throw new Error('Please log in to place an order');
+if (!token) throw new Error("Please log in to place an order");
 ```
 
 ## Backend Requirements
@@ -78,11 +81,11 @@ The backend enforces authentication at the controller level:
 ```typescript
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class OrderController {
-    @Post()
-    @Permissions('order.create')
-    create(@Body() dto: CreateOrderDto, @Request() req: any) {
-        return this.orderService.create(dto, req.user.userId);
-    }
+  @Post()
+  @Permissions("order.create")
+  create(@Body() dto: CreateOrderDto, @Request() req: any) {
+    return this.orderService.create(dto, req.user.userId);
+  }
 }
 ```
 
@@ -100,12 +103,14 @@ export class OrderController {
 Both payment methods require authentication:
 
 ### Cash on Delivery (COD)
+
 - User must be logged in
 - Order created with PENDING status
 - Seller confirms order → Status: CONFIRMED
 - Delivery completed → Status: DELIVERED, Payment: PAID
 
 ### Stripe Prepaid
+
 - User must be logged in
 - Order created, PaymentIntent generated
 - User completes Stripe payment
@@ -133,7 +138,7 @@ The frontend API wrapper translates this to a user-friendly message.
 ✅ Authenticated user can access checkout directly  
 ✅ COD order creation succeeds for logged-in user  
 ✅ Stripe payment flow works for logged-in user  
-✅ Error messages are user-friendly (no technical jargon)  
+✅ Error messages are user-friendly (no technical jargon)
 
 ## Future Considerations
 

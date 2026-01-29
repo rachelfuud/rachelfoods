@@ -31,7 +31,7 @@ export const api = {
     // Theme
     getTheme: async () => {
         const res = await fetch(`${API_BASE}/theme`, { cache: 'no-store' });
-        if (!res.ok) throw new Error('Failed to fetch theme');
+        if (!res.ok) throw new Error('Unable to load theme settings. Please refresh the page.');
         return res.json();
     },
 
@@ -42,7 +42,10 @@ export const api = {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
         });
-        if (!res.ok) throw new Error('Registration failed');
+        if (!res.ok) {
+            const error = await res.json().catch(() => ({}));
+            throw new Error(error.message || 'Unable to create account. Email may already be in use.');
+        }
         return res.json();
     },
 
@@ -52,14 +55,17 @@ export const api = {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
         });
-        if (!res.ok) throw new Error('Login failed');
+        if (!res.ok) {
+            const error = await res.json().catch(() => ({}));
+            throw new Error(error.message || 'Invalid email or password. Please check your credentials.');
+        }
         return res.json();
     },
 
     // Categories
     getCategories: async () => {
         const res = await fetch(`${API_BASE}/categories`, { next: { revalidate: 60 } });
-        if (!res.ok) throw new Error('Failed to fetch categories');
+        if (!res.ok) throw new Error('Unable to load product categories. Please try again later.');
         return res.json();
     },
 
@@ -68,37 +74,37 @@ export const api = {
         if (categorySlug) {
             // Fetch category with its products (already filtered to ACTIVE by backend)
             const res = await fetch(`${API_BASE}/categories/slug/${categorySlug}`, { next: { revalidate: 60 } });
-            if (!res.ok) throw new Error('Failed to fetch category products');
+            if (!res.ok) throw new Error('Unable to load products for this category. Please try again.');
             const category = await res.json();
             return category.products || [];
         }
         // Fetch all products (backend returns ACTIVE only by default)
         const res = await fetch(`${API_BASE}/products`, { next: { revalidate: 60 } });
-        if (!res.ok) throw new Error('Failed to fetch products');
+        if (!res.ok) throw new Error('Unable to load products. Please refresh the page.');
         return res.json();
     },
 
     getProduct: async (slug: string) => {
         const res = await fetch(`${API_BASE}/products/slug/${slug}`, { next: { revalidate: 60 } });
-        if (!res.ok) throw new Error('Failed to fetch product');
+        if (!res.ok) throw new Error('Product not found or temporarily unavailable.');
         return res.json();
     },
 
     getFeaturedProducts: async () => {
         const res = await fetch(`${API_BASE}/products/featured`, { next: { revalidate: 60 } });
-        if (!res.ok) throw new Error('Failed to fetch featured products');
+        if (!res.ok) throw new Error('Unable to load featured products. Please try again.');
         return res.json();
     },
 
     getPopularProducts: async (limit = 6) => {
         const res = await fetch(`${API_BASE}/products/popular?limit=${limit}`, { next: { revalidate: 60 } });
-        if (!res.ok) throw new Error('Failed to fetch popular products');
+        if (!res.ok) throw new Error('Unable to load popular products. Please try again.');
         return res.json();
     },
 
     searchProducts: async (query: string) => {
         const res = await fetch(`${API_BASE}/products/search?q=${encodeURIComponent(query)}`, { cache: 'no-store' });
-        if (!res.ok) throw new Error('Failed to search products');
+        if (!res.ok) throw new Error('Search failed. Please try again with different keywords.');
         return res.json();
     },
 
@@ -108,7 +114,10 @@ export const api = {
             headers: { Authorization: `Bearer ${token}` },
             cache: 'no-store',
         });
-        if (!res.ok) throw new Error('Failed to fetch orders');
+        if (!res.ok) {
+            if (res.status === 401) throw new Error('Session expired. Please log in again.');
+            throw new Error('Unable to load your orders. Please try again.');
+        }
         return res.json();
     },
 
@@ -117,19 +126,26 @@ export const api = {
             headers: { Authorization: `Bearer ${token}` },
             cache: 'no-store',
         });
-        if (!res.ok) throw new Error('Failed to fetch order');
+        if (!res.ok) {
+            if (res.status === 404) throw new Error('Order not found.');
+            if (res.status === 401) throw new Error('Session expired. Please log in again.');
+            throw new Error('Unable to load order details. Please try again.');
+        }
         return res.json();
     },
 
     // Profile
     getProfile: async () => {
         const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-        if (!token) throw new Error('No auth token');
+        if (!token) throw new Error('Please log in to view your profile');
         const res = await fetch(`${API_BASE}/profile`, {
             headers: { Authorization: `Bearer ${token}` },
             cache: 'no-store',
         });
-        if (!res.ok) throw new Error('Failed to fetch profile');
+        if (!res.ok) {
+            if (res.status === 401) throw new Error('Session expired. Please log in again.');
+            throw new Error('Unable to load profile. Please try again.');
+        }
         return res.json();
     },
 
@@ -158,18 +174,26 @@ export const api = {
             headers: { Authorization: `Bearer ${token}` },
             cache: 'no-store',
         });
-        if (!res.ok) throw new Error('Failed to fetch admin products');
+        if (!res.ok) {
+            if (res.status === 403) throw new Error('You don\'t have permission to access admin features.');
+            if (res.status === 401) throw new Error('Session expired. Please log in again.');
+            throw new Error('Unable to load products. Please try again.');
+        }
         return res.json();
     },
 
     getAdminProduct: async (id: string) => {
         const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-        if (!token) throw new Error('No auth token');
+        if (!token) throw new Error('Please log in to access admin features');
         const res = await fetch(`${API_BASE}/admin/products/${id}`, {
             headers: { Authorization: `Bearer ${token}` },
             cache: 'no-store',
         });
-        if (!res.ok) throw new Error('Failed to fetch product');
+        if (!res.ok) {
+            if (res.status === 404) throw new Error('Product not found');
+            if (res.status === 403) throw new Error('You don\'t have permission to access this product');
+            throw new Error('Unable to load product details. Please try again.');
+        }
         return res.json();
     },
 
@@ -333,19 +357,22 @@ export const api = {
 
     getAdminOrderStats: async () => {
         const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-        if (!token) throw new Error('No auth token');
+        if (!token) throw new Error('Please log in to access admin features');
         const res = await fetch(`${API_BASE}/admin/orders/stats/overview`, {
             headers: { Authorization: `Bearer ${token}` },
             cache: 'no-store',
         });
-        if (!res.ok) throw new Error('Failed to fetch order stats');
+        if (!res.ok) {
+            if (res.status === 403) throw new Error('You don\'t have permission to view order statistics');
+            throw new Error('Unable to load order statistics. Please try again.');
+        }
         return res.json();
     },
 
     // Payments (Phase 3B)
     createPaymentIntent: async (data: { orderId: string }) => {
         const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-        if (!token) throw new Error('No auth token');
+        if (!token) throw new Error('Please log in to complete payment');
         const res = await fetch(`${API_BASE}/payments/create-intent`, {
             method: 'POST',
             headers: {
@@ -355,8 +382,8 @@ export const api = {
             body: JSON.stringify(data),
         });
         if (!res.ok) {
-            const error = await res.json();
-            throw new Error(error.message || 'Failed to create payment intent');
+            const error = await res.json().catch(() => ({}));
+            throw new Error(error.message || 'Unable to initialize payment. Please try again.');
         }
         return res.json();
     },
@@ -372,7 +399,10 @@ export const api = {
             },
             body: JSON.stringify(data),
         });
-        if (!res.ok) throw new Error('Failed to confirm COD order');
+        if (!res.ok) {
+            const error = await res.json().catch(() => ({}));
+            throw new Error(error.message || 'Unable to confirm your order. Please contact support.');
+        }
         return res.json();
     },
 
@@ -419,14 +449,14 @@ export const api = {
 
     reorderFromPrevious: async (orderId: string) => {
         const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-        if (!token) throw new Error('No auth token');
+        if (!token) throw new Error('Please log in to reorder');
         const res = await fetch(`${API_BASE}/orders/reorder/${orderId}`, {
             method: 'POST',
             headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) {
-            const error = await res.json();
-            throw new Error(error.message || 'Failed to reorder');
+            const error = await res.json().catch(() => ({}));
+            throw new Error(error.message || 'Unable to create reorder. Some items may be out of stock.');
         }
         return res.json();
     },

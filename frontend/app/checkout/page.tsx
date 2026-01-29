@@ -22,6 +22,7 @@ export default function CheckoutPage() {
         fullName: '',
         email: '',
         phone: '',
+        countryCode: '+234',
         address: '',
         city: '',
         zipCode: '',
@@ -69,11 +70,12 @@ export default function CheckoutPage() {
 
         try {
             // 1. Create order on backend
+            const fullPhoneNumber = `${formData.countryCode}${formData.phone}`;
             const orderData = {
                 deliveryAddress: formData.address,
                 deliveryCity: formData.city,
                 deliveryZipCode: formData.zipCode,
-                deliveryPhone: formData.phone,
+                deliveryPhone: fullPhoneNumber,
                 deliveryNotes: formData.notes,
                 paymentMethod: paymentMethod === 'COD' ? 'COD' : 'PREPAID',
                 items: JSON.parse(localStorage.getItem('cart') || '[]'), // Cart items from localStorage
@@ -164,15 +166,42 @@ export default function CheckoutPage() {
                                         <label htmlFor="phone" className="block text-sm font-medium mb-2">
                                             Phone Number *
                                         </label>
-                                        <input
-                                            id="phone"
-                                            type="tel"
-                                            value={formData.phone}
-                                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                            className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background"
-                                            required
-                                            disabled={loading || !!clientSecret}
-                                        />
+                                        <div className="flex gap-2">
+                                            <select
+                                                value={formData.countryCode}
+                                                onChange={(e) => setFormData({ ...formData, countryCode: e.target.value })}
+                                                className="px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background"
+                                                disabled={loading || !!clientSecret}
+                                            >
+                                                <option value="+234">🇳🇬 +234</option>
+                                                <option value="+1">🇺🇸 +1</option>
+                                                <option value="+44">🇬🇧 +44</option>
+                                                <option value="+91">🇮🇳 +91</option>
+                                                <option value="+86">🇨🇳 +86</option>
+                                                <option value="+81">🇯🇵 +81</option>
+                                                <option value="+49">🇩🇪 +49</option>
+                                                <option value="+33">🇫🇷 +33</option>
+                                                <option value="+61">🇦🇺 +61</option>
+                                                <option value="+971">🇦🇪 +971</option>
+                                            </select>
+                                            <input
+                                                id="phone"
+                                                type="tel"
+                                                value={formData.phone}
+                                                onChange={(e) => {
+                                                    // Remove non-numeric characters
+                                                    const cleaned = e.target.value.replace(/\D/g, '');
+                                                    setFormData({ ...formData, phone: cleaned });
+                                                }}
+                                                placeholder="8012345678"
+                                                className="flex-1 px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background"
+                                                required
+                                                disabled={loading || !!clientSecret}
+                                            />
+                                        </div>
+                                        <p className="text-xs text-text-secondary mt-1">
+                                            Enter your phone number without the country code
+                                        </p>
                                     </div>
 
                                     <div className="md:col-span-2">
