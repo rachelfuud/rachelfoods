@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import Link from 'next/link';
@@ -9,6 +9,8 @@ import { api } from '@/lib/api';
 
 export default function LoginPage() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const returnUrl = searchParams.get('returnUrl') || '/';
     const [isLogin, setIsLogin] = useState(true);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -32,8 +34,8 @@ export default function LoginPage() {
                     localStorage.setItem('user', JSON.stringify(response.user));
                 }
 
-                // Redirect to home or dashboard
-                router.push('/');
+                // Redirect to return URL or home
+                router.push(returnUrl);
             } else {
                 // Register - split fullName into firstName and lastName
                 const nameParts = fullName.trim().split(' ');
@@ -52,8 +54,8 @@ export default function LoginPage() {
                     localStorage.setItem('user', JSON.stringify(response.user));
                 }
 
-                // Redirect to home
-                router.push('/');
+                // Redirect to return URL or home
+                router.push(returnUrl);
             }
         } catch (err: any) {
             console.error('Authentication error:', err);
@@ -73,6 +75,12 @@ export default function LoginPage() {
                         <h1 className="text-3xl font-bold mb-6 text-center">
                             {isLogin ? 'Welcome Back' : 'Create Account'}
                         </h1>
+
+                        {returnUrl === '/checkout' && (
+                            <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded text-blue-800 text-sm">
+                                Please log in or create an account to complete your checkout.
+                            </div>
+                        )}
 
                         {error && (
                             <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-600 text-sm">

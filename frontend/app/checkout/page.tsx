@@ -32,6 +32,35 @@ export default function CheckoutPage() {
     const [orderId, setOrderId] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+    const [checkingAuth, setCheckingAuth] = useState(true);
+
+    // Check if user is logged in
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            // Redirect to login with return URL
+            router.push('/login?returnUrl=/checkout');
+        } else {
+            setIsAuthenticated(true);
+            setCheckingAuth(false);
+        }
+    }, [router]);
+
+    // Show loading state while checking authentication
+    if (checkingAuth || !isAuthenticated) {
+        return (
+            <div className="min-h-screen flex flex-col">
+                <Header />
+                <main className="flex-1 container mx-auto px-4 py-8">
+                    <div className="text-center">
+                        <p className="text-lg">Checking authentication...</p>
+                    </div>
+                </main>
+                <Footer />
+            </div>
+        );
+    }
 
     const handleCreateOrder = async (e: React.FormEvent) => {
         e.preventDefault();

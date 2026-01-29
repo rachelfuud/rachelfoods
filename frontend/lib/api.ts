@@ -363,7 +363,7 @@ export const api = {
 
     confirmCODOrder: async (data: { orderId: string }) => {
         const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-        if (!token) throw new Error('No auth token');
+        if (!token) throw new Error('Please log in to complete your order');
         const res = await fetch(`${API_BASE}/payments/cod-confirm`, {
             method: 'POST',
             headers: {
@@ -390,7 +390,7 @@ export const api = {
     // Orders
     createOrder: async (data: any) => {
         const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-        if (!token) throw new Error('No auth token');
+        if (!token) throw new Error('Please log in to place an order');
         const res = await fetch(`${API_BASE}/orders`, {
             method: 'POST',
             headers: {

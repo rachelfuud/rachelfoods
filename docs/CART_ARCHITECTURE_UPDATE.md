@@ -4,6 +4,7 @@
 **Commit**: 5995688
 
 ## Overview
+
 This update introduces an auto-updating cart system with real-time notifications, quantity controls on product pages, and fixes critical backend logging and API endpoint issues.
 
 ---
@@ -14,7 +15,8 @@ This update introduces an auto-updating cart system with real-time notifications
 
 **Problem**: WebhookDispatcher was logging DEBUG messages every 30 seconds even when no webhooks were pending, cluttering production logs.
 
-**Solution**: 
+**Solution**:
+
 - Removed `webhook_dispatch_started` and `webhook_dispatch_no_pending` debug logs
 - Now only logs when webhooks are actually being processed
 - Reduces log noise from ~8 messages/minute to 0 when idle
@@ -58,13 +60,14 @@ async processOutbox(): Promise<void> {
 
 ```typescript
 // BEFORE
-const data = await api.get('/api/admin/hero-slides/public');
+const data = await api.get("/api/admin/hero-slides/public");
 
 // AFTER
-const data = await api.get('/admin/hero-slides/public');
+const data = await api.get("/admin/hero-slides/public");
 ```
 
-**Impact**: 
+**Impact**:
+
 - ✅ Hero slides now load correctly
 - ✅ No more 404 errors in backend logs
 - ✅ Reduces unnecessary API calls
@@ -78,6 +81,7 @@ const data = await api.get('/admin/hero-slides/public');
 **File Created**: `frontend/contexts/CartContext.tsx`
 
 **Key Features**:
+
 - ✅ Centralized cart state management
 - ✅ Animated toast notifications (green for success, blue for info, red for errors)
 - ✅ Auto-save to localStorage on every change
@@ -85,20 +89,25 @@ const data = await api.get('/admin/hero-slides/public');
 - ✅ Methods: `addToCart()`, `removeFromCart()`, `updateQuantity()`, `clearCart()`, `showToast()`
 
 **Usage Example**:
+
 ```typescript
-import { useCart } from '@/contexts/CartContext';
+import { useCart } from "@/contexts/CartContext";
 
 const { addToCart, itemCount } = useCart();
 
-addToCart({
+addToCart(
+  {
     productId: product.id,
     variantId: selectedVariantId,
     product: product,
     variant: selectedVariant,
-}, quantity); // Shows toast: "Added Jollof Rice to cart!"
+  },
+  quantity
+); // Shows toast: "Added Jollof Rice to cart!"
 ```
 
 **Toast Notification Design**:
+
 - Fixed position: bottom-right
 - Auto-dismiss after 3 seconds
 - Slide-in animation from bottom
@@ -114,6 +123,7 @@ addToCart({
 **File Modified**: `frontend/components/ProductDetailClient.tsx`
 
 **Features**:
+
 - ✅ Quantity input with +/- buttons
 - ✅ Min quantity: 1
 - ✅ Max quantity: Current stock
@@ -124,6 +134,7 @@ addToCart({
 - ✅ Auto-resets to 1 after adding to cart
 
 **UI Design**:
+
 ```
 Quantity: [ − ] [ 5 ] [ + ]  (150 available)
           ────────────────────────────────
@@ -132,6 +143,7 @@ Quantity: [ − ] [ 5 ] [ + ]  (150 available)
 ```
 
 **Validation Logic**:
+
 - Decrement button disabled when quantity = 1
 - Increment button disabled when quantity = stock
 - Direct input clamped between 1 and stock
@@ -146,6 +158,7 @@ Quantity: [ − ] [ 5 ] [ + ]  (150 available)
 **File Modified**: `frontend/components/Header.tsx`
 
 **Changes**:
+
 - Imported `useCart()` hook
 - Added `itemCount` badge to cart icon
 - Badge appears only when cart has items
@@ -153,6 +166,7 @@ Quantity: [ − ] [ 5 ] [ + ]  (150 available)
 - Red circular badge with white text
 
 **Visual Example**:
+
 ```
 🛒       (empty cart - no badge)
 🛒  3    (3 items - badge shown)
@@ -169,7 +183,9 @@ Quantity: [ − ] [ 5 ] [ + ]  (150 available)
 ```tsx
 <AuthProvider>
   <ThemeProvider>
-    <CartProvider>  {/* NEW */}
+    <CartProvider>
+      {" "}
+      {/* NEW */}
       {children}
     </CartProvider>
   </ThemeProvider>
@@ -181,6 +197,7 @@ Quantity: [ − ] [ 5 ] [ + ]  (150 available)
 ## 🎯 User Experience Improvements
 
 ### **Before**:
+
 1. **Cart Updates**: No feedback when adding items (only browser alert)
 2. **Quantity**: Always added 1 item (no control)
 3. **Cart Count**: Required page refresh to see updated count
@@ -188,6 +205,7 @@ Quantity: [ − ] [ 5 ] [ + ]  (150 available)
 5. **Hero Slides**: 404 errors in console
 
 ### **After**:
+
 1. **Cart Updates**: Beautiful toast notification with product name
 2. **Quantity**: Full control with +/- buttons and direct input
 3. **Cart Count**: Updates instantly with animated badge
@@ -259,11 +277,13 @@ setToast(null) - Toast fades out
 ## 🔍 Testing Checklist
 
 ### ✅ **Backend**
+
 - [x] No verbose webhook logs when idle
 - [x] Webhook logs appear when processing deliveries
 - [x] Hero slides API returns 200 (not 404)
 
 ### ✅ **Frontend - Cart Context**
+
 - [x] Cart badge shows 0 when empty (no badge displayed)
 - [x] Cart badge increments when adding items
 - [x] Cart badge decrements when removing items
@@ -272,6 +292,7 @@ setToast(null) - Toast fades out
 - [x] Cart persists across page refreshes (localStorage)
 
 ### ✅ **Frontend - Quantity Controls**
+
 - [x] Default quantity is 1
 - [x] Minus button disabled at quantity 1
 - [x] Plus button disabled at max stock
@@ -280,6 +301,7 @@ setToast(null) - Toast fades out
 - [x] Quantity resets to 1 after adding
 
 ### ✅ **Frontend - UX**
+
 - [x] Hero slideshow loads without errors
 - [x] Search functionality still works
 - [x] Theme toggle works
@@ -291,12 +313,14 @@ setToast(null) - Toast fades out
 ## 🚀 Deployment Impact
 
 ### **Production Benefits**:
+
 1. **Reduced Log Volume**: ~240 fewer log lines per hour in production
 2. **Better UX**: Users get instant feedback on cart actions
 3. **Lower Error Rate**: No more hero-slides 404s
 4. **Improved Performance**: Cart updates don't trigger page refreshes
 
 ### **Backwards Compatibility**:
+
 - ✅ Existing cart localStorage format preserved
 - ✅ Old cart items automatically migrated to context
 - ✅ No database schema changes required
@@ -307,15 +331,18 @@ setToast(null) - Toast fades out
 ## 📝 Code Quality Metrics
 
 ### **Files Changed**: 6
+
 - Modified: 5 files
 - Created: 1 file (CartContext)
 
 ### **Lines of Code**:
+
 - Added: ~227 lines
 - Removed: ~29 lines
 - Net: +198 lines
 
 ### **Components Updated**:
+
 1. `webhook-dispatcher.service.ts` - Logging logic
 2. `HeroSlideshow.tsx` - API endpoint
 3. `ProductDetailClient.tsx` - Quantity controls + cart integration
@@ -328,6 +355,7 @@ setToast(null) - Toast fades out
 ## 🎨 UI/UX Design Decisions
 
 ### **Toast Notifications**:
+
 - **Position**: Bottom-right (non-intrusive)
 - **Duration**: 3 seconds (standard for non-critical info)
 - **Animation**: Slide-in from bottom (modern, smooth)
@@ -337,6 +365,7 @@ setToast(null) - Toast fades out
   - Red: Error (stock issues)
 
 ### **Quantity Controls**:
+
 - **Style**: Inline, compact (doesn't overwhelm product page)
 - **Buttons**: Clear +/- symbols
 - **Input**: Editable number for power users
@@ -344,6 +373,7 @@ setToast(null) - Toast fades out
 - **Context**: Shows available stock for transparency
 
 ### **Cart Badge**:
+
 - **Style**: Small, circular, red background
 - **Animation**: Zoom-in on count change (draws attention)
 - **Visibility**: Hidden when count = 0 (cleaner UI)
@@ -353,9 +383,11 @@ setToast(null) - Toast fades out
 ## 🔧 Configuration Changes
 
 ### **Environment Variables** (No changes required)
+
 - `NEXT_PUBLIC_API_URL` - Already configured correctly
 
 ### **Dependencies** (No new packages)
+
 - Used existing React Context API
 - No npm install needed
 
@@ -367,43 +399,48 @@ setToast(null) - Toast fades out
 
 ```typescript
 // In any component
-import { useCart } from '@/contexts/CartContext';
+import { useCart } from "@/contexts/CartContext";
 
 function MyComponent() {
-    const { items, itemCount, addToCart, showToast } = useCart();
-    
-    // Add item
-    addToCart({
-        productId: '123',
-        variantId: null,
-        product: productData,
-        variant: null,
-    }, 5); // Adds 5 units
-    
-    // Show custom toast
-    showToast('Custom message', 'success');
-    
-    // Check cart state
-    console.log(`Cart has ${itemCount} items`);
+  const { items, itemCount, addToCart, showToast } = useCart();
+
+  // Add item
+  addToCart(
+    {
+      productId: "123",
+      variantId: null,
+      product: productData,
+      variant: null,
+    },
+    5
+  ); // Adds 5 units
+
+  // Show custom toast
+  showToast("Custom message", "success");
+
+  // Check cart state
+  console.log(`Cart has ${itemCount} items`);
 }
 ```
 
 ### **Extending the Cart Context**:
 
 To add new features (e.g., wishlist, favorites):
+
 1. Add state to CartContext
 2. Add methods to CartContextType
 3. Implement in CartProvider
 4. Use via useCart() hook
 
 Example:
+
 ```typescript
 // Add to CartContext.tsx
 const [wishlist, setWishlist] = useState<string[]>([]);
 
 const addToWishlist = (productId: string) => {
-    setWishlist(prev => [...prev, productId]);
-    showToast('Added to wishlist!', 'info');
+  setWishlist((prev) => [...prev, productId]);
+  showToast("Added to wishlist!", "info");
 };
 ```
 
@@ -412,6 +449,7 @@ const addToWishlist = (productId: string) => {
 ## 🐛 Known Issues & Future Enhancements
 
 ### **Potential Improvements**:
+
 1. **Quantity Debouncing**: Add debounce to direct input (prevent rapid API calls if fetching price)
 2. **Cart Sync**: Add backend cart sync for logged-in users (currently localStorage only)
 3. **Toast Queue**: Stack multiple toasts if many actions happen quickly
@@ -425,16 +463,19 @@ const addToWishlist = (productId: string) => {
 ## 📞 Support & Questions
 
 **If cart isn't updating**:
+
 1. Check browser console for errors
 2. Verify `localStorage` is enabled
 3. Ensure `<CartProvider>` wraps the app in layout.tsx
 
 **If toast doesn't appear**:
+
 1. Check if `showToast()` is being called
 2. Verify CartProvider is in component tree
 3. Check for CSS conflicts (z-index)
 
 **If badge count is wrong**:
+
 1. Refresh page (cart loads from localStorage)
 2. Clear localStorage and test fresh
 3. Check itemCount calculation logic
