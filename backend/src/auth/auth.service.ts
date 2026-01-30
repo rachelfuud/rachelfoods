@@ -76,6 +76,13 @@ export class AuthService {
                     },
                 },
             },
+            include: {
+                user_roles: {
+                    include: {
+                        roles: true,
+                    },
+                },
+            },
         });
 
         // Generate JWT token
@@ -89,6 +96,11 @@ export class AuthService {
                 firstName: user.firstName,
                 lastName: user.lastName,
                 status: user.status,
+                roles: user.user_roles.map((ur) => ({
+                    id: ur.roles.id,
+                    name: ur.roles.name,
+                    slug: ur.roles.slug,
+                })),
             },
         };
     }
@@ -99,9 +111,16 @@ export class AuthService {
     async login(loginDto: LoginDto): Promise<AuthResponse> {
         const { email, password } = loginDto;
 
-        // Find user by email
+        // Find user by email with roles
         const user = await this.prisma.users.findUnique({
             where: { email },
+            include: {
+                user_roles: {
+                    include: {
+                        roles: true,
+                    },
+                },
+            },
         });
 
         if (!user) {
@@ -134,6 +153,22 @@ export class AuthService {
             },
         });
 
+        // Extract roles from user_roles relation
+        const roles = user.user_roles?.map((ur) => ({
+            id: ur.roles.id,
+            name: ur.roles.name,
+            slug: ur.roles.slug,
+        })) || [];
+
+        // If no user_roles but has simple role field, add it
+        if (roles.length === 0 && user.role) {
+            roles.push({
+                id: `role_${user.role.toLowerCase()}`,
+                name: user.role,
+                slug: user.role.toLowerCase(),
+            });
+        }
+
         return {
             accessToken,
             refreshToken,
@@ -143,6 +178,8 @@ export class AuthService {
                 firstName: user.firstName,
                 lastName: user.lastName,
                 status: user.status,
+                role: user.role,
+                roles: roles,
             },
         };
     }
