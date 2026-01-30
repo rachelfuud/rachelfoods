@@ -26,7 +26,7 @@ import { PolicyEvaluationReport } from './policy.types';
 import { PolicyEvaluationService } from './policy-evaluation.service';
 
 @ApiTags('Policy Evaluation (Platform Admin Only)')
-@Controller('admin/governance/policies')
+@Controller('api/admin/governance/policies')
 @UseGuards(AuthGuard, RoleGuard)
 @ApiBearerAuth()
 export class PolicyController {

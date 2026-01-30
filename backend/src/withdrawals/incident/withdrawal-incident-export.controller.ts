@@ -41,7 +41,7 @@ import { WithdrawalIncidentExportService, IncidentExportOptions } from './withdr
  * - Compliance reporting: Generate professional PDF reports
  * - Data portability: Enable external analysis with JSON/CSV exports
  */
-@Controller('admin/withdrawals/risk')
+@Controller('api/admin/withdrawals/risk')
 @UseGuards(AuthGuard, RoleGuard)
 export class WithdrawalIncidentExportController {
     constructor(

@@ -32,7 +32,7 @@ import {
 import { GovernanceAttestationService } from './governance-attestation.service';
 
 @ApiTags('Governance Attestation (Platform Admin Only)')
-@Controller('admin/governance')
+@Controller('api/admin/governance')
 @UseGuards(AuthGuard, RoleGuard)
 @ApiBearerAuth()
 export class GovernanceAttestationController {

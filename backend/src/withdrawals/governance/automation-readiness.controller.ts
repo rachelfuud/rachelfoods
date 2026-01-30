@@ -26,7 +26,7 @@ import { AutomationReadinessReport } from './automation-readiness.types';
 import { AutomationReadinessService } from './automation-readiness.service';
 
 @ApiTags('Governance Automation Readiness (Platform Admin Only)')
-@Controller('admin/governance')
+@Controller('api/admin/governance')
 @UseGuards(AuthGuard, RoleGuard)
 @ApiBearerAuth()
 export class AutomationReadinessController {

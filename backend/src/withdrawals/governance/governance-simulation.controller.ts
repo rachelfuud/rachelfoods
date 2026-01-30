@@ -27,7 +27,7 @@ import { ControlGapService } from './control-gap.service';
 import { PolicySimulationService } from './policy-simulation.service';
 
 @ApiTags('Governance Simulation (Platform Admin Only)')
-@Controller('admin/governance')
+@Controller('api/admin/governance')
 @UseGuards(AuthGuard, RoleGuard)
 @ApiBearerAuth()
 export class GovernanceSimulationController {

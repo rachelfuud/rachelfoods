@@ -48,7 +48,7 @@ import { WithdrawalIncidentBundleService, IncidentBundleOptions } from './withdr
  * - Forensic analysis: All artifacts with tamper detection
  * - Compliance archival: Long-term storage with hash verification
  */
-@Controller('admin/withdrawals/risk')
+@Controller('api/admin/withdrawals/risk')
 @UseGuards(AuthGuard, RoleGuard)
 export class WithdrawalIncidentBundleController {
     constructor(

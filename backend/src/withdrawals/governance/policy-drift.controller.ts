@@ -26,7 +26,7 @@ import { PolicyDriftReport } from './policy-snapshot.types';
 import { PolicyDriftService } from './policy-drift.service';
 
 @ApiTags('Policy Drift (Platform Admin Only)')
-@Controller('admin/governance/policies')
+@Controller('api/admin/governance/policies')
 @UseGuards(AuthGuard, RoleGuard)
 @ApiBearerAuth()
 export class PolicyDriftController {
