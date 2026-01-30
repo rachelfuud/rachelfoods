@@ -13,7 +13,9 @@ import StripeCheckoutForm from '@/components/StripeCheckoutForm';
 import { api } from '@/lib/api';
 
 // Load Stripe with publishable key from environment
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
+const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '';
+const stripePromise = stripePublishableKey ? loadStripe(stripePublishableKey) : null;
+const paypalClientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || '';
 
 type PaymentMethod = 'PAYPAL' | 'STRIPE' | 'COD';
 
@@ -29,7 +31,13 @@ export default function CheckoutPage() {
         zipCode: '',
         notes: '',
     });
-    const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('PAYPAL');
+    // Default to COD if neither Stripe nor PayPal is configured
+    const getDefaultPaymentMethod = (): PaymentMethod => {
+        if (paypalClientId) return 'PAYPAL';
+        if (stripePublishableKey) return 'STRIPE';
+        return 'COD';
+    };
+    const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(getDefaultPaymentMethod());
     const [clientSecret, setClientSecret] = useState<string | null>(null);
     const [orderId, setOrderId] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
@@ -278,31 +286,33 @@ export default function CheckoutPage() {
                                     <h2 className="text-2xl font-bold mb-4">Payment Method</h2>
 
                                     <div className="space-y-3">
-                                        {/* PayPal - Default */}
-                                        <label className="flex items-start gap-3 p-4 border-2 border-primary rounded-lg cursor-pointer bg-primary/5">
-                                            <input
-                                                type="radio"
-                                                name="paymentMethod"
-                                                value="PAYPAL"
-                                                checked={paymentMethod === 'PAYPAL'}
-                                                onChange={() => setPaymentMethod('PAYPAL')}
-                                                className="mt-1"
-                                            />
-                                            <div className="flex-1">
-                                                <div className="font-semibold mb-1">
-                                                    PayPal <span className="text-xs bg-primary text-white px-2 py-0.5 rounded ml-2">RECOMMENDED</span>
+                                        {/* PayPal - Only show if client ID is configured */}
+                                        {paypalClientId && (
+                                            <label className="flex items-start gap-3 p-4 border-2 border-primary rounded-lg cursor-pointer bg-primary/5">
+                                                <input
+                                                    type="radio"
+                                                    name="paymentMethod"
+                                                    value="PAYPAL"
+                                                    checked={paymentMethod === 'PAYPAL'}
+                                                    onChange={() => setPaymentMethod('PAYPAL')}
+                                                    className="mt-1"
+                                                />
+                                                <div className="flex-1">
+                                                    <div className="font-semibold mb-1">
+                                                        PayPal <span className="text-xs bg-primary text-white px-2 py-0.5 rounded ml-2">RECOMMENDED</span>
+                                                    </div>
+                                                    <p className="text-sm text-foreground/70">
+                                                        Fast, secure payment via PayPal. Instant order confirmation.
+                                                    </p>
+                                                    <div className="mt-2">
+                                                        <svg className="h-6" viewBox="0 0 124 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M46.211 6.749h-6.839a.95.95 0 0 0-.939.802l-2.766 17.537a.57.57 0 0 0 .564.658h3.265a.95.95 0 0 0 .939-.803l.746-4.73a.95.95 0 0 1 .938-.803h2.165c4.505 0 7.105-2.18 7.784-6.5.306-1.89.013-3.375-.872-4.415-.972-1.142-2.696-1.746-4.985-1.746z" fill="#003087" />
+                                                            <path d="M47.138 13.097c-.375 2.454-2.249 2.454-4.062 2.454h-1.032l.724-4.583a.57.57 0 0 1 .563-.481h.473c1.235 0 2.4 0 3.002.704.359.42.468 1.044.332 1.906z" fill="#003087" />
+                                                        </svg>
+                                                    </div>
                                                 </div>
-                                                <p className="text-sm text-foreground/70">
-                                                    Fast, secure payment via PayPal. Instant order confirmation.
-                                                </p>
-                                                <div className="mt-2">
-                                                    <svg className="h-6" viewBox="0 0 124 33" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                        <path d="M46.211 6.749h-6.839a.95.95 0 0 0-.939.802l-2.766 17.537a.57.57 0 0 0 .564.658h3.265a.95.95 0 0 0 .939-.803l.746-4.73a.95.95 0 0 1 .938-.803h2.165c4.505 0 7.105-2.18 7.784-6.5.306-1.89.013-3.375-.872-4.415-.972-1.142-2.696-1.746-4.985-1.746z" fill="#003087" />
-                                                        <path d="M47.138 13.097c-.375 2.454-2.249 2.454-4.062 2.454h-1.032l.724-4.583a.57.57 0 0 1 .563-.481h.473c1.235 0 2.4 0 3.002.704.359.42.468 1.044.332 1.906z" fill="#003087" />
-                                                    </svg>
-                                                </div>
-                                            </div>
-                                        </label>
+                                            </label>
+                                        )}
 
                                         <label className="flex items-start gap-3 p-4 border-2 border-border rounded-lg cursor-pointer hover:border-primary transition-colors">
                                             <input
@@ -314,38 +324,46 @@ export default function CheckoutPage() {
                                                 className="mt-1"
                                             />
                                             <div className="flex-1">
-                                                <div className="font-semibold mb-1">Cash on Delivery (COD)</div>
+                                                <div className="font-semibold mb-1">
+                                                    Cash on Delivery (COD)
+                                                    {!paypalClientId && !stripePublishableKey && (
+                                                        <span className="text-xs bg-primary text-white px-2 py-0.5 rounded ml-2">ONLY OPTION</span>
+                                                    )}
+                                                </div>
                                                 <p className="text-sm text-foreground/70">
                                                     Pay when you receive your order. Order will be confirmed by seller first.
                                                 </p>
                                             </div>
                                         </label>
 
-                                        <label className="flex items-start gap-3 p-4 border-2 border-border rounded-lg cursor-pointer hover:border-primary transition-colors">
-                                            <input
-                                                type="radio"
-                                                name="paymentMethod"
-                                                value="STRIPE"
-                                                checked={paymentMethod === 'STRIPE'}
-                                                onChange={() => setPaymentMethod('STRIPE')}
-                                                className="mt-1"
-                                            />
-                                            <div className="flex-1">
-                                                <div className="font-semibold mb-1">Pay Now (Credit/Debit Card)</div>
-                                                <p className="text-sm text-foreground/70">
-                                                    Secure payment via Stripe. Your order will be confirmed instantly.
-                                                </p>
-                                                <div className="mt-2">
-                                                    <PaymentIcons />
+                                        {/* Stripe - Only show if publishable key is configured */}
+                                        {stripePublishableKey && (
+                                            <label className="flex items-start gap-3 p-4 border-2 border-border rounded-lg cursor-pointer hover:border-primary transition-colors">
+                                                <input
+                                                    type="radio"
+                                                    name="paymentMethod"
+                                                    value="STRIPE"
+                                                    checked={paymentMethod === 'STRIPE'}
+                                                    onChange={() => setPaymentMethod('STRIPE')}
+                                                    className="mt-1"
+                                                />
+                                                <div className="flex-1">
+                                                    <div className="font-semibold mb-1">Pay Now (Credit/Debit Card)</div>
+                                                    <p className="text-sm text-foreground/70">
+                                                        Secure payment via Stripe. Your order will be confirmed instantly.
+                                                    </p>
+                                                    <div className="mt-2">
+                                                        <PaymentIcons />
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </label>
+                                            </label>
+                                        )}
                                     </div>
                                 </div>
                             )}
 
                             {/* Stripe Payment Form */}
-                            {clientSecret && paymentMethod === 'STRIPE' && (
+                            {clientSecret && paymentMethod === 'STRIPE' && stripePromise && (
                                 <div className="border border-primary/20 rounded-lg p-6 bg-primary/5">
                                     <h2 className="text-2xl font-bold mb-4">Complete Payment</h2>
                                     <Elements stripe={stripePromise} options={{ clientSecret }}>
@@ -358,12 +376,12 @@ export default function CheckoutPage() {
                             )}
 
                             {/* PayPal Button */}
-                            {orderId && paymentMethod === 'PAYPAL' && (
+                            {orderId && paymentMethod === 'PAYPAL' && paypalClientId && (
                                 <div className="border border-primary/20 rounded-lg p-6 bg-primary/5">
                                     <h2 className="text-2xl font-bold mb-4">Complete Payment with PayPal</h2>
                                     <PayPalScriptProvider
                                         options={{
-                                            clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || '',
+                                            clientId: paypalClientId,
                                             currency: 'USD',
                                         }}
                                     >
