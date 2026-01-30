@@ -25,7 +25,13 @@ export async function runCmsMigration() {
         console.log('🚀 Running CMS tables migration...');
 
         // Read the SQL file
-        const sqlFilePath = path.join(__dirname, '../prisma/migrations/manual_add_cms_tables.sql');
+        // In production (Docker), prisma is at /app/prisma
+        // In development, it's at backend/prisma relative to project root
+        const sqlFilePath = process.env.NODE_ENV === 'production'
+            ? path.join(process.cwd(), 'prisma/migrations/manual_add_cms_tables.sql')
+            : path.join(__dirname, '../prisma/migrations/manual_add_cms_tables.sql');
+
+        console.log(`📂 Looking for SQL file at: ${sqlFilePath}`);
         const sql = fs.readFileSync(sqlFilePath, 'utf-8');
 
         // Execute the entire SQL as one transaction
