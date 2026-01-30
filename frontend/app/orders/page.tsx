@@ -105,7 +105,7 @@ export default function OrdersPage() {
 
                                 <div className="border-t border-border pt-4 mb-4">
                                     <div className="text-2xl font-bold text-primary">
-                                        {formatCurrency(order.totalAmount)}
+                                        {formatCurrency(order.totalCost || order.totalAmount || 0)}
                                     </div>
                                     <p className="text-sm text-foreground/70">
                                         {(order.order_items?.length || order.items?.length || 0)} item(s)

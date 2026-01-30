@@ -8,13 +8,14 @@ import { api } from '@/lib/api';
 interface Order {
     id: string;
     orderNumber: string;
-    userId: string;
-    users: { firstName: string; lastName: string; email: string };
+    userId?: string;
+    users?: { firstName?: string; lastName?: string; email?: string };
     status: string;
-    paymentStatus: string;
-    totalCost: number;
+    paymentStatus?: string;
+    totalCost?: number;
+    totalAmount?: number;
     createdAt: string;
-    order_items: any[];
+    order_items?: any[];
 }
 
 export default function AdminOrdersPage() {
@@ -112,7 +113,7 @@ export default function AdminOrdersPage() {
                                         Order #{order.orderNumber}
                                     </h3>
                                     <p className="text-sm text-foreground/70">
-                                        {order.users.firstName} {order.users.lastName} ({order.users.email})
+                                        {order.users?.firstName || ''} {order.users?.lastName || ''} ({order.users?.email || 'N/A'})
                                     </p>
                                     <p className="text-sm text-foreground/70">
                                         {new Date(order.createdAt).toLocaleString()}
@@ -127,7 +128,7 @@ export default function AdminOrdersPage() {
                             <div className="flex justify-between items-center pt-4 border-t border-border">
                                 <div>
                                     <span className="text-2xl font-bold text-primary">
-                                        {formatCurrency(order.totalCost)}
+                                        {formatCurrency(order.totalCost || order.totalAmount || 0)}
                                     </span>
                                     <span className="text-sm text-foreground/70 ml-2">
                                         {order.order_items?.length || 0} item(s)

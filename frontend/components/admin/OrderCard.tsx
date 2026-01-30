@@ -8,14 +8,16 @@ import Link from 'next/link';
 interface Order {
     id: string;
     orderNumber: string;
-    userId: string;
-    users: { firstName: string; lastName: string; email: string };
+    userId?: string;
+    users?: { firstName?: string; lastName?: string; email?: string };
     status: 'PENDING' | 'CONFIRMED' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED';
-    paymentMethod: string;
-    paymentStatus: string;
-    totalCost: number;
+    paymentMethod?: string;
+    paymentStatus?: string;
+    totalCost?: number;
+    totalAmount?: number;
     walletUsed?: number;
     couponDiscount?: number;
+    discountAmount?: number;
     createdAt: string;
     order_items?: any[];
 }
@@ -62,9 +64,9 @@ export function OrderCard({ order, onStatusUpdate, onRefund }: OrderCardProps) {
                         <StatusBadge status={order.status} />
                     </div>
                     <p className="text-sm text-foreground/70 mb-1">
-                        {order.users.firstName} {order.users.lastName}
+                        {order.users?.firstName || ''} {order.users?.lastName || ''}
                     </p>
-                    <p className="text-xs text-foreground/60">{order.users.email}</p>
+                    <p className="text-xs text-foreground/60">{order.users?.email || 'N/A'}</p>
                     <p className="text-xs text-foreground/60 mt-1">
                         {new Date(order.createdAt).toLocaleString()}
                     </p>
@@ -82,7 +84,7 @@ export function OrderCard({ order, onStatusUpdate, onRefund }: OrderCardProps) {
             <div className="bg-muted rounded-lg p-4 mb-4 space-y-2">
                 <div className="flex justify-between text-sm">
                     <span className="text-foreground/70">Order Total</span>
-                    <span className="font-semibold">{formatCurrency(order.totalCost)}</span>
+                    <span className="font-semibold">{formatCurrency(order.totalCost || order.totalAmount || 0)}</span>
                 </div>
                 {order.walletUsed && order.walletUsed > 0 && (
                     <div className="flex justify-between text-sm">
@@ -90,10 +92,10 @@ export function OrderCard({ order, onStatusUpdate, onRefund }: OrderCardProps) {
                         <span className="text-success font-medium">-{formatCurrency(order.walletUsed)}</span>
                     </div>
                 )}
-                {order.couponDiscount && order.couponDiscount > 0 && (
+                {(order.couponDiscount || order.discountAmount) && (order.couponDiscount || order.discountAmount || 0) > 0 && (
                     <div className="flex justify-between text-sm">
                         <span className="text-foreground/70">🎟️ Coupon Discount</span>
-                        <span className="text-success font-medium">-{formatCurrency(order.couponDiscount)}</span>
+                        <span className="text-success font-medium">-{formatCurrency(order.couponDiscount || order.discountAmount || 0)}</span>
                     </div>
                 )}
                 <div className="flex justify-between text-sm pt-2 border-t border-border">

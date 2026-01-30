@@ -72,18 +72,68 @@ export interface CartItem {
 export interface Order {
     id: string;
     orderNumber: string;
-    userId: string;
+    buyerId?: string;  // Backend field name
+    userId?: string;  // Legacy/alias
     status: string;
-    totalAmount: number;
+    paymentStatus?: string;
+    paymentMethod?: string;
+    totalAmount?: number;  // May not always be present
+    totalCost?: number;  // Backend uses this field name
+    subtotal?: number;
+    shippingCost?: number;
+    discountAmount?: number;
+    walletUsed?: number;
+    couponCode?: string;
+    deliveryAddress?: string;
+    deliveryCity?: string;
+    deliveryState?: string;
+    deliveryZipCode?: string;
+    deliveryPhone?: string;
+    deliveryNotes?: string;
     createdAt: string;
-    items?: OrderItem[];  // Optional - backend returns order_items
-    order_items?: OrderItem[];  // Backend uses this field name
+    confirmedAt?: string;
+    shippedAt?: string;
+    deliveredAt?: string;
+    cancelledAt?: string;
+    cancellationReason?: string;
+    items?: OrderItem[];  // Legacy/alias - backend returns order_items
+    order_items?: OrderItem[];  // Backend field name
+    custom_order_items?: CustomOrderItem[];
+    users?: {  // Backend returns buyer info as 'users'
+        id: string;
+        email: string;
+        firstName?: string;
+        lastName?: string;
+        phone?: string;
+    };
+    _count?: {
+        order_items?: number;
+        custom_order_items?: number;
+    };
 }
 
 export interface OrderItem {
     id: string;
     productId: string;
-    product: Product;
+    variantId?: string;
+    productName: string;
+    variantName?: string;
+    productPrice: number;
     quantity: number;
-    price: number;
+    subtotal: number;
+    product?: Product;
+    products?: Product;  // Backend may use this field name
+    categories?: Category;
+}
+
+export interface CustomOrderItem {
+    id: string;
+    orderId: string;
+    itemName: string;
+    description?: string;
+    quantity: number;
+    unit: string;
+    estimatedPrice?: number;
+    approvedPrice?: number;
+    status: string;
 }
