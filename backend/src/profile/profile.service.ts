@@ -52,7 +52,7 @@ export class ProfileService {
                     password: hashedPassword,
                 },
                 include: {
-                    userRoles: {
+                    user_roles: {
                         include: {
                             role: true,
                         },
@@ -64,7 +64,7 @@ export class ProfileService {
             const { password, ...result } = updatedUser;
             return {
                 ...result,
-                roles: result.userRoles.map((ur) => ({
+                roles: result.user_roles.map((ur) => ({
                     id: ur.role.id,
                     name: ur.role.name,
                     slug: ur.role.slug,
@@ -82,7 +82,7 @@ export class ProfileService {
                 phone: dto.phone,
             },
             include: {
-                userRoles: {
+                user_roles: {
                     include: {
                         role: true,
                     },
@@ -94,7 +94,7 @@ export class ProfileService {
         const { password, ...result } = updatedUser;
         return {
             ...result,
-            roles: result.userRoles.map((ur) => ({
+            roles: result.user_roles.map((ur) => ({
                 id: ur.role.id,
                 name: ur.role.name,
                 slug: ur.role.slug,
