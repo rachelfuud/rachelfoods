@@ -24,7 +24,7 @@ class ProcessRefundDto {
     reason?: string;
 }
 
-@Controller('refunds')
+@Controller('api/refunds')
 @UseGuards(JwtAuthGuard)
 export class RefundController {
     constructor(private refundService: RefundService) { }

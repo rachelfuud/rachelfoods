@@ -37,7 +37,7 @@ import {
  * 3. System processes → POST /refunds/:id/process (COMPLETED)
  *    OR Admin rejects → POST /refunds/:id/reject (REJECTED)
  */
-@Controller('refunds')
+@Controller('api/refunds')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class RefundController {
     constructor(private readonly refundService: RefundService) { }

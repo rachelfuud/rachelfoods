@@ -31,7 +31,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
  */
 @ApiTags('Products')
 @ApiBearerAuth('JWT-auth')
-@Controller('products')
+@Controller('api/products')
 @UseGuards(JwtAuthGuard, PermissionsGuard) // Apply both guards to all routes
 export class ProductsController {
     /**

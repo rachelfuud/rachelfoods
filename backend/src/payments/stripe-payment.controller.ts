@@ -14,7 +14,7 @@ import { CreatePaymentIntentDto, PaymentResponseDto } from './dto/payment.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Request } from 'express';
 
-@Controller('payments')
+@Controller('api/payments')
 export class StripePaymentController {
     constructor(private readonly stripePaymentService: StripePaymentService) { }
 

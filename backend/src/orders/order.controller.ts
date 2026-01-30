@@ -23,7 +23,7 @@ import { Permissions } from '../auth/decorators/permissions.decorator';
 
 @ApiTags('Orders')
 @ApiBearerAuth('JWT-auth')
-@Controller('orders')
+@Controller('api/orders')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class OrderController {
     constructor(

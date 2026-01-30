@@ -19,7 +19,7 @@ import { ModerateReviewDto } from './dto/moderate-review.dto';
 import { QueryReviewDto } from './dto/query-review.dto';
 
 @ApiTags('reviews')
-@Controller('reviews')
+@Controller('api/reviews')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 @ApiBearerAuth()
 export class ReviewController {

@@ -33,7 +33,7 @@ import { PaymentStatus } from '@prisma/client';
  * NO BUSINESS LOGIC. NO PRISMA. NO CROSS-SERVICE CALLS.
  * Services own all orchestration and database access.
  */
-@Controller('payments')
+@Controller('api/payments')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class PaymentController {
     constructor(private readonly paymentService: PaymentService) { }

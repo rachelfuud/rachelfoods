@@ -6,7 +6,7 @@ import { PrismaService } from '../prisma/prisma.service';
  * 
  * Reference: SPRINT_8_TRACK_D_HARDENING.md - Connection Pooling
  */
-@Controller('health')
+@Controller('api/health')
 export class HealthController {
     constructor(private prisma: PrismaService) { }
 

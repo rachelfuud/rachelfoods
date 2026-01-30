@@ -19,7 +19,7 @@ import { UpdateReferralConfigDto } from './dto/update-referral-config.dto';
 import { QueryReferralDto } from './dto/query-referral.dto';
 
 @ApiTags('referrals')
-@Controller('referrals')
+@Controller('api/referrals')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 @ApiBearerAuth()
 export class ReferralController {

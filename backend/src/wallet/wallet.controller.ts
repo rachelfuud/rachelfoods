@@ -31,7 +31,7 @@ class CreditWalletDto {
     reason?: string;
 }
 
-@Controller('wallet')
+@Controller('api/wallet')
 @UseGuards(JwtAuthGuard)
 export class WalletController {
     constructor(private walletService: WalletService) { }
