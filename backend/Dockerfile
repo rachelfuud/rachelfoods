@@ -15,6 +15,9 @@ RUN npm run build
 # Compile the migration script separately
 RUN npx tsc scripts/auto-migrate-cms.ts --outDir dist/scripts --esModuleInterop --skipLibCheck
 
+# Compile the admin seed script
+RUN npx tsc scripts/seed-admin.ts --outDir dist/scripts --esModuleInterop --skipLibCheck
+
 FROM node:20-alpine AS production
 
 RUN apk add --no-cache openssl
@@ -29,4 +32,4 @@ COPY --from=base /app/prisma/migrations ./prisma/migrations
 
 EXPOSE 3001
 
-CMD npx prisma migrate deploy && node dist/scripts/auto-migrate-cms.js && node dist/src/main.js
+CMD npx prisma migrate deploy && node dist/scripts/auto-migrate-cms.js && node dist/scripts/seed-admin.js && node dist/src/main.js
