@@ -24,7 +24,8 @@ WORKDIR /app
 COPY --from=base /app/dist ./dist
 COPY --from=base /app/node_modules ./node_modules
 COPY --from=base /app/package*.json ./
-COPY --from=base /app/prisma ./prisma
+COPY --from=base /app/prisma/schema.prisma ./prisma/schema.prisma
+COPY --from=base /app/prisma/migrations ./prisma/migrations
 
 EXPOSE 3001
 
