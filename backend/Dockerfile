@@ -12,6 +12,9 @@ RUN npx prisma generate
 
 RUN npm run build
 
+# Compile the migration script separately
+RUN npx tsc scripts/auto-migrate-cms.ts --outDir dist/scripts --esModuleInterop --skipLibCheck
+
 FROM node:20-alpine AS production
 
 RUN apk add --no-cache openssl
@@ -22,8 +25,7 @@ COPY --from=base /app/dist ./dist
 COPY --from=base /app/node_modules ./node_modules
 COPY --from=base /app/package*.json ./
 COPY --from=base /app/prisma ./prisma
-COPY --from=base /app/scripts ./scripts
 
 EXPOSE 3001
 
-CMD npx prisma migrate deploy && npx ts-node scripts/auto-migrate-cms.ts && node dist/src/main.js
+CMD npx prisma migrate deploy && node dist/scripts/auto-migrate-cms.js && node dist/src/main.js
