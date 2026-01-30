@@ -25,11 +25,12 @@ export class ProfileController {
             lastName: user.lastName,
             phone: user.phone,
             status: user.status,
-            roles: user.userRoles.map((ur) => ({
-                id: ur.role.id,
-                name: ur.role.name,
-                slug: ur.role.slug,
-            })),
+            role: user.role, // Simple role from users table
+            roles: user.user_roles?.map((ur) => ({
+                id: ur.roles.id,
+                name: ur.roles.name,
+                slug: ur.roles.slug,
+            })) || [],
         };
     }
 
