@@ -76,7 +76,8 @@ export interface Order {
     status: string;
     totalAmount: number;
     createdAt: string;
-    items: OrderItem[];
+    items?: OrderItem[];  // Optional - backend returns order_items
+    order_items?: OrderItem[];  // Backend uses this field name
 }
 
 export interface OrderItem {

@@ -108,7 +108,7 @@ export default function OrdersPage() {
                                         {formatCurrency(order.totalAmount)}
                                     </div>
                                     <p className="text-sm text-foreground/70">
-                                        {order.items?.length || 0} item(s)
+                                        {(order.order_items?.length || order.items?.length || 0)} item(s)
                                     </p>
                                 </div>
 
