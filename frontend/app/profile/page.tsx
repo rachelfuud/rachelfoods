@@ -54,9 +54,18 @@ export default function ProfilePage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
+        setLoading(true);
 
-        // TODO: Implement profile update API call when backend endpoint is ready
-        console.log('Update profile:', formData);
+        try {
+            const updatedUser = await api.updateProfile(formData);
+            setUser(updatedUser);
+            alert('Profile updated successfully!');
+        } catch (err: any) {
+            console.error('Failed to update profile:', err);
+            setError(err.message || 'Failed to update profile. Please try again.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     if (loading) {

@@ -138,13 +138,60 @@ export const api = {
     getProfile: async () => {
         const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
         if (!token) throw new Error('Please log in to view your profile');
-        const res = await fetch(`${API_BASE}/profile`, {
+        const res = await fetch(`${API_BASE}/profile/me`, {
             headers: { Authorization: `Bearer ${token}` },
             cache: 'no-store',
         });
         if (!res.ok) {
             if (res.status === 401) throw new Error('Session expired. Please log in again.');
             throw new Error('Unable to load profile. Please try again.');
+        }
+        return res.json();
+    },
+
+    updateProfile: async (data: {
+        firstName?: string;
+        lastName?: string;
+        email?: string;
+        phone?: string;
+        currentPassword?: string;
+        newPassword?: string;
+    }) => {
+        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+        if (!token) throw new Error('Please log in to update your profile');
+        const res = await fetch(`${API_BASE}/profile`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(data),
+        });
+        if (!res.ok) {
+            const error = await res.json();
+            throw new Error(error.message || 'Unable to update profile. Please try again.');
+        }
+        return res.json();
+    },
+
+    // Contact Form
+    submitContactForm: async (data: {
+        name: string;
+        email: string;
+        phone?: string;
+        subject: string;
+        message: string;
+    }) => {
+        const res = await fetch(`${API_BASE}/contact`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+        if (!res.ok) {
+            const error = await res.json();
+            throw new Error(error.message || 'Unable to send message. Please try again.');
         }
         return res.json();
     },

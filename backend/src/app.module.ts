@@ -35,6 +35,7 @@ import { WalletModule } from './wallet/wallet.module';
 import { RefundModule } from './refunds/refund.module';
 import { AuditModule } from './audit/audit.module';
 import { CmsModule } from './cms/cms.module';
+import { ContactModule } from './contact/contact.module';
 
 @Module({
     imports: [
@@ -74,6 +75,7 @@ import { CmsModule } from './cms/cms.module';
         RefundModule, // PHASE 5C: Refund processing
         AuditModule, // PHASE 8: Audit logging for compliance
         CmsModule, // PHASE 9: Content Management System
+        ContactModule, // Contact form submissions
     ],
     controllers: [AppController, SeedController],
     providers: [

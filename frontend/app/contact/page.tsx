@@ -3,32 +3,32 @@
 import { useState } from 'react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { api } from '@/lib/api';
 
 export default function ContactPage() {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
+        phone: '',
         subject: '',
         message: '',
     });
     const [submitted, setSubmitted] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
+        setError(null);
 
         try {
-            // TODO: Implement contact form submission to backend
-            console.log('Contact form:', formData);
-
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1000));
-
+            await api.submitContactForm(formData);
             setSubmitted(true);
-            setFormData({ name: '', email: '', subject: '', message: '' });
-        } catch (error) {
-            console.error('Failed to send message:', error);
+            setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
+        } catch (err: any) {
+            console.error('Failed to send message:', err);
+            setError(err.message || 'Failed to send message. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -90,6 +90,12 @@ export default function ContactPage() {
                             </div>
                         )}
 
+                        {error && (
+                            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded text-red-600">
+                                {error}
+                            </div>
+                        )}
+
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
@@ -121,6 +127,20 @@ export default function ContactPage() {
                                         disabled={loading}
                                     />
                                 </div>
+                            </div>
+
+                            <div>
+                                <label htmlFor="phone" className="block text-sm font-medium mb-2">
+                                    Phone Number (Optional)
+                                </label>
+                                <input
+                                    id="phone"
+                                    type="tel"
+                                    value={formData.phone}
+                                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                    className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background"
+                                    disabled={loading}
+                                />
                             </div>
 
                             <div>
