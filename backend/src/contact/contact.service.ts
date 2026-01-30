@@ -44,6 +44,10 @@ export class ContactService {
             'We received your message - RachelFoods',
             confirmMessage
         );
-    };
-}
+
+        return {
+            success: true,
+            message: 'Your message has been sent successfully! We\'ll get back to you soon.',
+        };
+    }
 }

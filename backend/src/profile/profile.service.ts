@@ -54,7 +54,7 @@ export class ProfileService {
                 include: {
                     user_roles: {
                         include: {
-                            role: true,
+                            roles: true,
                         },
                     },
                 },
@@ -65,9 +65,9 @@ export class ProfileService {
             return {
                 ...result,
                 roles: result.user_roles.map((ur) => ({
-                    id: ur.role.id,
-                    name: ur.role.name,
-                    slug: ur.role.slug,
+                    id: ur.roles.id,
+                    name: ur.roles.name,
+                    slug: ur.roles.slug,
                 })),
             };
         }
@@ -84,7 +84,7 @@ export class ProfileService {
             include: {
                 user_roles: {
                     include: {
-                        role: true,
+                        roles: true,
                     },
                 },
             },
@@ -95,9 +95,9 @@ export class ProfileService {
         return {
             ...result,
             roles: result.user_roles.map((ur) => ({
-                id: ur.role.id,
-                name: ur.role.name,
-                slug: ur.role.slug,
+                id: ur.roles.id,
+                name: ur.roles.name,
+                slug: ur.roles.slug,
             })),
         };
     }
