@@ -18,6 +18,25 @@ export class ProfileController {
         // User is attached to request by JwtStrategy
         const user = req.user;
 
+        // Build roles array from user_roles relation
+        let roles = [];
+        if (user.user_roles && Array.isArray(user.user_roles)) {
+            roles = user.user_roles.map((ur) => ({
+                id: ur.roles?.id || ur.roleId,
+                name: ur.roles?.name || 'Unknown',
+                slug: ur.roles?.slug || 'unknown',
+            }));
+        }
+
+        // If no user_roles but has simple role field, add it
+        if (roles.length === 0 && user.role) {
+            roles.push({
+                id: `role_${user.role.toLowerCase()}`,
+                name: user.role,
+                slug: user.role.toLowerCase(),
+            });
+        }
+
         return {
             id: user.id,
             email: user.email,
@@ -26,11 +45,7 @@ export class ProfileController {
             phone: user.phone,
             status: user.status,
             role: user.role, // Simple role from users table
-            roles: user.user_roles?.map((ur) => ({
-                id: ur.roles.id,
-                name: ur.roles.name,
-                slug: ur.roles.slug,
-            })) || [],
+            roles: roles,
         };
     }
 
