@@ -126,7 +126,53 @@ npx prisma studio
 
 5. Use environment variables for all sensitive data
 
+## Recent Updates (January 2025)
+
+### Fixed: Admin Role Recognition
+
+**Problem**: Admin users were not being recognized after login due to missing roles in auth response.
+
+**Solution**: 
+1. Updated `auth.service.ts` login method to include `user_roles` relation in database query
+2. Login response now includes both simple `role` field and full `roles` array
+3. Admin seed script now assigns `platform-admin` role in `user_roles` table
+4. Frontend `AuthProvider` checks for ADMIN, STAFF, or PLATFORM_ADMIN in roles array
+
+### Authentication Flow
+
+When you login as admin, the backend now returns:
+
+```json
+{
+  "accessToken": "jwt-token",
+  "refreshToken": "refresh-token",
+  "user": {
+    "id": "usr_xxx",
+    "email": "admin@rachelfoods.com",
+    "firstName": "Admin",
+    "lastName": "User",
+    "status": "ACTIVE",
+    "role": "ADMIN",
+    "roles": [
+      {
+        "id": "role_xxx",
+        "name": "Platform Admin",
+        "slug": "platform-admin"
+      }
+    ]
+  }
+}
+```
+
+### Admin Permissions
+
+The seeded admin user now has:
+- Simple role: `ADMIN` in `users.role` field
+- RBAC role: `platform-admin` in `user_roles` table
+- Full system access to all admin features
+- Bypasses all permission checks (super-admin privileges)
+
 ---
 
-**Last Updated**: January 29, 2026  
+**Last Updated**: January 2025  
 **See Also**: [ROLE_PERMISSION_MATRIX.md](./ROLE_PERMISSION_MATRIX.md), [SEED_DATA.md](./SEED_DATA.md)
