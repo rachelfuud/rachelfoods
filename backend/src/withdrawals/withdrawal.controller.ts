@@ -40,7 +40,7 @@ export class WithdrawalController {
     @ApiOperation({ summary: 'Initiate a new withdrawal request' })
     @ApiResponse({ status: 201, description: 'Withdrawal initiated successfully' })
     async initiateWithdrawal(@Body() dto: InitiateWithdrawalDto, @Request() req: any) {
-        const userId = req.user.userId;
+        const userId = req.user.id;
         const userRole = req.user.role;
         return this.withdrawalService.initiateWithdrawal(dto, userId, userRole);
     }
@@ -51,7 +51,7 @@ export class WithdrawalController {
     @ApiOperation({ summary: 'Approve a withdrawal request (Admin only)' })
     @ApiResponse({ status: 200, description: 'Withdrawal approved successfully' })
     async approveWithdrawal(@Body() dto: ApproveWithdrawalDto, @Request() req: any) {
-        const adminUserId = req.user.userId;
+        const adminUserId = req.user.id;
         return this.withdrawalService.approveWithdrawal(dto.withdrawalId, adminUserId, dto.reason);
     }
 
@@ -61,7 +61,7 @@ export class WithdrawalController {
     @ApiOperation({ summary: 'Reject a withdrawal request (Admin only)' })
     @ApiResponse({ status: 200, description: 'Withdrawal rejected successfully' })
     async rejectWithdrawal(@Body() dto: RejectWithdrawalDto, @Request() req: any) {
-        const adminUserId = req.user.userId;
+        const adminUserId = req.user.id;
         return this.withdrawalService.rejectWithdrawal(dto.withdrawalId, adminUserId, dto.reason);
     }
 
@@ -70,7 +70,7 @@ export class WithdrawalController {
     @ApiOperation({ summary: 'Cancel own withdrawal request' })
     @ApiResponse({ status: 200, description: 'Withdrawal cancelled successfully' })
     async cancelWithdrawal(@Body() dto: CancelWithdrawalDto, @Request() req: any) {
-        const userId = req.user.userId;
+        const userId = req.user.id;
         return this.withdrawalService.cancelWithdrawal(dto.withdrawalId, userId, dto.reason);
     }
 
@@ -88,7 +88,7 @@ export class WithdrawalController {
     @ApiQuery({ name: 'status', required: false, enum: WithdrawalStatus })
     @ApiResponse({ status: 200, description: 'User withdrawals retrieved' })
     async getUserWithdrawals(@Request() req: any, @Query('status') status?: WithdrawalStatus) {
-        const userId = req.user.userId;
+        const userId = req.user.id;
         return this.withdrawalService.getUserWithdrawals(userId, status);
     }
 
@@ -108,7 +108,7 @@ export class WithdrawalController {
     @ApiOperation({ summary: 'Start processing an approved withdrawal (Admin only)' })
     @ApiResponse({ status: 200, description: 'Withdrawal processing started' })
     async processWithdrawal(@Body('withdrawalId') withdrawalId: string, @Request() req: any) {
-        const initiatorId = req.user.userId;
+        const initiatorId = req.user.id;
         return this.processingService.startProcessing(withdrawalId, initiatorId);
     }
 
@@ -139,7 +139,7 @@ export class WithdrawalController {
     @ApiOperation({ summary: 'Retry a failed withdrawal (Admin only)' })
     @ApiResponse({ status: 200, description: 'Withdrawal retry initiated' })
     async retryWithdrawal(@Body('withdrawalId') withdrawalId: string, @Request() req: any) {
-        const adminUserId = req.user.userId;
+        const adminUserId = req.user.id;
         return this.processingService.retryWithdrawal(withdrawalId, adminUserId);
     }
 }

@@ -154,7 +154,7 @@ export class WithdrawalRiskExportController {
         @Request() req?: any,
         @Res({ passthrough: true }) res?: Response,
     ) {
-        const adminId = req.user.userId;
+        const adminId = req.user.id;
 
         // Validate required parameters
         if (!format) {
@@ -265,7 +265,7 @@ export class WithdrawalRiskExportController {
         @Query('severity') severity?: 'MEDIUM' | 'HIGH',
         @Request() req?: any,
     ) {
-        const adminId = req.user.userId;
+        const adminId = req.user.id;
 
         // Parse dates
         const parsedStartDate = startDate ? new Date(startDate) : undefined;

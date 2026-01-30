@@ -42,7 +42,7 @@ export class WalletController {
      */
     @Get('/balance')
     async getBalance(@Request() req) {
-        const balance = await this.walletService.getBalance(req.user.userId);
+        const balance = await this.walletService.getBalance(req.user.id);
         return {
             balance,
             currency: 'USD',
@@ -55,7 +55,7 @@ export class WalletController {
      */
     @Get('/details')
     async getDetails(@Request() req) {
-        return this.walletService.getWalletDetails(req.user.userId);
+        return this.walletService.getWalletDetails(req.user.id);
     }
 
     /**
@@ -64,7 +64,7 @@ export class WalletController {
      */
     @Get('/history')
     async getHistory(@Request() req) {
-        return this.walletService.getWalletHistory(req.user.userId);
+        return this.walletService.getWalletHistory(req.user.id);
     }
 
     /**
@@ -85,7 +85,7 @@ export class WalletController {
             dto.source,
             dto.reference,
             {
-                adminId: req.user.userId,
+                adminId: req.user.id,
                 adminEmail: req.user.email,
                 reason: dto.reason,
             },

@@ -48,7 +48,7 @@ export class DeliveryAgentController {
     @Get('me')
     @Permissions('shipping.view')
     async getMyProfile(@Request() req: any) {
-        return this.deliveryAgentService.findByUserId(req.user.userId);
+        return this.deliveryAgentService.findByUserId(req.user.id);
     }
 
     /**

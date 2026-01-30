@@ -41,7 +41,7 @@ export class OrderController {
     @ApiResponse({ status: 201, description: 'Order successfully created' })
     @ApiResponse({ status: 400, description: 'Invalid order data' })
     async create(@Body() createOrderDto: CreateOrderDto, @Request() req: any) {
-        return this.orderService.create(createOrderDto, req.user.userId);
+        return this.orderService.create(createOrderDto, req.user.id);
     }
 
     /**
@@ -54,7 +54,7 @@ export class OrderController {
     @ApiResponse({ status: 200, description: 'Orders retrieved successfully' })
     async findAll(@Request() req: any, @Query() query: any) {
         return this.orderService.findAll(
-            req.user.userId,
+            req.user.id,
             req.user.roles || [],
             query,
         );
@@ -67,7 +67,7 @@ export class OrderController {
     @Get(':id')
     @Permissions('order.view')
     async findOne(@Param('id') id: string, @Request() req: any) {
-        return this.orderService.findOne(id, req.user.userId, req.user.roles || []);
+        return this.orderService.findOne(id, req.user.id, req.user.roles || []);
     }
 
     /**
@@ -85,7 +85,7 @@ export class OrderController {
         @Body() confirmDto: ConfirmOrderDto,
         @Request() req: any,
     ) {
-        return this.orderService.confirmOrder(id, confirmDto, req.user.userId);
+        return this.orderService.confirmOrder(id, confirmDto, req.user.id);
     }
 
     /**
@@ -99,7 +99,7 @@ export class OrderController {
         @Body() updateDto: UpdateOrderDto,
         @Request() req: any,
     ) {
-        return this.orderService.updateStatus(id, updateDto, req.user.userId);
+        return this.orderService.updateStatus(id, updateDto, req.user.id);
     }
 
     /**
@@ -116,7 +116,7 @@ export class OrderController {
         return this.orderService.cancel(
             id,
             reason,
-            req.user.userId,
+            req.user.id,
             req.user.roles || [],
         );
     }
@@ -172,7 +172,7 @@ export class OrderController {
     @Get('recent')
     @Permissions('order.view')
     async getRecentOrders(@Request() req: any) {
-        return this.orderService.getRecentCompletedOrders(req.user.userId);
+        return this.orderService.getRecentCompletedOrders(req.user.id);
     }
 
     /**
@@ -185,7 +185,7 @@ export class OrderController {
         @Param('orderId') orderId: string,
         @Request() req: any,
     ) {
-        return this.orderService.reorderFromPrevious(orderId, req.user.userId);
+        return this.orderService.reorderFromPrevious(orderId, req.user.id);
     }
 
     /**
@@ -212,7 +212,7 @@ export class OrderController {
         return this.kitchenRefillService.approveCustomItem(
             itemId,
             approveDto,
-            req.user.userId,
+            req.user.id,
         );
     }
 }

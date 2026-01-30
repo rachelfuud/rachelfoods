@@ -43,7 +43,7 @@ export class RefundController {
     ) {
         return this.refundService.processRefund(
             orderId,
-            req.user.userId,
+            req.user.id,
             dto.refundAmount,
             dto.reason,
         );

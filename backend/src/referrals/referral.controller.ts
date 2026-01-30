@@ -32,7 +32,7 @@ export class ReferralController {
     @ApiResponse({ status: 400, description: 'Invalid data or referral program inactive' })
     @ApiResponse({ status: 409, description: 'Email already referred by you' })
     async createReferral(@Body() dto: CreateReferralDto, @Request() req) {
-        return this.referralService.createReferral(req.user.userId, dto);
+        return this.referralService.createReferral(req.user.id, dto);
     }
 
     @Get('my-referrals')
@@ -42,7 +42,7 @@ export class ReferralController {
     async getMyReferrals(@Query() query: QueryReferralDto, @Request() req) {
         return this.referralService.queryReferrals({
             ...query,
-            referrerId: req.user.userId,
+            referrerId: req.user.id,
         });
     }
 
@@ -51,7 +51,7 @@ export class ReferralController {
     @ApiOperation({ summary: 'Get referral statistics for current buyer' })
     @ApiResponse({ status: 200, description: 'Referral statistics retrieved successfully' })
     async getMyReferralStats(@Request() req) {
-        return this.referralService.getReferralStats(req.user.userId);
+        return this.referralService.getReferralStats(req.user.id);
     }
 
     @Get('code/:code')

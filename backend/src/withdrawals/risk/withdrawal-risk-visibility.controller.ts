@@ -117,7 +117,7 @@ export class WithdrawalRiskVisibilityController {
         @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset?: number,
         @Request() req?: any,
     ) {
-        const adminId = req.user.userId;
+        const adminId = req.user.id;
 
         // Validate date filters
         const filters: any = { limit, offset };
@@ -208,7 +208,7 @@ export class WithdrawalRiskVisibilityController {
         @Param('id') withdrawalId: string,
         @Request() req: any,
     ) {
-        const adminId = req.user.userId;
+        const adminId = req.user.id;
 
         const timeline = await this.visibilityService.getWithdrawalRiskTimeline(
             withdrawalId,
@@ -260,7 +260,7 @@ export class WithdrawalRiskVisibilityController {
         @Query('endDate') endDate?: string,
         @Request() req?: any,
     ) {
-        const adminId = req.user.userId;
+        const adminId = req.user.id;
 
         const filters: any = {};
 

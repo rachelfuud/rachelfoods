@@ -37,7 +37,7 @@ export class ReviewController {
         @Body() dto: SubmitReviewDto,
         @Request() req,
     ) {
-        return this.reviewService.submitReview(orderId, req.user.userId, dto);
+        return this.reviewService.submitReview(orderId, req.user.id, dto);
     }
 
     @Patch(':id/moderate')
@@ -64,7 +64,7 @@ export class ReviewController {
     @ApiOperation({ summary: 'Get all reviews by current buyer' })
     @ApiResponse({ status: 200, description: 'Reviews retrieved successfully' })
     async getMyReviews(@Query() query: QueryReviewDto, @Request() req) {
-        return this.reviewService.getReviewsByBuyer(req.user.userId, query);
+        return this.reviewService.getReviewsByBuyer(req.user.id, query);
     }
 
     @Get('buyer/:buyerId')
@@ -96,6 +96,6 @@ export class ReviewController {
     @ApiOperation({ summary: 'Get review statistics for current buyer' })
     @ApiResponse({ status: 200, description: 'Review statistics retrieved successfully' })
     async getMyReviewStats(@Request() req) {
-        return this.reviewService.getBuyerReviewStats(req.user.userId);
+        return this.reviewService.getBuyerReviewStats(req.user.id);
     }
 }

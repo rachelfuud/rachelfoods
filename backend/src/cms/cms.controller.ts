@@ -53,7 +53,7 @@ export class CmsController {
         @Body('config') config: any,
         @Request() req,
     ) {
-        return await this.cmsService.updateSiteConfig(type, config, req.user.userId);
+        return await this.cmsService.updateSiteConfig(type, config, req.user.id);
     }
 
     // Page Management
@@ -77,7 +77,7 @@ export class CmsController {
     async createPage(@Body() data: any, @Request() req) {
         return await this.cmsService.createPage({
             ...data,
-            userId: req.user.userId,
+            userId: req.user.id,
         });
     }
 
@@ -87,7 +87,7 @@ export class CmsController {
     async updatePage(@Param('id') id: string, @Body() data: any, @Request() req) {
         return await this.cmsService.updatePage(id, {
             ...data,
-            userId: req.user.userId,
+            userId: req.user.id,
         });
     }
 
@@ -106,7 +106,7 @@ export class CmsController {
         @Body('publish') publish: boolean,
         @Request() req,
     ) {
-        return await this.cmsService.publishPage(id, publish, req.user.userId);
+        return await this.cmsService.publishPage(id, publish, req.user.id);
     }
 
     // Section Management
@@ -152,7 +152,7 @@ export class CmsController {
     async uploadMedia(@Body() data: any, @Request() req) {
         return await this.cmsService.uploadMedia({
             ...data,
-            userId: req.user.userId,
+            userId: req.user.id,
         });
     }
 
