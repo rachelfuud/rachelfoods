@@ -5,7 +5,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRole } from '@prisma/client';
 import { runCmsMigration } from '../../scripts/auto-migrate-cms';
 
-@Controller('admin/migrations')
+@Controller('api/admin/migrations')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(UserRole.ADMIN)
 export class MigrationsController {

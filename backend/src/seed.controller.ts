@@ -5,7 +5,7 @@ import { promisify } from 'util';
 
 const execAsync = promisify(exec);
 
-@Controller('admin')
+@Controller('api/admin')
 export class SeedController {
     constructor(private prisma: PrismaService) { }
 

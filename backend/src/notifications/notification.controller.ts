@@ -20,7 +20,7 @@ import { Permissions } from '../auth/decorators/permissions.decorator';
 
 @ApiTags('Admin Notifications')
 @ApiBearerAuth('JWT-auth')
-@Controller('admin/notifications')
+@Controller('api/admin/notifications')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class NotificationController {
     constructor(private readonly notificationService: NotificationService) { }
