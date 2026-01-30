@@ -95,6 +95,13 @@ async function seedAdminUser() {
                         },
                     },
                 },
+                include: {
+                    user_roles: {
+                        include: {
+                            roles: true,
+                        },
+                    },
+                },
             });
 
             console.log('✅ Created admin user:', adminUser.email);
@@ -111,15 +118,6 @@ async function seedAdminUser() {
     } finally {
         await prisma.$disconnect();
     }
-}
-
-seedAdminUser();
-    } catch (error) {
-    console.error('❌ Error seeding admin user:', error);
-    throw error;
-} finally {
-    await prisma.$disconnect();
-}
 }
 
 seedAdminUser()

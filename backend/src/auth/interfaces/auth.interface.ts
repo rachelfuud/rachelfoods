@@ -12,5 +12,11 @@ export interface AuthResponse {
         firstName: string | null;
         lastName: string | null;
         status: string;
+        role?: string;
+        roles?: Array<{
+            id: string;
+            name: string;
+            slug: string;
+        }>;
     };
 }

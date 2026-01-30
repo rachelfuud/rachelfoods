@@ -132,7 +132,8 @@ npx prisma studio
 
 **Problem**: Admin users were not being recognized after login due to missing roles in auth response.
 
-**Solution**: 
+**Solution**:
+
 1. Updated `auth.service.ts` login method to include `user_roles` relation in database query
 2. Login response now includes both simple `role` field and full `roles` array
 3. Admin seed script now assigns `platform-admin` role in `user_roles` table
@@ -167,6 +168,7 @@ When you login as admin, the backend now returns:
 ### Admin Permissions
 
 The seeded admin user now has:
+
 - Simple role: `ADMIN` in `users.role` field
 - RBAC role: `platform-admin` in `user_roles` table
 - Full system access to all admin features
