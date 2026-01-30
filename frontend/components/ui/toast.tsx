@@ -41,7 +41,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                     <div
                         key={toast.id}
                         className={`
-                            min-w-[300px] p-4 rounded-lg shadow-lg flex items-center justify-between
+                            min-w-75 p-4 rounded-lg shadow-lg flex items-center justify-between
                             animate-in slide-in-from-right duration-300
                             ${toast.type === 'success' ? 'bg-green-500 text-white' : ''}
                             ${toast.type === 'error' ? 'bg-red-500 text-white' : ''}

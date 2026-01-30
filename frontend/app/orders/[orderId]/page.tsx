@@ -5,9 +5,9 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { api } from '@/lib/api';
 import { formatCurrency, formatDate } from '@/lib/utils';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import LoadingSpinner from '@/components/LoadingSpinner';
+import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
 interface OrderItem {
     id: string;

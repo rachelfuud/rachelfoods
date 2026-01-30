@@ -34,7 +34,9 @@ export function StatusBadge({ status }: { status: OrderStatus }) {
     );
 }
 
-export function PaymentMethodBadge({ method }: { method: string }) {
+export function PaymentMethodBadge({ method }: { method?: string }) {
+    if (!method) return null;
+
     const styles = {
         STRIPE: 'bg-purple-100 text-purple-800 border-purple-200',
         COD: 'bg-orange-100 text-orange-800 border-orange-200',
