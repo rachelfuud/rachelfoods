@@ -36,7 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setToken(response.accessToken);
             localStorage.setItem('token', response.accessToken);
             localStorage.setItem('user', JSON.stringify(response.user));
-            
+
             return response;
         } catch (error) {
             console.error('Login failed:', error);
@@ -52,9 +52,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     // Check if user has admin or staff role
-    const isAdmin = user?.roles?.some((role: any) =>
-        ['ADMIN', 'STAFF', 'PLATFORM_ADMIN'].includes(role.name || role)
-    ) || false;
+    const isAdmin = user?.roles?.some((role: any) => {
+        const roleName = role.role?.name || role.name || role;
+        return ['ADMIN', 'STAFF', 'Platform Admin', 'Platform Staff'].includes(roleName);
+    }) || false;
 
     return (
         <AuthContext.Provider value={{ user, token, login, logout, isAdmin }}>

@@ -31,7 +31,7 @@ export default function AdminLoginPage() {
             // Check if user has admin role
             const user = response?.user || JSON.parse(localStorage.getItem('user') || '{}');
             const userRoles = user?.roles || [];
-            const hasAdminRole = userRoles.some((role: any) => 
+            const hasAdminRole = userRoles.some((role: any) =>
                 ['ADMIN', 'STAFF', 'Platform Admin', 'Platform Staff'].includes(role.role?.name || role.name)
             );
 
@@ -49,8 +49,8 @@ export default function AdminLoginPage() {
 
             // Small delay to show the success state before redirect
             setTimeout(() => {
-                router.push(returnUrl);
-                router.refresh();
+                // Use window.location for reliable navigation to admin dashboard
+                window.location.href = returnUrl;
             }, 500);
         } catch (err: any) {
             console.error('Admin authentication error:', err);
@@ -160,8 +160,8 @@ export default function AdminLoginPage() {
                                 <span>Contact your system administrator</span>
                             </div>
                             <div className="pt-2">
-                                <Link 
-                                    href="/" 
+                                <Link
+                                    href="/"
                                     className="text-sm text-primary hover:underline inline-flex items-center gap-1"
                                 >
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
