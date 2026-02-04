@@ -15,7 +15,7 @@ export function Header() {
     const pathname = usePathname();
     const router = useRouter();
     const { mode, toggleMode } = useTheme();
-    const { user, logout } = useAuth();
+    const { user, logout, isAdmin } = useAuth();
     const { itemCount } = useCart();
     const { showToast } = useToast();
     const [searchQuery, setSearchQuery] = useState('');
@@ -234,6 +234,18 @@ export function Header() {
                                         >
                                             🔄 Kitchen Refill
                                         </Link>
+                                        {isAdmin && (
+                                            <>
+                                                <hr className="my-2 border-border" />
+                                                <Link
+                                                    href="/admin"
+                                                    className="block px-4 py-2 text-sm font-semibold text-primary hover:bg-primary/10 transition-colors"
+                                                    onClick={() => setShowUserMenu(false)}
+                                                >
+                                                    ⚙️ Admin Dashboard
+                                                </Link>
+                                            </>
+                                        )}
                                         <hr className="my-2 border-border" />
                                         <button
                                             onClick={handleLogout}

@@ -10,8 +10,14 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
 
     useEffect(() => {
+        // Don't guard the admin login page itself
+        if (pathname === '/admin/login') {
+            return;
+        }
+
         if (!user) {
-            router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
+            // Redirect to admin login page instead of regular login
+            router.push(`/admin/login?returnUrl=${encodeURIComponent(pathname)}`);
         } else if (!isAdmin) {
             router.push('/');
         }

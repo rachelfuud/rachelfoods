@@ -6,7 +6,7 @@ import { api } from '@/lib/api';
 interface AuthContextType {
     user: any | null;
     token: string | null;
-    login: (email: string, password: string) => Promise<void>;
+    login: (email: string, password: string) => Promise<any>;
     logout: () => void;
     isAdmin: boolean;
 }
@@ -36,6 +36,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setToken(response.accessToken);
             localStorage.setItem('token', response.accessToken);
             localStorage.setItem('user', JSON.stringify(response.user));
+            
+            return response;
         } catch (error) {
             console.error('Login failed:', error);
             throw error;
