@@ -15,12 +15,6 @@ export const metadata: Metadata = {
   title: "RachelFoods - Traditional Food Delivery & Kitchen Refill",
   description: "Order authentic traditional foods with kitchen refill feature - pre-order weekly, monthly or for special events. Seller-confirmed orders with custom delivery scheduling.",
   manifest: "/manifest.json",
-  themeColor: "#16a34a",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 5,
-  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
@@ -35,6 +29,13 @@ export const metadata: Metadata = {
       { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
     ],
   },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#16a34a",
 };
 
 export default function RootLayout({
