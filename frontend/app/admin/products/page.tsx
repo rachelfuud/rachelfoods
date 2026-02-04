@@ -19,32 +19,13 @@ export default function AdminProductsPage() {
     const fetchProducts = async () => {
         try {
             setLoading(true);
-            const token = localStorage.getItem('token');
-            if (!token) {
-                alert('Please login first');
-                return;
-            }
-
-            const API_BASE = process.env.NEXT_PUBLIC_API_URL
-                ? `${process.env.NEXT_PUBLIC_API_URL}/api`
-                : 'http://localhost:3001/api';
-
-            const queryParams = new URLSearchParams({
-                page: page.toString(),
-                limit: '20',
-                ...(search && { search }),
+            const data = await api.getAdminProducts({
+                page,
+                limit: 20,
+                search: search || undefined,
+                includeDisabled: true,
             });
-
-            const response = await fetch(`${API_BASE}/admin/products?${queryParams}`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-
-            const data = await response.json();
-            setProducts(data.data || data.products || []);
+            setProducts(data.data || []);
             setTotalPages(data.pagination?.totalPages || 1);
         } catch (error: any) {
             console.error('Failed to fetch products:', error);
@@ -58,22 +39,7 @@ export default function AdminProductsPage() {
         if (!confirm(`Are you sure you want to delete "${name}"?`)) return;
 
         try {
-            const token = localStorage.getItem('token');
-            const API_BASE = process.env.NEXT_PUBLIC_API_URL
-                ? `${process.env.NEXT_PUBLIC_API_URL}/api`
-                : 'http://localhost:3001/api';
-
-            const response = await fetch(`${API_BASE}/admin/products/${id}`, {
-                method: 'DELETE',
-                headers: { Authorization: `Bearer ${token}` },
-            });
-
-            if (!response.ok) throw new Error('Delete failed');
-
-            alert('Product deleted successfully');
-            fetchProducts();
-        } catch (error: any) {
-            console.error('Failed to delete product:', error);
+            await api.deleteAdminProduct(id);
             alert(`Failed to delete product: ${error.message}`);
         }
     };

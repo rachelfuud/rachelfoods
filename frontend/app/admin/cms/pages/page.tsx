@@ -9,8 +9,8 @@ interface CMSPage {
     id: string;
     title: string;
     slug: string;
-    content: string;
-    status: 'DRAFT' | 'PUBLISHED';
+    content?: string;
+    status: string;
     lastModified: string;
 }
 
@@ -43,14 +43,12 @@ export default function CMSPagesPage() {
             });
 
             if (!response.ok) {
-                // If endpoint doesn't exist yet, show sample data
                 if (response.status === 404) {
                     setPages([
                         {
                             id: '1',
                             title: 'About Us',
                             slug: 'about-us',
-                            content: 'Sample content',
                             status: 'PUBLISHED',
                             lastModified: new Date().toISOString()
                         },
@@ -58,7 +56,6 @@ export default function CMSPagesPage() {
                             id: '2',
                             title: 'Contact',
                             slug: 'contact',
-                            content: 'Sample content',
                             status: 'PUBLISHED',
                             lastModified: new Date().toISOString()
                         },
@@ -74,16 +71,8 @@ export default function CMSPagesPage() {
         } catch (error: any) {
             console.error('Failed to load CMS pages:', error);
             showToast(error.message || 'Failed to load pages', 'error');
-            // Show sample data as fallback
             setPages([
-                {
-                    id: '1',
-                    title: 'About Us',
-                    slug: 'about-us',
-                    content: 'Sample content',
-                    status: 'PUBLISHED',
-                    lastModified: new Date().toISOString()
-                },
+                { id: '1', title: 'About Us', slug: 'about-us', status: 'PUBLISHED', lastModified: new Date().toISOString() },
             ]);
         } finally {
             setLoading(false);
@@ -114,16 +103,11 @@ export default function CMSPagesPage() {
     };
 
     if (loading) {
-        return (
-            <div className="flex items-center justify-center min-h-[400px]">
-                <LoadingSpinner />
-            </div>
-        );
+        return <div className="flex items-center justify-center min-h-[400px]"><LoadingSpinner /></div>;
     }
 
     return (
         <div className="space-y-6">
-            {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-bold">Content Pages</h1>
@@ -137,7 +121,6 @@ export default function CMSPagesPage() {
                 </button>
             </div>
 
-            {/* Pages List */}
             <div className="bg-background border border-border rounded-lg overflow-hidden">
                 <table className="w-full">
                     <thead className="bg-muted border-b border-border">
@@ -163,9 +146,7 @@ export default function CMSPagesPage() {
                                     <td className="px-6 py-4 text-foreground/70">/{page.slug}</td>
                                     <td className="px-6 py-4">
                                         <span
-                                            className={`px-2 py-1 rounded-full text-xs font-medium ${page.status === 'PUBLISHED'
-                                                    ? 'bg-green-100 text-green-700'
-                                                    : 'bg-yellow-100 text-yellow-700'
+                                            className={`px-2 py-1 rounded-full text-xs font-medium ${page.status === 'PUBLISHED' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
                                                 }`}
                                         >
                                             {page.status}
@@ -175,16 +156,10 @@ export default function CMSPagesPage() {
                                         {new Date(page.lastModified).toLocaleDateString()}
                                     </td>
                                     <td className="px-6 py-4 text-right space-x-2">
-                                        <button
-                                            onClick={() => showToast('Edit feature coming soon', 'info')}
-                                            className="text-primary hover:underline text-sm"
-                                        >
+                                        <button onClick={() => showToast('Edit feature coming soon', 'info')} className="text-primary hover:underline text-sm">
                                             Edit
                                         </button>
-                                        <button
-                                            onClick={() => handleDelete(page.id, page.title)}
-                                            className="text-red-600 hover:underline text-sm"
-                                        >
+                                        <button onClick={() => handleDelete(page.id, page.title)} className="text-red-600 hover:underline text-sm">
                                             Delete
                                         </button>
                                     </td>
@@ -195,51 +170,5 @@ export default function CMSPagesPage() {
                 </table>
             </div>
         </div>
-    );
-}
-<tr key={page.slug} className="border-b border-border hover:bg-muted/50">
-    <td className="px-6 py-4 font-medium">{page.title}</td>
-    <td className="px-6 py-4 text-sm text-foreground/70">/{page.slug}</td>
-    <td className="px-6 py-4">
-        <span
-            className={`px-2 py-1 rounded-full text-xs font-semibold ${page.status === 'Published'
-                ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
-                }`}
-        >
-            {page.status}
-        </span>
-    </td>
-    <td className="px-6 py-4 text-sm text-foreground/70">{page.lastModified}</td>
-    <td className="px-6 py-4 text-right">
-        <button
-            onClick={() => showToast('Edit feature coming soon!', 'info')}
-            className="text-primary hover:underline text-sm font-medium"
-        >
-            Edit
-        </button>
-    </td>
-</tr>
-                        ))}
-                    </tbody >
-                </table >
-            </div >
-
-    {/* Coming Soon Notice */ }
-    < div className = "bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6" >
-        <div className="flex items-start gap-3">
-            <span className="text-2xl">ℹ️</span>
-            <div>
-                <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">
-                    Feature in Development
-                </h3>
-                <p className="text-sm text-blue-800 dark:text-blue-200">
-                    Full CMS page editor with rich text editing, media embedding, and SEO controls is currently in development.
-                    For now, pages are managed through the codebase.
-                </p>
-            </div>
-        </div>
-            </div >
-        </div >
     );
 }

@@ -5,7 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 
 export function AdminGuard({ children }: { children: React.ReactNode }) {
-    const { user, isAdmin } = useAuth();
+    const { user, isAdmin, loading } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
 
@@ -15,13 +15,16 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
             return;
         }
 
+        // Wait for auth to finish loading before redirecting
+        if (loading) return;
+
         if (!user) {
             // Redirect to admin login page instead of regular login
             router.push(`/admin/login?returnUrl=${encodeURIComponent(pathname)}`);
         } else if (!isAdmin) {
             router.push('/');
         }
-    }, [user, isAdmin, router, pathname]);
+    }, [user, isAdmin, loading, router, pathname]);
 
     // Allow access to login page without authentication
     if (pathname === '/admin/login') {
