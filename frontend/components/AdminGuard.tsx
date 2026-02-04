@@ -23,6 +23,11 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
         }
     }, [user, isAdmin, router, pathname]);
 
+    // Allow access to login page without authentication
+    if (pathname === '/admin/login') {
+        return <>{children}</>;
+    }
+
     if (!user || !isAdmin) {
         return (
             <div className="min-h-screen flex items-center justify-center">
