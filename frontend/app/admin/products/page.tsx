@@ -19,17 +19,36 @@ export default function AdminProductsPage() {
     const fetchProducts = async () => {
         try {
             setLoading(true);
-            const data = await api.getAdminProducts({
-                page,
-                limit: 20,
-                search: search || undefined,
-                includeDisabled: true,
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('Please login first');
+                return;
+            }
+
+            const API_BASE = process.env.NEXT_PUBLIC_API_URL
+                ? `${process.env.NEXT_PUBLIC_API_URL}/api`
+                : 'http://localhost:3001/api';
+
+            const queryParams = new URLSearchParams({
+                page: page.toString(),
+                limit: '20',
+                ...(search && { search }),
             });
-            setProducts(data.data);
-            setTotalPages(data.pagination.totalPages);
-        } catch (error) {
+
+            const response = await fetch(`${API_BASE}/admin/products?${queryParams}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            setProducts(data.data || data.products || []);
+            setTotalPages(data.pagination?.totalPages || 1);
+        } catch (error: any) {
             console.error('Failed to fetch products:', error);
-            alert('Failed to load products');
+            alert(`Failed to load products: ${error.message}`);
         } finally {
             setLoading(false);
         }
@@ -39,12 +58,23 @@ export default function AdminProductsPage() {
         if (!confirm(`Are you sure you want to delete "${name}"?`)) return;
 
         try {
-            await api.deleteAdminProduct(id);
+            const token = localStorage.getItem('token');
+            const API_BASE = process.env.NEXT_PUBLIC_API_URL
+                ? `${process.env.NEXT_PUBLIC_API_URL}/api`
+                : 'http://localhost:3001/api';
+
+            const response = await fetch(`${API_BASE}/admin/products/${id}`, {
+                method: 'DELETE',
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            if (!response.ok) throw new Error('Delete failed');
+
             alert('Product deleted successfully');
             fetchProducts();
-        } catch (error) {
+        } catch (error: any) {
             console.error('Failed to delete product:', error);
-            alert('Failed to delete product');
+            alert(`Failed to delete product: ${error.message}`);
         }
     };
 
@@ -135,8 +165,8 @@ export default function AdminProductsPage() {
                                         <td className="px-6 py-4">
                                             <span
                                                 className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${product.status === 'ACTIVE'
-                                                        ? 'bg-success/20 text-success'
-                                                        : 'bg-error/20 text-error'
+                                                    ? 'bg-success/20 text-success'
+                                                    : 'bg-error/20 text-error'
                                                     }`}
                                             >
                                                 {product.status}

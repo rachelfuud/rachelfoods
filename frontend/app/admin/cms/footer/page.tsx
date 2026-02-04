@@ -45,8 +45,11 @@ export default function FooterManagerPage() {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
+            const API_BASE = process.env.NEXT_PUBLIC_API_URL
+                ? `${process.env.NEXT_PUBLIC_API_URL}/api`
+                : 'http://localhost:3001/api';
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/api/admin/cms/config/footer`,
+                `${API_BASE}/admin/cms/config/footer`,
                 {
                     headers: { Authorization: `Bearer ${token}` },
                 }
@@ -65,8 +68,11 @@ export default function FooterManagerPage() {
         try {
             setSaving(true);
             const token = localStorage.getItem('token');
+            const API_BASE = process.env.NEXT_PUBLIC_API_URL
+                ? `${process.env.NEXT_PUBLIC_API_URL}/api`
+                : 'http://localhost:3001/api';
             await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/api/admin/cms/config/footer`,
+                `${API_BASE}/admin/cms/config/footer`,
                 {
                     method: 'PUT',
                     headers: {

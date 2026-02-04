@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useToast } from '@/components/ui/toast';
 import Image from 'next/image';
 
@@ -16,26 +16,69 @@ interface MediaFile {
 export default function MediaLibraryPage() {
     const { showToast } = useToast();
     const [uploading, setUploading] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [mediaFiles, setMediaFiles] = useState<MediaFile[]>([]);
 
-    // Sample media files
-    const mediaFiles: MediaFile[] = [
-        {
-            id: '1',
-            filename: 'logo.png',
-            url: '/logo.png',
-            type: 'image/png',
-            size: 15234,
-            uploadedAt: '2026-02-04',
-        },
-        {
-            id: '2',
-            filename: 'hero-banner.jpg',
-            url: '/placeholder.jpg',
-            type: 'image/jpeg',
-            size: 234567,
-            uploadedAt: '2026-02-03',
-        },
-    ];
+    useEffect(() => {
+        loadMedia();
+    }, []);
+
+    const loadMedia = async () => {
+        try {
+            setLoading(true);
+            const token = localStorage.getItem('token');
+            if (!token) {
+                showToast('Please login first', 'error');
+                return;
+            }
+
+            const API_BASE = process.env.NEXT_PUBLIC_API_URL
+                ? `${process.env.NEXT_PUBLIC_API_URL}/api`
+                : 'http://localhost:3001/api';
+
+            const response = await fetch(`${API_BASE}/admin/cms/media`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            if (!response.ok) {
+                // If endpoint doesn't exist, show sample data
+                if (response.status === 404) {
+                    setMediaFiles([
+                        {
+                            id: '1',
+                            filename: 'logo.png',
+                            url: '/logo.png',
+                            type: 'image/png',
+                            size: 15234,
+                            uploadedAt: new Date().toISOString(),
+                        },
+                    ]);
+                    showToast('Media library endpoint not implemented yet - showing sample', 'info');
+                    return;
+                }
+                throw new Error(`Failed to load: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            setMediaFiles(data.media || data.files || []);
+        } catch (error: any) {
+            console.error('Failed to load media:', error);
+            showToast(error.message || 'Failed to load media library', 'error');
+            // Fallback to sample data
+            setMediaFiles([
+                {
+                    id: '1',
+                    filename: 'placeholder.jpg',
+                    url: '/placeholder.jpg',
+                    type: 'image/jpeg',
+                    size: 15234,
+                    uploadedAt: new Date().toISOString(),
+                },
+            ]);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const formatFileSize = (bytes: number) => {
         if (bytes < 1024) return bytes + ' B';
@@ -46,6 +89,37 @@ export default function MediaLibraryPage() {
     const handleFileUpload = () => {
         showToast('Upload feature will be available in next update', 'info');
     };
+
+    const handleDelete = async (id: string, filename: string) => {
+        if (!confirm(`Delete "${filename}"?`)) return;
+
+        try {
+            const token = localStorage.getItem('token');
+            const API_BASE = process.env.NEXT_PUBLIC_API_URL
+                ? `${process.env.NEXT_PUBLIC_API_URL}/api`
+                : 'http://localhost:3001/api';
+
+            const response = await fetch(`${API_BASE}/admin/cms/media/${id}`, {
+                method: 'DELETE',
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            if (!response.ok) throw new Error('Delete failed');
+
+            showToast('Media deleted successfully', 'success');
+            loadMedia();
+        } catch (error: any) {
+            showToast(error.message || 'Failed to delete media', 'error');
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-[400px]">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-6">
