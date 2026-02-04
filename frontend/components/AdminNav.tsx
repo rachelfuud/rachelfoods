@@ -19,6 +19,8 @@ export function AdminNav() {
     const navItems = [
         { path: '/admin', label: 'Dashboard', icon: '📊' },
         { path: '/admin/orders', label: 'Orders', icon: '📦' },
+        { path: '/admin/products', label: 'Products', icon: '🛍️' },
+        { path: '/admin/hero-slides', label: 'Hero Slides', icon: '🎯' },
         { path: '/admin/withdrawals', label: 'Withdrawals', icon: '💰' },
         { path: '/admin/alerts', label: 'Alerts', icon: '⚠️' },
         { path: '/admin/governance', label: 'Governance', icon: '🛡️' },

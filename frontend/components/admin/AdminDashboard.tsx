@@ -62,16 +62,14 @@ export function AdminDashboard() {
                 return;
             }
 
-            // Use same pattern as lib/api.ts to prevent path duplication
-            const API_BASE = process.env.NEXT_PUBLIC_API_URL
-                ? `${process.env.NEXT_PUBLIC_API_URL}/api`
-                : 'http://localhost:3001/api';
+            // Use API_BASE from environment variable or fallback
+            const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
             const [healthRes, metricsRes] = await Promise.all([
-                fetch(`${API_BASE}/admin/system/health`, {
+                fetch(`${API_BASE}/api/admin/system/health`, {
                     headers: { Authorization: `Bearer ${token}` },
                 }),
-                fetch(`${API_BASE}/admin/system/metrics/orders`, {
+                fetch(`${API_BASE}/api/admin/system/metrics/orders`, {
                     headers: { Authorization: `Bearer ${token}` },
                 }),
             ]);

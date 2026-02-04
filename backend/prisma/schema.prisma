@@ -32,6 +32,7 @@ model categories {
   @@index([parentId])
   @@index([slug])
   @@index([status])
+  @@index([status, parentId])
 }
 
 model custom_order_items {
@@ -291,6 +292,8 @@ model products {
   @@index([status])
   @@index([isFeatured])
   @@index([orderCount])
+  @@index([status, isFeatured])
+  @@index([status, orderCount(sort: Desc)])
 }
 
 model product_images {
@@ -347,6 +350,7 @@ model product_variants {
   @@index([isDefault])
   @@index([stock])
   @@index([productId, isActive])
+  @@index([isActive, isDefault])
 }
 
 model referral_config {
@@ -566,6 +570,7 @@ model users {
   @@index([email])
   @@index([status])
   @@index([refreshToken])
+  @@index([id, status])
 }
 
 model wallets {
@@ -592,6 +597,7 @@ model wallets {
   @@index([userId])
   @@index([walletCode])
   @@index([walletType])
+  @@index([walletType, userId, walletStatus])
 }
 
 model audit_logs {
@@ -945,6 +951,7 @@ model refill_profiles {
   @@index([isActive])
   @@index([lastOrderedAt])
   @@index([lastReminderSentAt])
+  @@index([userId, isActive])
 }
 
 // Address Book (Phase 4A)
@@ -987,6 +994,7 @@ model admin_notifications {
   @@index([priority])
   @@index([createdAt])
   @@index([orderId])
+  @@index([isRead, priority(sort: Desc), createdAt(sort: Desc)])
 }
 
 enum AdminNotificationType {
@@ -1090,6 +1098,7 @@ model hero_slides {
 
   @@index([order])
   @@index([isActive])
+  @@index([isActive, order])
 }
 
 // ========================================

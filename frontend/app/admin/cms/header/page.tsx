@@ -40,8 +40,9 @@ export default function HeaderManagerPage() {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
+            const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/api/admin/cms/config/header`,
+                `${API_BASE}/api/admin/cms/config/header`,
                 {
                     headers: { Authorization: `Bearer ${token}` },
                 }
