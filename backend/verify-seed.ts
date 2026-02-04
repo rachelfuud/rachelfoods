@@ -26,7 +26,7 @@ async function verify() {
         include: { category: true }
     });
     console.log(`\n🍲 Products: ${productCount}`);
-    products.forEach(p => console.log(`   • ${p.name} (${p.category?.name || 'No category'}) - ${p.stock} in stock - ${p.imageUrl ? 'Has image' : 'No image'}`));
+    products.forEach(p => console.log(`   • ${p.name} (${p.category?.name || 'No category'}) - ${p.stock} in stock - ${p.images && p.images.length > 0 ? 'Has image' : 'No image'}`));
 
     // Check hero slides
     const heroCount = await prisma.hero_slides.count();

@@ -170,7 +170,6 @@ async function main() {
             password: hashedPassword,
             firstName: 'System',
             lastName: 'Administrator',
-            role: 'ADMIN',
             updatedAt: new Date(),
         },
     });

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+import dynamic from 'next/dynamic';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { PageLoader } from '@/components/ui/PageLoader';
@@ -10,6 +10,11 @@ import { useAuth } from '@/components/AuthProvider';
 import { api } from '@/lib/api';
 import { Product } from '@/lib/types';
 import { formatCurrency } from '@/lib/currency';
+
+// Lazy load Image component for better initial load
+const Image = dynamic(() => import('next/image'), {
+    loading: () => <div className="animate-pulse bg-gray-200 h-48 w-full rounded" />,
+});
 
 interface RefillItem extends Product {
     lastOrderedQuantity?: number;

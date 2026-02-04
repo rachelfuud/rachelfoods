@@ -44,7 +44,7 @@ async function updateProductImages() {
 
             await prisma.products.update({
                 where: { id: product.id },
-                data: { imageUrl: newImageUrl },
+                data: { images: { set: [newImageUrl] } },
             });
 
             console.log(`✅ Updated "${product.name}" with image: ${newImageUrl}`);

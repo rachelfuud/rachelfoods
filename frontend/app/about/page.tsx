@@ -2,6 +2,10 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import Link from 'next/link';
 
+// Enable ISR: Revalidate every hour (static content changes rarely)
+// FREE optimization - instant page loads from cache
+export const revalidate = 3600;
+
 export default function AboutPage() {
     return (
         <div className="min-h-screen flex flex-col">

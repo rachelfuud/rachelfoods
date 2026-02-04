@@ -65,12 +65,6 @@ async function seedAdminUser() {
                 },
             });
 
-            // Update user's simple role field
-            await prisma.users.update({
-                where: { id: adminUser.id },
-                data: { role: 'ADMIN' },
-            });
-
             console.log('✅ Added Platform Admin role to existing user:', adminEmail);
         } else {
             // Create new admin user
@@ -83,7 +77,6 @@ async function seedAdminUser() {
                     password: hashedPassword,
                     firstName: 'Admin',
                     lastName: 'User',
-                    role: 'ADMIN',
                     status: 'ACTIVE',
                     createdAt: new Date(),
                     updatedAt: new Date(),

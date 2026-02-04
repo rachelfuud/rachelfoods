@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { api } from '@/lib/api';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import { Header } from '@/components/Header';
@@ -246,10 +247,12 @@ export default function OrderDetailPage() {
                             {orderItems.map((item) => (
                                 <div key={item.id} className="flex items-start gap-4 pb-4 border-b border-border last:border-b-0 last:pb-0">
                                     {item.products?.imageUrl && (
-                                        <img
+                                        <Image
                                             src={item.products.imageUrl}
                                             alt={item.productName}
-                                            className="w-20 h-20 object-cover rounded-lg border border-border"
+                                            width={80}
+                                            height={80}
+                                            className="object-cover rounded-lg border border-border"
                                         />
                                     )}
                                     <div className="flex-1">

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { api } from '@/lib/api';
 
@@ -79,10 +80,12 @@ export default function AdminRefillAnalytics() {
                                 {index + 1}
                             </div>
                             {item.product.imageUrl && (
-                                <img
+                                <Image
                                     src={item.product.imageUrl}
                                     alt={item.product.name}
-                                    className="w-12 h-12 object-cover rounded"
+                                    width={48}
+                                    height={48}
+                                    className="object-cover rounded"
                                 />
                             )}
                             <div className="flex-1">

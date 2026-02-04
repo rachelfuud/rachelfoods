@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { api } from '@/lib/api';
 import Link from 'next/link';
 
@@ -115,10 +116,12 @@ export default function RefillSection() {
                             >
                                 <div className="flex items-start gap-3">
                                     {refill.product.imageUrl && (
-                                        <img
+                                        <Image
                                             src={refill.product.imageUrl}
                                             alt={refill.product.name}
-                                            className="w-16 h-16 object-cover rounded"
+                                            width={64}
+                                            height={64}
+                                            className="object-cover rounded"
                                         />
                                     )}
                                     <div className="flex-1">

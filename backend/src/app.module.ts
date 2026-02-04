@@ -1,12 +1,13 @@
-import { Module } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
-import { ThrottlerGuard } from '@nestjs/throttler';
 import { WinstonModule } from 'nest-winston';
 import { loggerConfig } from './common/logging/logger.config';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
+import { UserThrottlerGuard } from './common/guards/user-throttler.guard';
+import { CorrelationIdMiddleware } from './common/middleware/correlation-id.middleware';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SeedController } from './seed.controller';
@@ -80,10 +81,10 @@ import { ContactModule } from './contact/contact.module';
     controllers: [AppController, SeedController],
     providers: [
         AppService,
-        // Apply throttler guard globally
+        // Apply user-based throttler guard globally (ENTERPRISE HARDENING)
         {
             provide: APP_GUARD,
-            useClass: ThrottlerGuard,
+            useClass: UserThrottlerGuard,
         },
         // Apply logging interceptor globally
         {
@@ -92,4 +93,11 @@ import { ContactModule } from './contact/contact.module';
         },
     ],
 })
-export class AppModule { }
+export class AppModule implements NestModule {
+    configure(consumer: MiddlewareConsumer) {
+        // Apply correlation ID middleware globally for request tracing (ENTERPRISE HARDENING)
+        consumer
+            .apply(CorrelationIdMiddleware)
+            .forRoutes('*');
+    }
+}

@@ -1,8 +1,10 @@
-'use client';
-
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import Link from 'next/link';
+
+// Enable static generation: Help content doesn't change often
+// Revalidate every 4 hours
+export const revalidate = 14400;
 
 export default function HelpPage() {
     return (

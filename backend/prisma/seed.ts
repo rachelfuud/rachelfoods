@@ -292,7 +292,7 @@ async function main() {
     const createdCategories: Record<string, any> = {};
     for (const category of sampleCategories) {
         const upsertedCategory = await prisma.categories.upsert({
-            where: { id: category.id },
+            where: { slug: category.slug },
             update: category,
             create: category,
         });
@@ -458,8 +458,7 @@ async function main() {
                     unit: product.unit,
                     weight: product.weight,
                     categoryId: product.categoryId,
-                    imageUrl: product.imageUrl,
-                    isFeatured: product.isFeatured,
+                    images: product.imageUrl ? [product.imageUrl] : [],
                     status: product.status as ProductStatus,
                     updatedAt: new Date(),
                 },

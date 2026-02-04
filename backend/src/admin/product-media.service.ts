@@ -66,7 +66,7 @@ export class ProductMediaService {
         if (primaryImage) {
             await this.prisma.products.update({
                 where: { id: productId },
-                data: { imageUrl: primaryImage.url },
+                data: { images: { set: [primaryImage.url] } },
             });
         }
 
@@ -111,7 +111,7 @@ export class ProductMediaService {
             // Update product's imageUrl
             await this.prisma.products.update({
                 where: { id: image.productId },
-                data: { imageUrl: data.url || image.url },
+                data: { images: { set: [data.url || image.url] } },
             });
         }
 
@@ -157,13 +157,13 @@ export class ProductMediaService {
 
                 await this.prisma.products.update({
                     where: { id: image.productId },
-                    data: { imageUrl: nextImage.url },
+                    data: { images: { set: [nextImage.url] } },
                 });
             } else {
                 // No images left, clear product imageUrl
                 await this.prisma.products.update({
                     where: { id: image.productId },
-                    data: { imageUrl: null },
+                    data: { images: { set: [] } },
                 });
             }
         }

@@ -9,7 +9,6 @@
     "target": "ES2021",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,
@@ -18,8 +17,8 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "esModuleInterop": true,
-    "moduleResolution": "node10",
-    "ignoreDeprecations": "5.0"
+    "moduleResolution": "bundler",
+    "ignoreDeprecations": "6.0"
   },
   "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]
 }

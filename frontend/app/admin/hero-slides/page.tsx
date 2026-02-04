@@ -1,11 +1,17 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useAuth } from '@/components/AuthProvider';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
-import Image from 'next/image';
+import dynamic from 'next/dynamic';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+
+// Lazy load heavy Image component for better performance
+const Image = dynamic(() => import('next/image'), {
+    loading: () => <div className="animate-pulse bg-gray-200 h-48 w-full rounded-md" />,
+    ssr: false,
+});
 
 interface HeroSlide {
     id: string;

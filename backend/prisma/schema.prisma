@@ -6,8 +6,9 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  // Note: url property will be moved to prisma.config.ts in Prisma 7
-  // Current configuration is valid for Prisma 5.x
+  // Note: This configuration is valid for Prisma 5.x
+  // Prisma 7 will require prisma.config.ts - migration pending
+  // See: https://pris.ly/d/config-datasource
 }
 
 model categories {
@@ -268,6 +269,7 @@ model products {
   perishable     Boolean            @default(false)
   categoryId     String?
   status         ProductStatus      @default(DRAFT)
+  images         String[]
   imageUrl       String?
   isFeatured     Boolean            @default(false)
   supportsRefill Boolean            @default(true)
@@ -280,8 +282,8 @@ model products {
   variants       product_variants[]
   category       categories?        @relation(fields: [categoryId], references: [id])
   refillProfiles refill_profiles[]
-  images         product_images[]
-  videos         product_videos[]
+  productImages  product_images[]
+  productVideos  product_videos[]
 
   @@index([categoryId])
   @@index([createdBy])
@@ -541,7 +543,6 @@ model users {
   firstName                                 String?
   lastName                                  String?
   phone                                     String?
-  role                                      UserRole              @default(CUSTOMER)
   status                                    UserStatus            @default(ACTIVE)
   refreshToken                              String?               @unique
   refreshTokenExpiresAt                     DateTime?
@@ -564,7 +565,6 @@ model users {
 
   @@index([email])
   @@index([status])
-  @@index([role])
   @@index([refreshToken])
 }
 

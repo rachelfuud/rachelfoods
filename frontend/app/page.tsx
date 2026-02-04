@@ -7,6 +7,43 @@ import { ProductCard } from '@/components/ProductCard';
 import { api } from '@/lib/api';
 import { Product } from '@/lib/types';
 import Image from 'next/image';
+import type { Metadata } from 'next';
+
+// Metadata for SEO and social sharing
+export const metadata: Metadata = {
+  title: 'RachelFoods - Authentic Traditional Food Delivery',
+  description: 'Order fresh traditional foods with our unique kitchen refill feature. Seller-confirmed orders, custom delivery scheduling, and authentic recipes delivered to your door.',
+  openGraph: {
+    type: 'website',
+    url: 'https://rachelfoods.com',
+    title: 'RachelFoods - Authentic Traditional Food Delivery',
+    description: 'Order fresh traditional foods with our unique kitchen refill feature. Seller-confirmed orders, custom delivery scheduling, and authentic recipes.',
+    images: [
+      {
+        url: 'https://rachelfoods.com/og-home.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'RachelFoods - Traditional Food Delivery',
+      },
+    ],
+    siteName: 'RachelFoods',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'RachelFoods - Authentic Traditional Food Delivery',
+    description: 'Order fresh traditional foods with our unique kitchen refill feature.',
+    images: ['https://rachelfoods.com/og-home.jpg'],
+    creator: '@rachelfoods',
+  },
+  keywords: [
+    'traditional food',
+    'food delivery',
+    'kitchen refill',
+    'authentic recipes',
+    'fresh food',
+    'RachelFoods',
+  ],
+};
 
 export default async function Home() {
   // Fetch featured, popular, and all products with comprehensive fallback

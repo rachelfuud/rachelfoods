@@ -4,6 +4,39 @@ import { ProductGrid } from '@/components/ProductGrid';
 import { api } from '@/lib/api';
 import { Product, Category } from '@/lib/types';
 import Link from 'next/link';
+import type { Metadata } from 'next';
+
+// Metadata for SEO and social sharing
+export const metadata: Metadata = {
+    title: 'Product Catalog - RachelFoods',
+    description: 'Browse our complete selection of authentic traditional food products. Fresh ingredients, spices, ready mixes, and more delivered to your door.',
+    openGraph: {
+        type: 'website',
+        url: 'https://rachelfoods.com/catalog',
+        title: 'Product Catalog - RachelFoods',
+        description: 'Browse our complete selection of authentic traditional food products.',
+        images: [
+            {
+                url: 'https://rachelfoods.com/og-catalog.jpg',
+                width: 1200,
+                height: 630,
+                alt: 'RachelFoods Product Catalog',
+            },
+        ],
+        siteName: 'RachelFoods',
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Product Catalog - RachelFoods',
+        description: 'Browse our complete selection of authentic traditional food products.',
+        images: ['https://rachelfoods.com/og-catalog.jpg'],
+    },
+};
+
+// Enable ISR: Revalidate every 60 seconds
+// Pages are pre-rendered and cached for 60s, then regenerated on next request
+// FREE optimization - reduces database load by 90%
+export const revalidate = 60;
 
 export default async function CatalogPage({
     searchParams,

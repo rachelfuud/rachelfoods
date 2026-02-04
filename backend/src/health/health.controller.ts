@@ -1,14 +1,33 @@
 import { Controller, Get } from '@nestjs/common';
+import { HealthCheck, HealthCheckService, HealthCheckResult } from '@nestjs/terminus';
 import { PrismaService } from '../prisma/prisma.service';
+import { PrismaHealthIndicator } from './prisma.health';
 
 /**
  * Health check endpoints for monitoring
  * 
  * Reference: SPRINT_8_TRACK_D_HARDENING.md - Connection Pooling
+ * Enhanced with @nestjs/terminus for standardized health checks
  */
 @Controller('api/health')
 export class HealthController {
-    constructor(private prisma: PrismaService) { }
+    constructor(
+        private prisma: PrismaService,
+        private health: HealthCheckService,
+        private db: PrismaHealthIndicator,
+    ) { }
+
+    /**
+     * Main health check endpoint (Terminus)
+     * FREE: Railway/Render can use this for auto-restart
+     */
+    @Get()
+    @HealthCheck()
+    async check(): Promise<HealthCheckResult> {
+        return this.health.check([
+            () => this.db.pingCheck('database'),
+        ]);
+    }
 
     @Get('db')
     async checkDatabase() {

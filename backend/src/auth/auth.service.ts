@@ -160,15 +160,6 @@ export class AuthService {
             slug: ur.roles.slug,
         })) || [];
 
-        // If no user_roles but has simple role field, add it
-        if (roles.length === 0 && user.role) {
-            roles.push({
-                id: `role_${user.role.toLowerCase()}`,
-                name: user.role,
-                slug: user.role.toLowerCase(),
-            });
-        }
-
         return {
             accessToken,
             refreshToken,
@@ -178,7 +169,6 @@ export class AuthService {
                 firstName: user.firstName,
                 lastName: user.lastName,
                 status: user.status,
-                role: user.role,
                 roles: roles,
             },
         };

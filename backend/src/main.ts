@@ -3,16 +3,26 @@ import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 import { json } from 'express';
+import helmet from 'helmet';
+import compression from 'compression';
+import { validateEnv } from './config/env.validation';
 
 console.log('=== STARTING APPLICATION ===');
 console.log('NODE_ENV:', process.env.NODE_ENV);
 console.log('PORT:', process.env.PORT);
 
 async function bootstrap() {
+  // Validate environment variables FIRST (fail fast on configuration errors)
+  validateEnv();
+
   console.log('Bootstrap function called...');
   const app = await NestFactory.create(AppModule, {
     rawBody: true, // Enable raw body for Stripe webhooks
   });
+
+  // Enable compression (gzip/brotli) for 70% smaller responses
+  // FREE optimization - reduces bandwidth usage dramatically
+  app.use(compression());
 
   // Configure JSON middleware with raw body ONLY for webhook route
   app.use((req: any, res: any, next: any) => {
@@ -49,6 +59,27 @@ async function bootstrap() {
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
   });
+
+  // Security hardening with Helmet (FREE)
+  // Content Security Policy to prevent XSS attacks
+  app.use(helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "js.stripe.com", "*.paypal.com"],
+        styleSrc: ["'self'", "'unsafe-inline'", "fonts.googleapis.com"],
+        fontSrc: ["'self'", "fonts.gstatic.com"],
+        imgSrc: ["'self'", "data:", "*.stripe.com", "*.cloudinary.com"],
+        connectSrc: ["'self'", "*.stripe.com", "*.paypal.com"],
+        frameSrc: ["'self'", "js.stripe.com", "*.paypal.com"],
+      },
+    },
+    hsts: {
+      maxAge: 31536000,
+      includeSubDomains: true,
+      preload: true,
+    },
+  }));
 
   // Global prefix removed - controllers already have 'api/' prefix
   app.useGlobalFilters(new GlobalExceptionFilter());
