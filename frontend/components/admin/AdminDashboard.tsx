@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { StatCard, SkeletonCard, EmptyState } from '@/components/admin/StatCard';
 import { BusinessIntelligence } from '@/components/admin/BusinessIntelligence';
+import { QuickActionCard, QuickActionsGrid } from '@/components/admin/QuickActionCard';
 import { formatCurrency } from '@/lib/utils';
 
 interface SystemHealth {
@@ -125,6 +126,36 @@ export function AdminDashboard() {
                     🔄 Refresh
                 </button>
             </div>
+
+            {/* Quick Actions */}
+            <QuickActionsGrid>
+                <QuickActionCard
+                    icon="📦"
+                    title="New Product"
+                    description="Add a product to catalog"
+                    href="/admin/products?action=new"
+                />
+                <QuickActionCard
+                    icon="📋"
+                    title="Manage Orders"
+                    description="View and process orders"
+                    href="/admin/orders"
+                    badge={health?.metrics.orders.pending ? String(health.metrics.orders.pending) : undefined}
+                    badgeColor="warning"
+                />
+                <QuickActionCard
+                    icon="🎯"
+                    title="Hero Slides"
+                    description="Update homepage banner"
+                    href="/admin/hero-slides"
+                />
+                <QuickActionCard
+                    icon="🎨"
+                    title="Theme Settings"
+                    description="Customize site appearance"
+                    href="/admin/theme"
+                />
+            </QuickActionsGrid>
 
             {/* Key Metrics Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
