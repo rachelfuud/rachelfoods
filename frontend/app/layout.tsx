@@ -7,6 +7,7 @@ import { CartProvider } from "@/contexts/CartContext";
 import { ToastProvider } from "@/components/ui/toast";
 import { PageTransitionLoader } from "@/components/ui/page-transition-loader";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { QueryClientProvider } from "@/components/QueryClientProvider";
 import { Analytics } from '@vercel/analytics/react';
 
 const inter = Inter({ subsets: ["latin"] });
@@ -52,17 +53,19 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <ErrorBoundary>
-          <ToastProvider>
-            <AuthProvider>
-              <ThemeProvider>
-                <CartProvider>
-                  <PageTransitionLoader />
-                  {children}
-                  <Analytics />
-                </CartProvider>
-              </ThemeProvider>
-            </AuthProvider>
-          </ToastProvider>
+          <QueryClientProvider>
+            <ToastProvider>
+              <AuthProvider>
+                <ThemeProvider>
+                  <CartProvider>
+                    <PageTransitionLoader />
+                    {children}
+                    <Analytics />
+                  </CartProvider>
+                </ThemeProvider>
+              </AuthProvider>
+            </ToastProvider>
+          </QueryClientProvider>
         </ErrorBoundary>
       </body>
     </html>

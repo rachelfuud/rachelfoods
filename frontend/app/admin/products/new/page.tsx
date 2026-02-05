@@ -2,22 +2,14 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { api } from '@/lib/api';
-
-interface ProductFormData {
-    name: string;
-    description: string;
-    price: number;
-    categoryId: string;
-    imageUrl: string;
-    featured: boolean;
-    status: 'DRAFT' | 'PUBLISHED';
-}
+import { useCreateProduct } from '@/lib/hooks/useProducts';
+import { CreateProductData } from '@/lib/api/endpoints/products';
 
 export default function NewProductPage() {
     const router = useRouter();
-    const [loading, setLoading] = useState(false);
-    const [formData, setFormData] = useState<ProductFormData>({
+    const createMutation = useCreateProduct();
+
+    const [formData, setFormData] = useState<CreateProductData>({
         name: '',
         description: '',
         price: 0,
@@ -36,21 +28,19 @@ export default function NewProductPage() {
         }
 
         try {
-            setLoading(true);
-            await api.createAdminProduct(formData);
+            await createMutation.mutateAsync(formData);
             alert('Product created successfully!');
             router.push('/admin/products');
         } catch (error: any) {
-            console.error('Failed to create product:', error);
             alert(error.message || 'Failed to create product');
-        } finally {
-            setLoading(false);
         }
     };
 
-    const handleChange = (field: keyof ProductFormData, value: any) => {
+    const handleChange = (field: keyof CreateProductData, value: any) => {
         setFormData(prev => ({ ...prev, [field]: value }));
     };
+
+    const isLoading = createMutation.isPending;
 
     return (
         <div className="max-w-4xl mx-auto">
@@ -199,14 +189,15 @@ export default function NewProductPage() {
                 <div className="flex gap-4 pt-4 border-t border-border">
                     <button
                         type="submit"
-                        disabled={loading}
+                        disabled={isLoading}
                         className="px-6 py-2 bg-primary text-white rounded-md hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                     >
-                        {loading ? 'Creating...' : 'Create Product'}
+                        {isLoading ? 'Creating...' : 'Create Product'}
                     </button>
                     <button
                         type="button"
                         onClick={() => router.back()}
+                        disabled={isLoading}
                         className="px-6 py-2 border border-border rounded-md hover:bg-muted text-text-primary font-medium"
                     >
                         Cancel

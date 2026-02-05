@@ -1,48 +1,38 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
-import { api } from '@/lib/api';
+import { useAdminProducts, useDeleteProduct } from '@/lib/hooks/useProducts';
 import { formatCurrency } from '@/lib/utils';
 
 export default function AdminProductsPage() {
-    const [products, setProducts] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
     const [search, setSearch] = useState('');
 
-    useEffect(() => {
-        fetchProducts();
-    }, [page, search]);
+    // React Query hook - automatic caching, loading states, error handling
+    const { data, isLoading, error, refetch } = useAdminProducts({
+        page,
+        limit: 20,
+        search: search || undefined,
+        includeDisabled: true,
+    });
 
-    const fetchProducts = async () => {
-        try {
-            setLoading(true);
-            const data = await api.getAdminProducts({
-                page,
-                limit: 20,
-                search: search || undefined,
-                includeDisabled: true,
-            });
-            setProducts(data.data || []);
-            setTotalPages(data.pagination?.totalPages || 1);
-        } catch (error: any) {
-            console.error('Failed to fetch products:', error);
-            alert(`Failed to load products: ${error.message}`);
-        } finally {
-            setLoading(false);
-        }
-    };
+    // Delete mutation with automatic refetch
+    const deleteMutation = useDeleteProduct();
 
     const handleDelete = async (id: string, name: string) => {
         if (!confirm(`Are you sure you want to delete "${name}"?`)) return;
 
         try {
-            await api.deleteAdminProduct(id);
+            await deleteMutation.mutateAsync(id);
+            alert(`"${name}" deleted successfully!`);
+        } catch (error: any) {
             alert(`Failed to delete product: ${error.message}`);
         }
     };
+
+    const products = data?.data || [];
+    const totalPages = data?.totalPages || 1;
 
     return (
         <div>
@@ -70,10 +60,24 @@ export default function AdminProductsPage() {
                 />
             </div>
 
+            {/* Error State */}
+            {error && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                    <p className="text-red-800">{error.message}</p>
+                    <button
+                        onClick={() => refetch()}
+                        className="mt-2 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                    >
+                        Retry
+                    </button>
+                </div>
+            )}
+
             {/* Products Table */}
-            {loading ? (
+            {isLoading ? (
                 <div className="text-center py-12">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+                    <p className="text-text-secondary mt-4">Loading products...</p>
                 </div>
             ) : (
                 <>
