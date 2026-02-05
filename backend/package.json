@@ -23,6 +23,7 @@
     "prisma:seed": "ts-node prisma/seed.ts",
     "migrate:cms": "ts-node scripts/auto-migrate-cms.ts",
     "seed:admin": "ts-node scripts/seed-admin.ts",
+    "fix:role-slug": "ts-node scripts/fix-role-slug.ts",
     "seed:platform-wallets": "ts-node src/seeds/seed-platform-wallets.ts",
     "seed:payments-rbac": "ts-node src/seeds/seed-payments-rbac.ts",
     "view:payments-rbac": "ts-node src/seeds/view-payments-rbac.ts"
