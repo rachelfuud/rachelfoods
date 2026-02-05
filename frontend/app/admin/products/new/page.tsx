@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useCreateProduct } from '@/lib/hooks/useProducts';
 import { CreateProductData } from '@/lib/api/endpoints/products';
 
+// Create new product page
 export default function NewProductPage() {
     const router = useRouter();
     const createMutation = useCreateProduct();
