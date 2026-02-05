@@ -9,6 +9,7 @@ RachelFoods now uses a modern, enterprise-standard architecture based on **React
 ### 1. **Axios API Client** (`lib/api/client.ts`)
 
 Centralized HTTP client with:
+
 - Automatic auth token injection from localStorage
 - Global error handling with user-friendly messages
 - Request/response logging in development
@@ -17,16 +18,18 @@ Centralized HTTP client with:
 - Base URL from `NEXT_PUBLIC_API_URL` environment variable
 
 **Example:**
+
 ```typescript
-import apiClient from '@/lib/api/client';
+import apiClient from "@/lib/api/client";
 
 // Automatically includes auth token and handles errors
-const response = await apiClient.get('/admin/products');
+const response = await apiClient.get("/admin/products");
 ```
 
 ### 2. **API Endpoint Files** (`lib/api/endpoints/`)
 
 Organized by feature domain:
+
 - `auth.ts` - Authentication endpoints (login, register, profile)
 - `products.ts` - Product CRUD operations (public + admin)
 - `orders.ts` - Order management (user + admin)
@@ -34,14 +37,16 @@ Organized by feature domain:
 - `admin.ts` - System metrics and business intelligence
 
 **Benefits:**
+
 - Type-safe with TypeScript interfaces
 - Clear separation of concerns
 - Easy to find and update endpoints
 - Consistent error handling
 
 **Example:**
+
 ```typescript
-import { productsEndpoints } from '@/lib/api/endpoints/products';
+import { productsEndpoints } from "@/lib/api/endpoints/products";
 
 const products = await productsEndpoints.getAdminProducts({ page: 1, limit: 20 });
 ```
@@ -49,6 +54,7 @@ const products = await productsEndpoints.getAdminProducts({ page: 1, limit: 20 }
 ### 3. **React Query Hooks** (`lib/hooks/`)
 
 Custom hooks wrapping React Query:
+
 - `useProducts.ts` - Product queries and mutations
 - `useOrders.ts` - Order queries and mutations
 - `useCMS.ts` - CMS content queries and mutations
@@ -56,27 +62,29 @@ Custom hooks wrapping React Query:
 - `useAuth.ts` - Auth operations (login, register, logout)
 
 **Benefits:**
+
 - **Automatic Caching**: Data fetched once is reused across components
 - **Smart Refetching**: Stale data is refetched automatically
 - **Loading States**: Built-in `isLoading`, `error`, `data` states
 - **Mutations**: `mutateAsync()` with automatic cache invalidation
 
 **Example:**
+
 ```typescript
 import { useAdminProducts, useDeleteProduct } from '@/lib/hooks/useProducts';
 
 function ProductsPage() {
     const { data, isLoading, error } = useAdminProducts({ page: 1, limit: 20 });
     const deleteMutation = useDeleteProduct();
-    
+
     const handleDelete = async (id: string) => {
         await deleteMutation.mutateAsync(id);
         // Cache automatically refetches products list!
     };
-    
+
     if (isLoading) return <LoadingSpinner />;
     if (error) return <Error message={error.message} />;
-    
+
     return <ProductsList products={data?.data || []} />;
 }
 ```
@@ -84,30 +92,33 @@ function ProductsPage() {
 ### 4. **Zustand Auth Store** (`lib/store/auth.ts`)
 
 Replaces AuthProvider context with lightweight state management:
+
 - Persists to localStorage automatically
 - No React Context re-renders
 - TypeScript support
 - Multiple selector hooks
 
 **Benefits:**
+
 - **Performance**: No unnecessary re-renders
 - **Simplicity**: Direct state access, no prop drilling
 - **Type-Safe**: Full TypeScript integration
 
 **Example:**
+
 ```typescript
 import { useAuthStore, useIsAdmin } from '@/lib/store/auth';
 
 function AdminButton() {
     const isAdmin = useIsAdmin(); // Only re-renders when isAdmin changes
-    
+
     if (!isAdmin) return null;
     return <button>Admin Panel</button>;
 }
 
 function LoginForm() {
     const setAuth = useAuthStore((state) => state.setAuth);
-    
+
     const handleLogin = async (email, password) => {
         const { user, token } = await authEndpoints.login({ email, password });
         setAuth(user, token); // Automatically persists and updates isAdmin
@@ -118,6 +129,7 @@ function LoginForm() {
 ### 5. **QueryClientProvider** (`components/QueryClientProvider.tsx`)
 
 Wraps the app with React Query context:
+
 - Configured in `app/layout.tsx`
 - Global cache settings:
   - **Stale Time**: 1 minute (queries remain fresh)
@@ -192,12 +204,12 @@ await deleteMutation.mutateAsync(productId);
 ```typescript
 // Axios interceptor handles all errors centrally
 try {
-    await productsEndpoints.deleteProduct(id);
+  await productsEndpoints.deleteProduct(id);
 } catch (error) {
-    // Already transformed to user-friendly message:
-    // "The requested resource was not found." (404)
-    // "Your session has expired. Please log in again." (401)
-    alert(error.message);
+  // Already transformed to user-friendly message:
+  // "The requested resource was not found." (404)
+  // "Your session has expired. Please log in again." (401)
+  alert(error.message);
 }
 ```
 
@@ -221,18 +233,18 @@ const [loading, setLoading] = useState(true);
 const [error, setError] = useState<string | null>(null);
 
 useEffect(() => {
-    const fetchProducts = async () => {
-        try {
-            setLoading(true);
-            const data = await api.getAdminProducts({ page: 1 });
-            setProducts(data.data);
-        } catch (err: any) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-    fetchProducts();
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const data = await api.getAdminProducts({ page: 1 });
+      setProducts(data.data);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  fetchProducts();
 }, []);
 ```
 
@@ -269,7 +281,7 @@ const { data, isLoading, error } = useAdminProducts({ page: 1 });
 // Admin data: Shorter stale time (fresher data)
 export function useAdminProducts() {
   return useQuery({
-    queryKey: ['admin', 'products'],
+    queryKey: ["admin", "products"],
     queryFn: () => productsEndpoints.getAdminProducts(),
     staleTime: 1 * 60 * 1000, // 1 minute
   });
@@ -278,7 +290,7 @@ export function useAdminProducts() {
 // Public data: Longer stale time (can be slightly stale)
 export function useProducts() {
   return useQuery({
-    queryKey: ['products'],
+    queryKey: ["products"],
     queryFn: () => productsEndpoints.getProducts(),
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
@@ -287,7 +299,7 @@ export function useProducts() {
 // CMS config: Very long stale time (rarely changes)
 export function useCMSConfig(key: string) {
   return useQuery({
-    queryKey: ['cms', 'config', key],
+    queryKey: ["cms", "config", key],
     queryFn: () => cmsEndpoints.getConfig(key),
     staleTime: 10 * 60 * 1000, // 10 minutes
   });
@@ -305,17 +317,17 @@ const [token, setToken] = useState(null);
 const [loading, setLoading] = useState(true);
 
 useEffect(() => {
-    const savedUser = localStorage.getItem('user');
-    const savedToken = localStorage.getItem('token');
-    // ... manual sync logic
+  const savedUser = localStorage.getItem("user");
+  const savedToken = localStorage.getItem("token");
+  // ... manual sync logic
 }, []);
 
 const login = async (email, password) => {
-    const data = await api.login({ email, password });
-    localStorage.setItem('token', data.token);
-    localStorage.setItem('user', JSON.stringify(data.user));
-    setUser(data.user);
-    setToken(data.token);
+  const data = await api.login({ email, password });
+  localStorage.setItem("token", data.token);
+  localStorage.setItem("user", JSON.stringify(data.user));
+  setUser(data.user);
+  setToken(data.token);
 };
 ```
 
@@ -323,15 +335,17 @@ const login = async (email, password) => {
 
 ```typescript
 // lib/store/auth.ts (automatically persists)
-export const useAuthStore = create(persist(
+export const useAuthStore = create(
+  persist(
     (set) => ({
-        user: null,
-        token: null,
-        setAuth: (user, token) => set({ user, token }),
-        logout: () => set({ user: null, token: null }),
+      user: null,
+      token: null,
+      setAuth: (user, token) => set({ user, token }),
+      logout: () => set({ user: null, token: null }),
     }),
-    { name: 'auth-storage' }
-));
+    { name: "auth-storage" }
+  )
+);
 
 // Usage
 const setAuth = useAuthStore((state) => state.setAuth);
@@ -347,9 +361,7 @@ setAuth(user, token); // Auto-persists to localStorage!
 
 ```tsx
 <QueryClientProvider>
-    <AuthProvider>
-        {children}
-    </AuthProvider>
+  <AuthProvider>{children}</AuthProvider>
 </QueryClientProvider>
 ```
 
@@ -358,8 +370,8 @@ setAuth(user, token); // Auto-persists to localStorage!
 **Check**: Axios client auto-injects token from localStorage. Verify token exists:
 
 ```typescript
-const token = localStorage.getItem('token');
-console.log('Token:', token);
+const token = localStorage.getItem("token");
+console.log("Token:", token);
 ```
 
 ### Issue: "Cache not updating after mutation"
@@ -368,14 +380,14 @@ console.log('Token:', token);
 
 ```typescript
 export function useCreateProduct() {
-    const queryClient = useQueryClient();
-    
-    return useMutation({
-        mutationFn: (data) => productsEndpoints.createProduct(data),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['admin', 'products'] });
-        },
-    });
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data) => productsEndpoints.createProduct(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin", "products"] });
+    },
+  });
 }
 ```
 
@@ -395,17 +407,17 @@ export function useCreateProduct() {
 
 ## Benefits Summary
 
-| Feature | Old Approach | New Approach |
-|---------|-------------|--------------|
-| **State Management** | Manual useState + useEffect | React Query (automatic) |
-| **Caching** | None (refetch every time) | 1-10 minute cache (configurable) |
-| **Loading States** | Manual setLoading(true/false) | Built-in isLoading |
-| **Error Handling** | Try/catch in every component | Centralized in Axios interceptor |
-| **Auth Token** | Manual in every fetch() | Auto-injected by Axios |
-| **Type Safety** | Partial (manual interfaces) | Full (TypeScript end-to-end) |
-| **Code Volume** | 50-100 lines per page | 10-20 lines per page |
-| **Performance** | Unnecessary re-renders | Optimized with selectors |
-| **Developer Experience** | Repetitive boilerplate | DRY (Don't Repeat Yourself) |
+| Feature                  | Old Approach                  | New Approach                     |
+| ------------------------ | ----------------------------- | -------------------------------- |
+| **State Management**     | Manual useState + useEffect   | React Query (automatic)          |
+| **Caching**              | None (refetch every time)     | 1-10 minute cache (configurable) |
+| **Loading States**       | Manual setLoading(true/false) | Built-in isLoading               |
+| **Error Handling**       | Try/catch in every component  | Centralized in Axios interceptor |
+| **Auth Token**           | Manual in every fetch()       | Auto-injected by Axios           |
+| **Type Safety**          | Partial (manual interfaces)   | Full (TypeScript end-to-end)     |
+| **Code Volume**          | 50-100 lines per page         | 10-20 lines per page             |
+| **Performance**          | Unnecessary re-renders        | Optimized with selectors         |
+| **Developer Experience** | Repetitive boilerplate        | DRY (Don't Repeat Yourself)      |
 
 ---
 

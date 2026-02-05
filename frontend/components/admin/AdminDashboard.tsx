@@ -1,106 +1,30 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { StatCard, SkeletonCard, EmptyState } from '@/components/admin/StatCard';
 import { BusinessIntelligence } from '@/components/admin/BusinessIntelligence';
 import { QuickActionCard, QuickActionsGrid } from '@/components/admin/QuickActionCard';
+import { useSystemHealth, useOrderMetrics } from '@/lib/hooks/useAdmin';
 import { formatCurrency } from '@/lib/utils';
 
-interface SystemHealth {
-    metrics: {
-        orders: {
-            today: number;
-            pending: number;
-        };
-        payments: {
-            failedToday: number;
-        };
-        refunds: {
-            today: number;
-        };
-        users: {
-            activeLast24h: number;
-        };
-        cache: {
-            validEntries: number;
-            expiredEntries: number;
-        };
-    };
-}
-
-interface OrderMetrics {
-    today: {
-        count: number;
-        totalValue: number;
-    };
-    thisWeek: {
-        count: number;
-        totalValue: number;
-    };
-    averageOrderValue: number;
-}
-
 export function AdminDashboard() {
-    const [health, setHealth] = useState<SystemHealth | null>(null);
-    const [orderMetrics, setOrderMetrics] = useState<OrderMetrics | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    // React Query hooks - automatic caching and refetching
+    const { data: health, isLoading: healthLoading, error: healthError } = useSystemHealth();
+    const { data: orderMetrics, isLoading: metricsLoading, error: metricsError } = useOrderMetrics();
 
-    useEffect(() => {
-        loadDashboardData();
-    }, []);
-
-    const loadDashboardData = async () => {
-        try {
-            setLoading(true);
-            setError(null);
-
-            const token = localStorage.getItem('token');
-            if (!token) {
-                setError('No authentication token found');
-                return;
-            }
-
-            // Use API_BASE from environment variable or fallback - append /api like lib/api.ts
-            const API_BASE = process.env.NEXT_PUBLIC_API_URL
-                ? `${process.env.NEXT_PUBLIC_API_URL}/api`
-                : 'http://localhost:3001/api';
-
-            const [healthRes, metricsRes] = await Promise.all([
-                fetch(`${API_BASE}/admin/system/health`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                }),
-                fetch(`${API_BASE}/admin/system/metrics/orders`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                }),
-            ]);
-
-            if (!healthRes.ok || !metricsRes.ok) {
-                throw new Error('Failed to fetch dashboard data');
-            }
-
-            const healthData = await healthRes.json();
-            const metricsData = await metricsRes.json();
-
-            setHealth(healthData);
-            setOrderMetrics(metricsData);
-        } catch (err: any) {
-            setError(err.message || 'Failed to load dashboard');
-        } finally {
-            setLoading(false);
-        }
-    };
+    const loading = healthLoading || metricsLoading;
+    const error = healthError || metricsError;
 
     if (error) {
         return (
             <EmptyState
                 icon="⚠️"
                 title="Failed to Load Dashboard"
-                description={error}
+                description={error.message}
                 action={
                     <button
-                        onClick={loadDashboardData}
+                        onClick={() => window.location.reload()}
                         className="px-4 py-2 bg-primary text-white rounded-lg hover:opacity-90"
                     >
                         Retry
@@ -119,7 +43,7 @@ export function AdminDashboard() {
                     <p className="text-foreground/60 mt-1">Overview of your business metrics</p>
                 </div>
                 <button
-                    onClick={loadDashboardData}
+                    onClick={() => window.location.reload()}
                     className="px-4 py-2 border border-border rounded-lg hover:bg-muted transition-colors"
                     disabled={loading}
                 >
