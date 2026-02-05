@@ -249,7 +249,12 @@ export class AuthService {
             return null;
         }
 
-        return user;
+        // Transform user to include flat 'role' property for RolesGuard
+        const primaryRole = user.user_roles?.[0]?.roles?.slug || null;
+        return {
+            ...user,
+            role: primaryRole, // RolesGuard expects this
+        };
     }
 
     /**
