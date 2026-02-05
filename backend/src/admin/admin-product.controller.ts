@@ -22,7 +22,7 @@ import {
 
 @Controller('api/admin/products')
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('ADMIN', 'STAFF')
+@Roles('ADMIN', 'STAFF', 'PLATFORM_ADMIN')
 export class AdminProductController {
     constructor(private readonly adminProductService: AdminProductService) { }
 

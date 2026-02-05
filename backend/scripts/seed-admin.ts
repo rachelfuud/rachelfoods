@@ -13,7 +13,7 @@ async function seedAdminUser() {
 
         // Find or create platform-admin role
         let platformAdminRole = await prisma.roles.findUnique({
-            where: { slug: 'platform-admin' },
+            where: { slug: 'PLATFORM_ADMIN' },
         });
 
         if (!platformAdminRole) {
@@ -22,7 +22,7 @@ async function seedAdminUser() {
                 data: {
                     id: crypto.randomUUID(),
                     name: 'Platform Admin',
-                    slug: 'platform-admin',
+                    slug: 'PLATFORM_ADMIN',
                     description: 'Full system access and platform configuration',
                     isActive: true,
                     createdAt: new Date(),
@@ -47,7 +47,7 @@ async function seedAdminUser() {
         if (adminUser) {
             // Check if user already has platform-admin role
             const hasPlatformAdmin = adminUser.user_roles.some(
-                (ur) => ur.roles.slug === 'platform-admin'
+                (ur) => ur.roles.slug === 'PLATFORM_ADMIN'
             );
 
             if (hasPlatformAdmin) {
