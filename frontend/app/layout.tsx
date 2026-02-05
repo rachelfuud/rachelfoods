@@ -8,26 +8,12 @@ import { ToastProvider } from "@/components/ui/toast";
 import { PageTransitionLoader } from "@/components/ui/page-transition-loader";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { QueryClientProvider } from "@/components/QueryClientProvider";
-import { Analytics } from '@vercel/analytics/react';
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "RachelFoods - Traditional Food Delivery & Kitchen Refill",
   description: "Order authentic traditional foods with kitchen refill feature - pre-order weekly, monthly or for special events. Seller-confirmed orders with custom delivery scheduling.",
-  manifest: "/manifest.json",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "default",
-    title: "RachelFoods",
-  },
-  icons: {
-    icon: [
-      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
-      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
-    ],
-    apple: [
-      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
     ],
   },
 };
@@ -60,7 +46,6 @@ export default function RootLayout({
                   <CartProvider>
                     <PageTransitionLoader />
                     {children}
-                    <Analytics />
                   </CartProvider>
                 </ThemeProvider>
               </AuthProvider>
