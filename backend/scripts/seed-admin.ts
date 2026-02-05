@@ -11,25 +11,40 @@ async function seedAdminUser() {
         const adminEmail = process.env.ADMIN_EMAIL || 'admin@rachelfoods.com';
         const adminPassword = process.env.ADMIN_PASSWORD || 'Admin123!';
 
-        // Find or create platform-admin role
+        // Find or create platform-admin role (with migration support)
+        // First, try to find by new slug
         let platformAdminRole = await prisma.roles.findUnique({
             where: { slug: 'PLATFORM_ADMIN' },
         });
 
+        // If not found, check if old slug exists and update it
         if (!platformAdminRole) {
-            console.log('⚠️  Platform Admin role not found. Creating it...');
-            platformAdminRole = await prisma.roles.create({
-                data: {
-                    id: crypto.randomUUID(),
-                    name: 'Platform Admin',
-                    slug: 'PLATFORM_ADMIN',
-                    description: 'Full system access and platform configuration',
-                    isActive: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
+            const oldRole = await prisma.roles.findUnique({
+                where: { slug: 'platform-admin' },
             });
-            console.log('✅ Created Platform Admin role');
+
+            if (oldRole) {
+                console.log('⚠️  Migrating old platform-admin role to PLATFORM_ADMIN...');
+                platformAdminRole = await prisma.roles.update({
+                    where: { id: oldRole.id },
+                    data: { slug: 'PLATFORM_ADMIN' },
+                });
+                console.log('✅ Migrated Platform Admin role');
+            } else {
+                console.log('⚠️  Platform Admin role not found. Creating it...');
+                platformAdminRole = await prisma.roles.create({
+                    data: {
+                        id: crypto.randomUUID(),
+                        name: 'Platform Admin',
+                        slug: 'PLATFORM_ADMIN',
+                        description: 'Full system access and platform configuration',
+                        isActive: true,
+                        createdAt: new Date(),
+                        updatedAt: new Date(),
+                    },
+                });
+                console.log('✅ Created Platform Admin role');
+            }
         }
 
         // Check if admin user exists
