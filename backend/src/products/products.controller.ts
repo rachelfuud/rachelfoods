@@ -96,12 +96,12 @@ export class ProductsController {
     async create(@Body() createProductDto: CreateProductDto, @CurrentUser() user: any) {
         const { images, videos, ...productData } = createProductDto;
 
-        // Create product
+        // Create product with explicit type casting for optional fields
         const product = await this.prisma.products.create({
             data: {
                 ...productData,
                 createdBy: user.id,
-            },
+            } as any,
         });
 
         // Add media if provided
@@ -154,7 +154,7 @@ export class ProductsController {
         // Update product data
         const product = await this.prisma.products.update({
             where: { id },
-            data: productData,
+            data: productData as any,
         });
 
         // Update media if provided

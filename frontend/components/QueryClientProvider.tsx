@@ -37,7 +37,7 @@ export function QueryClientProvider({ children }: { children: React.ReactNode })
             {children}
             {/* Show React Query devtools in development */}
             {process.env.NODE_ENV === 'development' && (
-                <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
+                <ReactQueryDevtools initialIsOpen={false} />
             )}
         </TanstackQueryClientProvider>
     );

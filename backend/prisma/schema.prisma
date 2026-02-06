@@ -7,9 +7,10 @@ datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_DATABASE_URL")
-  // Note: This configuration is valid for Prisma 5.x
-  // Prisma 7 will require prisma.config.ts - migration pending
-  // See: https://pris.ly/d/config-datasource
+  // Note: This configuration is valid for Prisma 5.x and 6.x
+  // Prisma 7 will require migration to prisma.config.ts (future update)
+  // Current Prisma version: Check package.json for installed version
+  // Migration guide: https://pris.ly/d/config-datasource
 }
 
 model categories {
