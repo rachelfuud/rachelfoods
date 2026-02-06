@@ -4,6 +4,12 @@ import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import FileUpload, { UploadedFile } from '@/components/ui/FileUpload';
 
+interface Category {
+    id: string;
+    name: string;
+    slug: string;
+}
+
 export default function EditProductPage() {
     const router = useRouter();
     const params = useParams();
@@ -11,6 +17,7 @@ export default function EditProductPage() {
 
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [categories, setCategories] = useState<Category[]>([]);
     const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
 
     const [formData, setFormData] = useState({
@@ -28,16 +35,30 @@ export default function EditProductPage() {
 
     useEffect(() => {
         if (productId) {
+            fetchCategories();
             fetchProduct();
         }
     }, [productId]);
+
+    const fetchCategories = async () => {
+        try {
+            const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+            const response = await fetch(`${API_BASE}/api/categories`);
+            if (response.ok) {
+                const data = await response.json();
+                setCategories(data);
+            }
+        } catch (error) {
+            console.error('Failed to fetch categories:', error);
+        }
+    };
 
     const fetchProduct = async () => {
         try {
             const token = localStorage.getItem('token');
             const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
-            const response = await fetch(`${API_BASE}/api/admin/products/${productId}`, {
+            const response = await fetch(`${API_BASE}/api/products/${productId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -52,10 +73,10 @@ export default function EditProductPage() {
             setFormData({
                 name: data.name || '',
                 description: data.description || '',
-                price: data.price || 0,
+                price: (data.price || 0) / 100, // Convert from cents to dollars
                 categoryId: data.categoryId || '',
-                unit: data.unit || 'unit',
-                weight: data.weight || 0,
+                unit: data.unit || 'Pack',
+                weight: data.weight || 500,
                 stock: data.stock || 0,
                 status: data.status || 'ACTIVE',
                 isFeatured: data.isFeatured || false,
@@ -167,7 +188,10 @@ export default function EditProductPage() {
             const token = localStorage.getItem('token');
             const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
-            const response = await fetch(`${API_BASE}/api/admin/products/${productId}`, {
+            // Convert price from dollars to cents for backend
+            const priceInCents = Math.round(formData.price * 100);
+
+            const response = await fetch(`${API_BASE}/api/products/${productId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -175,6 +199,7 @@ export default function EditProductPage() {
                 },
                 body: JSON.stringify({
                     ...formData,
+                    price: priceInCents,
                     images,
                     videos,
                 }),

@@ -1,12 +1,20 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import FileUpload, { UploadedFile } from '@/components/ui/FileUpload';
+
+interface Category {
+    id: string;
+    name: string;
+    slug: string;
+}
 
 export default function NewProductPage() {
     const router = useRouter();
     const [saving, setSaving] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [categories, setCategories] = useState<Category[]>([]);
     const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
 
     const [formData, setFormData] = useState({
@@ -14,13 +22,36 @@ export default function NewProductPage() {
         description: '',
         price: 0,
         categoryId: '',
-        unit: 'unit',
-        weight: 0,
+        unit: 'Pack',
+        weight: 500,
         stock: 0,
-        status: 'DRAFT',
+        status: 'ACTIVE',
         isFeatured: false,
         supportsRefill: true,
     });
+
+    useEffect(() => {
+        fetchCategories();
+    }, []);
+
+    const fetchCategories = async () => {
+        try {
+            const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+            const response = await fetch(`${API_BASE}/api/categories`);
+            if (response.ok) {
+                const data = await response.json();
+                setCategories(data);
+                // Set first category as default if available
+                if (data.length > 0) {
+                    setFormData(prev => ({ ...prev, categoryId: data[0].id }));
+                }
+            }
+        } catch (error) {
+            console.error('Failed to fetch categories:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const uploadFilesToServer = async (files: UploadedFile[]) => {
         // This would upload files to your file storage service (e.g., AWS S3, Cloudinary)
@@ -49,6 +80,11 @@ export default function NewProductPage() {
 
         if (!formData.name || !formData.description || formData.price <= 0) {
             alert('Please fill in all required fields');
+            return;
+        }
+
+        if (!formData.categoryId) {
+            alert('Please select a category');
             return;
         }
 
@@ -83,7 +119,10 @@ export default function NewProductPage() {
             const token = localStorage.getItem('token');
             const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
-            const response = await fetch(`${API_BASE}/api/admin/products`, {
+            // Convert price from dollars to cents for backend
+            const priceInCents = Math.round(formData.price * 100);
+
+            const response = await fetch(`${API_BASE}/api/products`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -91,6 +130,7 @@ export default function NewProductPage() {
                 },
                 body: JSON.stringify({
                     ...formData,
+                    price: priceInCents,
                     images,
                     videos,
                 }),
@@ -110,6 +150,19 @@ export default function NewProductPage() {
             setSaving(false);
         }
     };
+
+    if (loading) {
+        return (
+            <div className="max-w-6xl mx-auto p-6">
+                <div className="flex items-center justify-center h-64">
+                    <div className="text-center">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                        <p className="text-text-secondary">Loading...</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="max-w-6xl mx-auto p-6">
@@ -157,7 +210,7 @@ export default function NewProductPage() {
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-text-primary mb-2">
-                                    Price (₦) *
+                                    Price ($) *
                                 </label>
                                 <input
                                     type="number"
@@ -167,8 +220,11 @@ export default function NewProductPage() {
                                     value={formData.price}
                                     onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })}
                                     className="w-full px-4 py-2 border border-border rounded-md bg-background text-text-primary focus:ring-2 focus:ring-primary focus:border-transparent"
-                                    placeholder="0.00"
+                                    placeholder="10.00"
                                 />
+                                <p className="text-xs text-text-secondary mt-1">
+                                    Enter price in dollars (e.g., 10.00 for $10)
+                                </p>
                             </div>
 
                             <div>
@@ -201,34 +257,37 @@ export default function NewProductPage() {
 
                             <div>
                                 <label className="block text-sm font-medium text-text-primary mb-2">
-                                    Weight (kg)
+                                    Weight (grams)
                                 </label>
                                 <input
                                     type="number"
                                     min="0"
-                                    step="0.01"
+                                    step="1"
                                     value={formData.weight}
-                                    onChange={(e) => setFormData({ ...formData, weight: parseFloat(e.target.value) || 0 })}
+                                    onChange={(e) => setFormData({ ...formData, weight: parseInt(e.target.value) || 0 })}
                                     className="w-full px-4 py-2 border border-border rounded-md bg-background text-text-primary focus:ring-2 focus:ring-primary focus:border-transparent"
-                                    placeholder="0.00"
+                                    placeholder="500"
                                 />
                             </div>
                         </div>
 
                         <div>
                             <label className="block text-sm font-medium text-text-primary mb-2">
-                                Category ID
+                                Category *
                             </label>
-                            <input
-                                type="text"
+                            <select
+                                required
                                 value={formData.categoryId}
                                 onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
                                 className="w-full px-4 py-2 border border-border rounded-md bg-background text-text-primary focus:ring-2 focus:ring-primary focus:border-transparent"
-                                placeholder="Enter category ID or leave blank"
-                            />
-                            <p className="text-xs text-text-secondary mt-1">
-                                Optional: Will use default category if not provided
-                            </p>
+                            >
+                                <option value="">Select a category</option>
+                                {categories.map((category) => (
+                                    <option key={category.id} value={category.id}>
+                                        {category.name}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
                     </div>
                 </div>
