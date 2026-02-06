@@ -5,6 +5,14 @@ const nextConfig = {
     // WARNING: Do NOT include /api suffix - it's automatically added by lib/api.ts
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001',
   },
+  // Fix Railway deployment - ensure standalone output includes all routes
+  output: 'standalone',
+  // Ensure admin routes are generated at build time
+  experimental: {
+    outputFileTracingIncludes: {
+      '/admin/**/*': ['./app/admin/**/*'],
+    },
+  },
 };
 
 module.exports = nextConfig;
