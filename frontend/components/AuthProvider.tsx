@@ -30,9 +30,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     const parsedUser = JSON.parse(savedUser);
                     setToken(savedToken);
                     setUser(parsedUser);
-                    console.log('AuthProvider: Loaded saved auth state', { 
+                    console.log('AuthProvider: Loaded saved auth state', {
                         userId: parsedUser.id,
-                        email: parsedUser.email 
+                        email: parsedUser.email
                     });
                 } else {
                     console.log('AuthProvider: No saved auth state found');

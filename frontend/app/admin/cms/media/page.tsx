@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useToast } from '@/components/ui/toast';
+import { api } from '@/lib/api-client';
 import Image from 'next/image';
 
 interface MediaFile {
@@ -26,40 +27,7 @@ export default function MediaLibraryPage() {
     const loadMedia = async () => {
         try {
             setLoading(true);
-            const token = localStorage.getItem('token');
-            if (!token) {
-                showToast('Please login first', 'error');
-                return;
-            }
-
-            const API_BASE = process.env.NEXT_PUBLIC_API_URL
-                ? `${process.env.NEXT_PUBLIC_API_URL}/api`
-                : 'http://localhost:3001/api';
-
-            const response = await fetch(`${API_BASE}/admin/cms/media`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-
-            if (!response.ok) {
-                // If endpoint doesn't exist, show sample data
-                if (response.status === 404) {
-                    setMediaFiles([
-                        {
-                            id: '1',
-                            filename: 'logo.png',
-                            url: '/logo.png',
-                            type: 'image/png',
-                            size: 15234,
-                            uploadedAt: new Date().toISOString(),
-                        },
-                    ]);
-                    showToast('Media library endpoint not implemented yet - showing sample', 'info');
-                    return;
-                }
-                throw new Error(`Failed to load: ${response.statusText}`);
-            }
-
-            const data = await response.json();
+            const data = await api.get('/api/admin/cms/media');
             setMediaFiles(data.media || data.files || []);
         } catch (error: any) {
             console.error('Failed to load media:', error);
@@ -94,18 +62,7 @@ export default function MediaLibraryPage() {
         if (!confirm(`Delete "${filename}"?`)) return;
 
         try {
-            const token = localStorage.getItem('token');
-            const API_BASE = process.env.NEXT_PUBLIC_API_URL
-                ? `${process.env.NEXT_PUBLIC_API_URL}/api`
-                : 'http://localhost:3001/api';
-
-            const response = await fetch(`${API_BASE}/admin/cms/media/${id}`, {
-                method: 'DELETE',
-                headers: { Authorization: `Bearer ${token}` },
-            });
-
-            if (!response.ok) throw new Error('Delete failed');
-
+            await api.delete(`/api/admin/cms/media/${id}`);
             showToast('Media deleted successfully', 'success');
             loadMedia();
         } catch (error: any) {

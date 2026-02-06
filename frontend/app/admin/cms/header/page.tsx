@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { api } from '@/lib/api';
+import { api } from '@/lib/api-client';
 import { useToast } from '@/components/ui/toast';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
@@ -39,17 +39,7 @@ export default function HeaderManagerPage() {
     const loadConfig = async () => {
         try {
             setLoading(true);
-            const token = localStorage.getItem('token');
-            const API_BASE = process.env.NEXT_PUBLIC_API_URL
-                ? `${process.env.NEXT_PUBLIC_API_URL}/api`
-                : 'http://localhost:3001/api';
-            const response = await fetch(
-                `${API_BASE}/admin/cms/config/header`,
-                {
-                    headers: { Authorization: `Bearer ${token}` },
-                }
-            );
-            const data = await response.json();
+            const data = await api.get('/api/admin/cms/config/header');
             setConfig(data.config);
         } catch (error) {
             console.error('Failed to load header config:', error);
@@ -62,21 +52,7 @@ export default function HeaderManagerPage() {
     const handleSave = async () => {
         try {
             setSaving(true);
-            const token = localStorage.getItem('token');
-            const API_BASE = process.env.NEXT_PUBLIC_API_URL
-                ? `${process.env.NEXT_PUBLIC_API_URL}/api`
-                : 'http://localhost:3001/api';
-            await fetch(
-                `${API_BASE}/admin/cms/config/header`,
-                {
-                    method: 'PUT',
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ config }),
-                }
-            );
+            await api.put('/api/admin/cms/config/header', { config });
             showToast('Header configuration saved successfully!', 'success');
         } catch (error) {
             console.error('Failed to save header config:', error);

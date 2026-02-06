@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useToast } from '@/components/ui/toast';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { api } from '@/lib/api-client';
 
 interface FooterLink {
     label: string;
@@ -44,17 +45,7 @@ export default function FooterManagerPage() {
     const loadConfig = async () => {
         try {
             setLoading(true);
-            const token = localStorage.getItem('token');
-            const API_BASE = process.env.NEXT_PUBLIC_API_URL
-                ? `${process.env.NEXT_PUBLIC_API_URL}/api`
-                : 'http://localhost:3001/api';
-            const response = await fetch(
-                `${API_BASE}/admin/cms/config/footer`,
-                {
-                    headers: { Authorization: `Bearer ${token}` },
-                }
-            );
-            const data = await response.json();
+            const data = await api.get('/api/admin/cms/config/footer');
             setConfig(data.config);
         } catch (error) {
             console.error('Failed to load footer config:', error);
@@ -67,21 +58,7 @@ export default function FooterManagerPage() {
     const handleSave = async () => {
         try {
             setSaving(true);
-            const token = localStorage.getItem('token');
-            const API_BASE = process.env.NEXT_PUBLIC_API_URL
-                ? `${process.env.NEXT_PUBLIC_API_URL}/api`
-                : 'http://localhost:3001/api';
-            await fetch(
-                `${API_BASE}/admin/cms/config/footer`,
-                {
-                    method: 'PUT',
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ config }),
-                }
-            );
+            await api.put('/api/admin/cms/config/footer', { config });
             showToast('Footer configuration saved successfully!', 'success');
         } catch (error) {
             console.error('Failed to save footer config:', error);
