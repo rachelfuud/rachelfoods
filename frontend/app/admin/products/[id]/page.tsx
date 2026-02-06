@@ -5,6 +5,7 @@ import { useRouter, useParams } from 'next/navigation';
 import FileUpload, { UploadedFile } from '@/components/ui/FileUpload';
 import { centsToDollars, dollarsToCents } from '@/lib/utils/currency';
 import { api } from '@/lib/api-client';
+import { uploadFile } from '@/lib/upload';
 
 interface Category {
     id: string;
@@ -125,9 +126,14 @@ export default function EditProductPage() {
         const uploadedUrls = await Promise.all(
             files.map(async (file) => {
                 if (file.file) {
-                    // TODO: Implement actual file upload
-                    // For now, return the preview URL
-                    return { ...file, url: file.preview || file.url };
+                    try {
+                        const url = await uploadFile(file.file, 'rachelfoods/products');
+                        return { ...file, url };
+                    } catch (error) {
+                        console.error('Failed to upload file:', file.file.name, error);
+                        // Return with preview URL as fallback
+                        return { ...file, url: file.preview || file.url };
+                    }
                 }
                 return file;
             })

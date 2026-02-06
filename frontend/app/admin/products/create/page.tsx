@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import FileUpload, { UploadedFile } from '@/components/ui/FileUpload';
 import { dollarsToCents } from '@/lib/utils/currency';
 import { api } from '@/lib/api-client';
+import { uploadFile } from '@/lib/upload';
 
 interface Category {
     id: string;
@@ -53,20 +54,18 @@ export default function NewProductPage() {
     };
 
     const uploadFilesToServer = async (files: UploadedFile[]) => {
-        // This would upload files to your file storage service (e.g., AWS S3, Cloudinary)
-        // For now, we'll assume files are already uploaded or use placeholder URLs
+        // Upload files to Cloudinary
         const uploadedUrls = await Promise.all(
             files.map(async (file) => {
                 if (file.file) {
-                    // TODO: Implement actual file upload to your storage service
-                    // const formData = new FormData();
-                    // formData.append('file', file.file);
-                    // const response = await fetch('/api/upload', { method: 'POST', body: formData });
-                    // const data = await response.json();
-                    // return { ...file, url: data.url };
-
-                    // For now, return the file object URL as placeholder
-                    return { ...file, url: file.preview || file.url };
+                    try {
+                        const url = await uploadFile(file.file, 'rachelfoods/products');
+                        return { ...file, url };
+                    } catch (error) {
+                        console.error('Failed to upload file:', file.file.name, error);
+                        // Return with preview URL as fallback
+                        return { ...file, url: file.preview || file.url };
+                    }
                 }
                 return file;
             })
