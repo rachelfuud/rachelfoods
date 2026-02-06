@@ -521,7 +521,7 @@ async function main() {
             price: 1000, // $10.00 in cents
             unit: 'Pack',
             weight: 400,
-            stock: 150,
+            stock: 40,
             categoryId: readyMixes.id,
             status: 'ACTIVE',
             isFeatured: true,
