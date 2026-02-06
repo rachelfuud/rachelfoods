@@ -37,7 +37,7 @@ export default function CMSPagesPage() {
     };
 
     if (isLoading) {
-        return <div className="flex items-center justify-center min-h-[400px]"><LoadingSpinner /></div>;
+        return <div className="flex items-center justify-center min-h-100"><LoadingSpinner /></div>;
     }
 
     return (

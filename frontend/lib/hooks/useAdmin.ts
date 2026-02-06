@@ -4,7 +4,7 @@
  * System administration and business intelligence
  */
 
-import { useQuery, useMutation, useQueryClient, UseQueryOptions } from '@tantml:react-query';
+import { useQuery, useMutation, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
 import { adminEndpoints } from '../api/endpoints/admin';
 
 /**
