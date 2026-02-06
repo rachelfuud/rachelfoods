@@ -297,7 +297,7 @@ async function main() {
             price: 700, // $7.00 in cents
             unit: 'Wrap/Pack',
             weight: 500,
-            stock: 80,
+            stock: 980,
             categoryId: grainsStaples.id,
             status: 'ACTIVE',
             isFeatured: false,
@@ -317,7 +317,7 @@ async function main() {
             price: 1000, // $10.00 in cents
             unit: '5 Pieces',
             weight: 500,
-            stock: 60,
+            stock: 960,
             categoryId: grainsStaples.id,
             status: 'ACTIVE',
             isFeatured: true,
@@ -337,7 +337,7 @@ async function main() {
             price: 1000, // $10.00 in cents
             unit: 'Pack',
             weight: 500,
-            stock: 70,
+            stock: 970,
             categoryId: grainsStaples.id,
             status: 'ACTIVE',
             isFeatured: false,
@@ -358,7 +358,7 @@ async function main() {
             price: 3000, // $30.00 in cents
             unit: 'Pack',
             weight: 1000,
-            stock: 30,
+            stock: 930,
             categoryId: proteinsFish.id,
             status: 'ACTIVE',
             isFeatured: true,
@@ -379,7 +379,7 @@ async function main() {
             price: 2000, // $20.00 in cents
             unit: 'Pack',
             weight: 500,
-            stock: 50,
+            stock: 950,
             categoryId: proteinsFish.id,
             status: 'ACTIVE',
             isFeatured: false,
@@ -399,7 +399,7 @@ async function main() {
             price: 2000, // $20.00 in cents
             unit: 'Pack',
             weight: 1000,
-            stock: 40,
+            stock: 940,
             categoryId: proteinsFish.id,
             status: 'ACTIVE',
             isFeatured: false,
@@ -419,7 +419,7 @@ async function main() {
             price: 1000, // $10.00 in cents
             unit: 'Pack',
             weight: 250,
-            stock: 35,
+            stock: 935,
             categoryId: proteinsFish.id,
             status: 'ACTIVE',
             isFeatured: true,
@@ -440,7 +440,7 @@ async function main() {
             price: 1000, // $10.00 in cents
             unit: 'Pack',
             weight: 200,
-            stock: 90,
+            stock: 990,
             categoryId: spicesIngredients.id,
             status: 'ACTIVE',
             isFeatured: false,
@@ -460,7 +460,7 @@ async function main() {
             price: 1000, // $10.00 in cents
             unit: 'Pack',
             weight: 500,
-            stock: 75,
+            stock: 975,
             categoryId: spicesIngredients.id,
             status: 'ACTIVE',
             isFeatured: true,
@@ -480,7 +480,7 @@ async function main() {
             price: 500, // $5.00 in cents
             unit: 'Pack',
             weight: 200,
-            stock: 60,
+            stock: 960,
             categoryId: spicesIngredients.id,
             status: 'ACTIVE',
             isFeatured: false,
@@ -500,7 +500,7 @@ async function main() {
             price: 1000, // $10.00 in cents
             unit: 'Pack',
             weight: 150,
-            stock: 85,
+            stock: 985,
             categoryId: spicesIngredients.id,
             status: 'ACTIVE',
             isFeatured: false,
@@ -521,7 +521,7 @@ async function main() {
             price: 1000, // $10.00 in cents
             unit: 'Pack',
             weight: 400,
-            stock: 40,
+            stock: 940,
             categoryId: readyMixes.id,
             status: 'ACTIVE',
             isFeatured: true,
@@ -541,7 +541,7 @@ async function main() {
             price: 1000, // $10.00 in cents
             unit: 'Pack',
             weight: 400,
-            stock: 45,
+            stock: 945,
             categoryId: readyMixes.id,
             status: 'ACTIVE',
             isFeatured: true,
@@ -561,7 +561,7 @@ async function main() {
             price: 1000, // $10.00 in cents
             unit: 'Pack',
             weight: 350,
-            stock: 50,
+            stock: 950,
             categoryId: readyMixes.id,
             status: 'ACTIVE',
             isFeatured: false,
