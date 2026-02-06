@@ -297,7 +297,7 @@ async function main() {
             price: 700, // $7.00 in cents
             unit: 'Wrap/Pack',
             weight: 500,
-            stock: 150,
+            stock: 80,
             categoryId: grainsStaples.id,
             status: 'ACTIVE',
             isFeatured: false,
@@ -317,7 +317,7 @@ async function main() {
             price: 1000, // $10.00 in cents
             unit: '5 Pieces',
             weight: 500,
-            stock: 150,
+            stock: 60,
             categoryId: grainsStaples.id,
             status: 'ACTIVE',
             isFeatured: true,
@@ -337,7 +337,7 @@ async function main() {
             price: 1000, // $10.00 in cents
             unit: 'Pack',
             weight: 500,
-            stock: 150,
+            stock: 70,
             categoryId: grainsStaples.id,
             status: 'ACTIVE',
             isFeatured: false,
@@ -358,7 +358,7 @@ async function main() {
             price: 3000, // $30.00 in cents
             unit: 'Pack',
             weight: 1000,
-            stock: 150,
+            stock: 30,
             categoryId: proteinsFish.id,
             status: 'ACTIVE',
             isFeatured: true,
@@ -379,7 +379,7 @@ async function main() {
             price: 2000, // $20.00 in cents
             unit: 'Pack',
             weight: 500,
-            stock: 150,
+            stock: 50,
             categoryId: proteinsFish.id,
             status: 'ACTIVE',
             isFeatured: false,
@@ -399,7 +399,7 @@ async function main() {
             price: 2000, // $20.00 in cents
             unit: 'Pack',
             weight: 1000,
-            stock: 150,
+            stock: 40,
             categoryId: proteinsFish.id,
             status: 'ACTIVE',
             isFeatured: false,
@@ -419,7 +419,7 @@ async function main() {
             price: 1000, // $10.00 in cents
             unit: 'Pack',
             weight: 250,
-            stock: 150,
+            stock: 35,
             categoryId: proteinsFish.id,
             status: 'ACTIVE',
             isFeatured: true,
@@ -440,7 +440,7 @@ async function main() {
             price: 1000, // $10.00 in cents
             unit: 'Pack',
             weight: 200,
-            stock: 150,
+            stock: 90,
             categoryId: spicesIngredients.id,
             status: 'ACTIVE',
             isFeatured: false,
@@ -460,7 +460,7 @@ async function main() {
             price: 1000, // $10.00 in cents
             unit: 'Pack',
             weight: 500,
-            stock: 150,
+            stock: 75,
             categoryId: spicesIngredients.id,
             status: 'ACTIVE',
             isFeatured: true,
@@ -480,7 +480,7 @@ async function main() {
             price: 500, // $5.00 in cents
             unit: 'Pack',
             weight: 200,
-            stock: 150,
+            stock: 60,
             categoryId: spicesIngredients.id,
             status: 'ACTIVE',
             isFeatured: false,
@@ -500,7 +500,7 @@ async function main() {
             price: 1000, // $10.00 in cents
             unit: 'Pack',
             weight: 150,
-            stock: 150,
+            stock: 85,
             categoryId: spicesIngredients.id,
             status: 'ACTIVE',
             isFeatured: false,
@@ -541,7 +541,7 @@ async function main() {
             price: 1000, // $10.00 in cents
             unit: 'Pack',
             weight: 400,
-            stock: 150,
+            stock: 45,
             categoryId: readyMixes.id,
             status: 'ACTIVE',
             isFeatured: true,
@@ -561,7 +561,7 @@ async function main() {
             price: 1000, // $10.00 in cents
             unit: 'Pack',
             weight: 350,
-            stock: 150,
+            stock: 50,
             categoryId: readyMixes.id,
             status: 'ACTIVE',
             isFeatured: false,
