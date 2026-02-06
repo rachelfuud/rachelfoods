@@ -17,6 +17,8 @@ import { Permissions } from '../auth/decorators/permissions.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { PrismaService } from '../prisma/prisma.service';
+import { ProductMediaService } from './product-media.service';
 
 /**
  * Product Controller
@@ -34,6 +36,11 @@ import { UpdateProductDto } from './dto/update-product.dto';
 @Controller('api/products')
 @UseGuards(JwtAuthGuard, PermissionsGuard) // Apply both guards to all routes
 export class ProductsController {
+    constructor(
+        private prisma: PrismaService,
+        private productMediaService: ProductMediaService,
+    ) { }
+
     /**
      * Get all products
      * Requires: product.view permission
@@ -87,6 +94,38 @@ export class ProductsController {
     @Permissions('product.create')
     @HttpCode(HttpStatus.CREATED)
     async create(@Body() createProductDto: CreateProductDto, @CurrentUser() user: any) {
+        const { images, videos, ...productData } = createProductDto;
+
+        // Create product
+        const product = await this.prisma.products.create({
+            data: {
+                ...productData,
+                createdBy: user.id,
+            },
+        });
+
+        // Add media if provided
+        if (images?.length > 0) {
+            await this.productMediaService.addProductImages(product.id, images);
+        }
+        if (videos?.length > 0) {
+            await this.productMediaService.addProductVideos(product.id, videos);
+        }
+
+        // Fetch complete product with relations
+        const completeProduct = await this.prisma.products.findUnique({
+            where: { id: product.id },
+            include: {
+                productImages: {
+                    orderBy: { displayOrder: 'asc' },
+                },
+                productVideos: {
+                    orderBy: { displayOrder: 'asc' },
+                },
+                category: true,
+            },
+        });
+
         return {
             message: 'Product created successfully',
             createdBy: {
@@ -94,8 +133,7 @@ export class ProductsController {
                 email: user.email,
                 roles: user.userRoles.map((ur) => ur.role.slug),
             },
-            // TODO: Implement actual product creation
-            product: createProductDto,
+            product: completeProduct,
         };
     }
 
@@ -111,14 +149,60 @@ export class ProductsController {
         @Body() updateProductDto: UpdateProductDto,
         @CurrentUser() user: any,
     ) {
+        const { images, videos, ...productData } = updateProductDto;
+
+        // Update product data
+        const product = await this.prisma.products.update({
+            where: { id },
+            data: productData,
+        });
+
+        // Update media if provided
+        if (images !== undefined) {
+            // Delete existing images
+            await this.prisma.product_images.deleteMany({
+                where: { productId: id },
+            });
+
+            // Add new images
+            if (images.length > 0) {
+                await this.productMediaService.addProductImages(id, images);
+            }
+        }
+
+        if (videos !== undefined) {
+            // Delete existing videos
+            await this.prisma.product_videos.deleteMany({
+                where: { productId: id },
+            });
+
+            // Add new videos
+            if (videos.length > 0) {
+                await this.productMediaService.addProductVideos(id, videos);
+            }
+        }
+
+        // Fetch complete product with relations
+        const completeProduct = await this.prisma.products.findUnique({
+            where: { id },
+            include: {
+                productImages: {
+                    orderBy: { displayOrder: 'asc' },
+                },
+                productVideos: {
+                    orderBy: { displayOrder: 'asc' },
+                },
+                category: true,
+            },
+        });
+
         return {
             message: `Product ${id} updated successfully`,
             updatedBy: {
                 id: user.id,
                 email: user.email,
             },
-            // TODO: Implement actual product update
-            product: updateProductDto,
+            product: completeProduct,
         };
     }
 
