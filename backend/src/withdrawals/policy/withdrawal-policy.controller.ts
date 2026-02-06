@@ -35,7 +35,7 @@ import {
 @ApiTags('Withdrawal Policies - Admin Only')
 @ApiBearerAuth()
 @UseGuards(AuthGuard, RoleGuard)
-@Roles('PLATFORM_ADMIN', 'ADMIN')
+@Roles('PLATFORM_ADMIN')
 @Controller('api/admin/withdrawal-policies')
 export class WithdrawalPolicyController {
     constructor(

@@ -96,7 +96,7 @@ export class WithdrawalIncidentBundleController {
      * @returns StreamableFile ZIP bundle with all artifacts + manifest
      */
     @Get(':id/incident-bundle')
-    @Roles('PLATFORM_ADMIN', 'ADMIN')
+    @Roles('PLATFORM_ADMIN')
     @Header('Cache-Control', 'no-cache, no-store, must-revalidate')
     async generateForensicBundle(
         @Param('id') withdrawalId: string,

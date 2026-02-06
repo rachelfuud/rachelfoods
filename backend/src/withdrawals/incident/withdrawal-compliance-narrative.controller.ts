@@ -31,7 +31,7 @@ import {
 @ApiTags('Admin - Withdrawal Compliance Narrative')
 @Controller('api/admin/withdrawals/risk')
 @UseGuards(AuthGuard, RoleGuard)
-@Roles('PLATFORM_ADMIN', 'ADMIN')
+@Roles('PLATFORM_ADMIN')
 @ApiBearerAuth()
 export class WithdrawalComplianceNarrativeController {
     constructor(

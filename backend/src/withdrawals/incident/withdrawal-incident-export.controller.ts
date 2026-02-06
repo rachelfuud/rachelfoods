@@ -77,7 +77,7 @@ export class WithdrawalIncidentExportController {
      * @returns StreamableFile with appropriate Content-Disposition header
      */
     @Get(':id/incident-export')
-    @Roles('PLATFORM_ADMIN', 'ADMIN')
+    @Roles('PLATFORM_ADMIN')
     @Header('Cache-Control', 'no-cache, no-store, must-revalidate')
     async exportIncident(
         @Param('id') withdrawalId: string,

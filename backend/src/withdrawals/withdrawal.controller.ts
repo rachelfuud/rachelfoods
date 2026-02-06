@@ -46,7 +46,7 @@ export class WithdrawalController {
     }
 
     @Put('approve')
-    @Roles('PLATFORM_ADMIN', 'ADMIN')
+    @Roles('PLATFORM_ADMIN')
     @HttpCode(HttpStatus.OK)
     @ApiOperation({ summary: 'Approve a withdrawal request (Admin only)' })
     @ApiResponse({ status: 200, description: 'Withdrawal approved successfully' })
@@ -56,7 +56,7 @@ export class WithdrawalController {
     }
 
     @Put('reject')
-    @Roles('PLATFORM_ADMIN', 'ADMIN')
+    @Roles('PLATFORM_ADMIN')
     @HttpCode(HttpStatus.OK)
     @ApiOperation({ summary: 'Reject a withdrawal request (Admin only)' })
     @ApiResponse({ status: 200, description: 'Withdrawal rejected successfully' })
@@ -93,7 +93,7 @@ export class WithdrawalController {
     }
 
     @Get()
-    @Roles('PLATFORM_ADMIN', 'ADMIN')
+    @Roles('PLATFORM_ADMIN')
     @HttpCode(HttpStatus.OK)
     @ApiOperation({ summary: 'Get all withdrawals (Admin only)' })
     @ApiQuery({ name: 'status', required: false, enum: WithdrawalStatus })
@@ -103,7 +103,7 @@ export class WithdrawalController {
     }
 
     @Put('process')
-    @Roles('PLATFORM_ADMIN', 'ADMIN')
+    @Roles('PLATFORM_ADMIN')
     @HttpCode(HttpStatus.OK)
     @ApiOperation({ summary: 'Start processing an approved withdrawal (Admin only)' })
     @ApiResponse({ status: 200, description: 'Withdrawal processing started' })
@@ -113,7 +113,7 @@ export class WithdrawalController {
     }
 
     @Get('admin/metrics')
-    @Roles('PLATFORM_ADMIN', 'ADMIN')
+    @Roles('PLATFORM_ADMIN')
     @HttpCode(HttpStatus.OK)
     @ApiOperation({ summary: 'Get withdrawal metrics (Admin only)' })
     @ApiQuery({ name: 'startDate', required: false, type: String, description: 'Start date (ISO 8601)' })
@@ -134,7 +134,7 @@ export class WithdrawalController {
     }
 
     @Put('retry')
-    @Roles('PLATFORM_ADMIN', 'ADMIN')
+    @Roles('PLATFORM_ADMIN')
     @HttpCode(HttpStatus.OK)
     @ApiOperation({ summary: 'Retry a failed withdrawal (Admin only)' })
     @ApiResponse({ status: 200, description: 'Withdrawal retry initiated' })

@@ -33,7 +33,7 @@ import { RoleGuard } from '../../common/guards/role.guard';
 @ApiTags('Admin - Dashboard')
 @Controller('api/admin/dashboard')
 @UseGuards(AuthGuard, RoleGuard)
-@Roles('PLATFORM_ADMIN', 'ADMIN')
+@Roles('PLATFORM_ADMIN')
 export class DashboardController {
     private readonly logger = new Logger(DashboardController.name);
 

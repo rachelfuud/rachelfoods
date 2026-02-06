@@ -23,7 +23,7 @@ import * as crypto from 'crypto';
 @ApiTags('Webhook Subscriptions (Admin)')
 @ApiBearerAuth()
 @UseGuards(AuthGuard, RoleGuard)
-@Roles('PLATFORM_ADMIN', 'ADMIN')
+@Roles('PLATFORM_ADMIN')
 @Controller('api/admin/webhooks/subscriptions')
 export class WebhookSubscriptionsController {
     constructor(

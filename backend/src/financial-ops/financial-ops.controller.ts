@@ -42,7 +42,7 @@ import {
 @ApiTags('Financial Operations - Admin Only')
 @ApiBearerAuth()
 @UseGuards(AuthGuard, RoleGuard)
-@Roles('PLATFORM_ADMIN', 'ADMIN')
+@Roles('PLATFORM_ADMIN')
 @Controller('api/admin/financial')
 export class FinancialOpsController {
     constructor(

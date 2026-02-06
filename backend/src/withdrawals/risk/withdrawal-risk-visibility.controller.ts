@@ -30,7 +30,7 @@ import { WithdrawalStatus } from '@prisma/client';
 @ApiTags('Admin - Risk Escalation Visibility')
 @ApiBearerAuth()
 @UseGuards(AuthGuard, RoleGuard)
-@Roles('PLATFORM_ADMIN', 'ADMIN')
+@Roles('PLATFORM_ADMIN')
 @Controller('api/admin/withdrawals/risk')
 export class WithdrawalRiskVisibilityController {
     constructor(

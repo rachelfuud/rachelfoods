@@ -30,7 +30,7 @@ import {
 @ApiTags('Admin - Withdrawal Incident Reconstruction')
 @Controller('api/admin/withdrawals/risk')
 @UseGuards(AuthGuard, RoleGuard)
-@Roles('PLATFORM_ADMIN', 'ADMIN')
+@Roles('PLATFORM_ADMIN')
 @ApiBearerAuth()
 export class WithdrawalIncidentReconstructionController {
     constructor(

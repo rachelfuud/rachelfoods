@@ -67,7 +67,7 @@ import type {
 @ApiTags('Admin - Alert Incidents')
 @ApiBearerAuth()
 @UseGuards(AuthGuard, RoleGuard)
-@Roles('PLATFORM_ADMIN', 'ADMIN')
+@Roles('PLATFORM_ADMIN')
 @Controller('api/admin/alert-incidents')
 export class AlertIncidentController {
     constructor(private readonly incidentService: AlertIncidentService) { }

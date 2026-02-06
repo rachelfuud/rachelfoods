@@ -23,7 +23,7 @@ import { HighRiskUsersQueryDto } from './dto/withdrawal-risk.dto';
 @ApiTags('Withdrawal Risk Analysis - Admin Only')
 @ApiBearerAuth()
 @UseGuards(AuthGuard, RoleGuard)
-@Roles('PLATFORM_ADMIN', 'ADMIN')
+@Roles('PLATFORM_ADMIN')
 @Controller('api/admin/withdrawals/risk')
 export class WithdrawalRiskController {
     constructor(private readonly riskService: WithdrawalRiskService) { }
