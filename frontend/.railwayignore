@@ -1,3 +1,4 @@
 # Railway build optimization - don't ignore anything critical
+
 .git
 node_modules/.cache

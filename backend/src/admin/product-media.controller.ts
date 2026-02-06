@@ -15,7 +15,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 
 @Controller('api/admin/products/:productId/media')
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('ADMIN', 'STAFF')
+@Roles('PLATFORM_ADMIN')
 export class ProductMediaController {
     constructor(private readonly mediaService: ProductMediaService) { }
 

@@ -15,7 +15,7 @@ import { UpdateOrderStatusDto } from './dto';
 
 @Controller('api/admin/orders')
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('ADMIN', 'STAFF', 'PLATFORM_ADMIN')
+@Roles('PLATFORM_ADMIN')
 export class AdminOrderController {
     constructor(private readonly adminOrderService: AdminOrderService) { }
 

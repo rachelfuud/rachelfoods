@@ -28,28 +28,28 @@ export class HeroSlidesController {
     // Admin endpoints - require authentication
     @Get()
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles('ADMIN', 'STAFF')
+    @Roles('PLATFORM_ADMIN')
     async getAll(@Query('activeOnly') activeOnly?: string) {
         return this.heroSlidesService.findAll(activeOnly === 'true');
     }
 
     @Get(':id')
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles('ADMIN', 'STAFF')
+    @Roles('PLATFORM_ADMIN')
     async getOne(@Param('id') id: string) {
         return this.heroSlidesService.findOne(id);
     }
 
     @Post()
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles('ADMIN')
+    @Roles('PLATFORM_ADMIN')
     async create(@Body() data: CreateHeroSlideDto, @Request() req) {
         return this.heroSlidesService.create(data, req.user?.userId);
     }
 
     @Put(':id')
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles('ADMIN')
+    @Roles('PLATFORM_ADMIN')
     async update(
         @Param('id') id: string,
         @Body() data: UpdateHeroSlideDto,
@@ -60,14 +60,14 @@ export class HeroSlidesController {
 
     @Delete(':id')
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles('ADMIN')
+    @Roles('PLATFORM_ADMIN')
     async delete(@Param('id') id: string, @Request() req) {
         return this.heroSlidesService.delete(id, req.user?.userId);
     }
 
     @Post('reorder')
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles('ADMIN')
+    @Roles('PLATFORM_ADMIN')
     async reorder(@Body() body: { slideIds: string[] }, @Request() req) {
         return this.heroSlidesService.reorder(body.slideIds, req.user?.userId);
     }

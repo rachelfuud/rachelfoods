@@ -26,7 +26,7 @@ import { startOfMonth, isValid } from 'date-fns';
 @Controller('api/admin/agents')
 @ApiBearerAuth()
 @UseGuards(AuthGuard, RoleGuard)
-@Roles('ADMIN', 'PLATFORM_ADMIN')
+@Roles('PLATFORM_ADMIN')
 export class AdminAgentMetricsController {
     constructor(private readonly agentMetricsService: AgentMetricsService) { }
 

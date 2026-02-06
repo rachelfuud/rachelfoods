@@ -22,7 +22,7 @@ import {
 
 @Controller('api/admin/products')
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('ADMIN', 'STAFF', 'PLATFORM_ADMIN')
+@Roles('PLATFORM_ADMIN')
 export class AdminProductController {
     constructor(private readonly adminProductService: AdminProductService) { }
 
@@ -59,7 +59,6 @@ export class AdminProductController {
     }
 
     @Delete(':id')
-    @Roles('ADMIN')
     async deleteProduct(@Param('id') id: string) {
         return this.adminProductService.delete(id);
     }
@@ -88,7 +87,6 @@ export class AdminProductController {
     }
 
     @Delete(':productId/variants/:variantId')
-    @Roles('ADMIN')
     async deleteVariant(
         @Param('productId') productId: string,
         @Param('variantId') variantId: string,
