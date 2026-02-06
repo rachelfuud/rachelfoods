@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import FileUpload, { UploadedFile } from '@/components/ui/FileUpload';
+import { dollarsToCents } from '@/lib/utils/currency';
+import { api } from '@/lib/api-client';
 
 interface Category {
     id: string;
@@ -36,18 +38,15 @@ export default function NewProductPage() {
 
     const fetchCategories = async () => {
         try {
-            const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-            const response = await fetch(`${API_BASE}/api/categories`);
-            if (response.ok) {
-                const data = await response.json();
-                setCategories(data);
-                // Set first category as default if available
-                if (data.length > 0) {
-                    setFormData(prev => ({ ...prev, categoryId: data[0].id }));
-                }
+            const data = await api.get<Category[]>('/api/categories');
+            setCategories(data);
+            // Set first category as default if available
+            if (data.length > 0) {
+                setFormData(prev => ({ ...prev, categoryId: data[0].id }));
             }
         } catch (error) {
             console.error('Failed to fetch categories:', error);
+            alert('Failed to load categories. Please refresh the page.');
         } finally {
             setLoading(false);
         }
@@ -116,30 +115,15 @@ export default function NewProductPage() {
                 }));
 
             // Create product with images and videos
-            const token = localStorage.getItem('token');
-            const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-
             // Convert price from dollars to cents for backend
-            const priceInCents = Math.round(formData.price * 100);
+            const priceInCents = dollarsToCents(formData.price);
 
-            const response = await fetch(`${API_BASE}/api/products`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    ...formData,
-                    price: priceInCents,
-                    images,
-                    videos,
-                }),
+            await api.post('/api/products', {
+                ...formData,
+                price: priceInCents,
+                images,
+                videos,
             });
-
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.message || 'Failed to create product');
-            }
 
             alert('Product created successfully!');
             router.push('/admin/products');

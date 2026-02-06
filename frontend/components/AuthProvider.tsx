@@ -21,14 +21,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         // Load token from localStorage on mount
-        const savedToken = localStorage.getItem('token');
-        const savedUser = localStorage.getItem('user');
+        const initAuth = () => {
+            try {
+                const savedToken = localStorage.getItem('token');
+                const savedUser = localStorage.getItem('user');
 
-        if (savedToken && savedUser) {
-            setToken(savedToken);
-            setUser(JSON.parse(savedUser));
-        }
-        setLoading(false);
+                if (savedToken && savedUser) {
+                    const parsedUser = JSON.parse(savedUser);
+                    setToken(savedToken);
+                    setUser(parsedUser);
+                    console.log('AuthProvider: Loaded saved auth state', { 
+                        userId: parsedUser.id,
+                        email: parsedUser.email 
+                    });
+                } else {
+                    console.log('AuthProvider: No saved auth state found');
+                }
+            } catch (error) {
+                console.error('AuthProvider: Error loading saved auth', error);
+                // Clear corrupted data
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        initAuth();
     }, []);
 
     const login = async (email: string, password: string) => {
@@ -40,18 +59,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             localStorage.setItem('token', response.accessToken);
             localStorage.setItem('user', JSON.stringify(response.user));
 
+            console.log('AuthProvider: Login successful', { userId: response.user.id });
             return response;
         } catch (error) {
-            console.error('Login failed:', error);
+            console.error('AuthProvider: Login failed:', error);
             throw error;
         }
     };
 
     const logout = () => {
+        console.log('AuthProvider: Logging out');
         setUser(null);
         setToken(null);
         localStorage.removeItem('token');
         localStorage.removeItem('user');
+        localStorage.removeItem('auth-storage');
     };
 
     // Check if user has admin or staff role
