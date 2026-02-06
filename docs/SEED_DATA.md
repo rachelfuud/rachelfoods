@@ -43,9 +43,9 @@ RachelFoods features **4 product categories** offering authentic Nigerian food i
 
 | Product       | Slug        | Price (USD) | Unit      | Stock | Featured | Description                    |
 | ------------- | ----------- | ----------- | --------- | ----- | -------- | ------------------------------ |
-| **Fresh Ogi** | `fresh-ogi` | $7.00       | Wrap/Pack | 80    | No       | Fermented cereal pudding (pap) |
-| **Fufu**      | `fufu`      | $10.00      | 5 Pieces  | 60    | Yes      | Pounded yam flour swallow      |
-| **Tapioca**   | `tapioca`   | $10.00      | Pack      | 70    | No       | Cassava flour for making eba   |
+| **Fresh Ogi** | `fresh-ogi` | $7.00       | Wrap/Pack | 980   | No       | Fermented cereal pudding (pap) |
+| **Fufu**      | `fufu`      | $10.00      | 5 Pieces  | 960   | Yes      | Pounded yam flour swallow      |
+| **Tapioca**   | `tapioca`   | $10.00      | Pack      | 970   | No       | Cassava flour for making eba   |
 
 ---
 
@@ -53,10 +53,10 @@ RachelFoods features **4 product categories** offering authentic Nigerian food i
 
 | Product      | Slug      | Price (USD) | Unit | Stock | Featured | Description                             |
 | ------------ | --------- | ----------- | ---- | ----- | -------- | --------------------------------------- |
-| **Cat Fish** | `catfish` | $30.00      | Pack | 30    | Yes      | Fresh catfish for pepper soup and stews |
-| **Panla**    | `panla`   | $20.00      | Pack | 50    | No       | Dried hake fish                         |
-| **Pomo**     | `pomo`    | $20.00      | Pack | 40    | No       | Cow skin for soups and stews            |
-| **Kilishi**  | `kilishi` | $10.00      | Pack | 35    | Yes      | Spicy dried beef (Nigerian jerky)       |
+| **Cat Fish** | `catfish` | $30.00      | Pack | 930   | Yes      | Fresh catfish for pepper soup and stews |
+| **Panla**    | `panla`   | $20.00      | Pack | 950   | No       | Dried hake fish                         |
+| **Pomo**     | `pomo`    | $20.00      | Pack | 940   | No       | Cow skin for soups and stews            |
+| **Kilishi**  | `kilishi` | $10.00      | Pack | 935   | Yes      | Spicy dried beef (Nigerian jerky)       |
 
 ---
 
@@ -64,10 +64,10 @@ RachelFoods features **4 product categories** offering authentic Nigerian food i
 
 | Product                    | Slug                     | Price (USD) | Unit | Stock | Featured | Description                                  |
 | -------------------------- | ------------------------ | ----------- | ---- | ----- | -------- | -------------------------------------------- |
-| **Cray Fish**              | `crayfish`               | $10.00      | Pack | 90    | No       | Ground crayfish for seasoning                |
-| **Egusi**                  | `egusi`                  | $10.00      | Pack | 75    | Yes      | Ground melon seeds for egusi soup            |
-| **Iru / Locust Beans**     | `iru-locust-beans`       | $5.00       | Pack | 60    | No       | Fermented locust beans for traditional soups |
-| **Pepper Soup Ingredient** | `pepper-soup-ingredient` | $10.00      | Pack | 85    | No       | Complete spice mix for authentic pepper soup |
+| **Cray Fish**              | `crayfish`               | $10.00      | Pack | 990   | No       | Ground crayfish for seasoning                |
+| **Egusi**                  | `egusi`                  | $10.00      | Pack | 975   | Yes      | Ground melon seeds for egusi soup            |
+| **Iru / Locust Beans**     | `iru-locust-beans`       | $5.00       | Pack | 960   | No       | Fermented locust beans for traditional soups |
+| **Pepper Soup Ingredient** | `pepper-soup-ingredient` | $10.00      | Pack | 985   | No       | Complete spice mix for authentic pepper soup |
 
 ---
 
@@ -75,9 +75,9 @@ RachelFoods features **4 product categories** offering authentic Nigerian food i
 
 | Product             | Slug              | Price (USD) | Unit | Stock | Featured | Description                             |
 | ------------------- | ----------------- | ----------- | ---- | ----- | -------- | --------------------------------------- |
-| **Ayamase Mix**     | `ayamase-mix`     | $10.00      | Pack | 40    | Yes      | Pre-mixed ingredients for designer stew |
-| **Ofada Mix**       | `ofada-mix`       | $10.00      | Pack | 45    | Yes      | Complete mix for Ofada rice sauce       |
-| **Ewa Aganyin Mix** | `ewa-aganyin-mix` | $10.00      | Pack | 50    | No       | Ready mix for mashed beans with sauce   |
+| **Ayamase Mix**     | `ayamase-mix`     | $10.00      | Pack | 940   | Yes      | Pre-mixed ingredients for designer stew |
+| **Ofada Mix**       | `ofada-mix`       | $10.00      | Pack | 945   | Yes      | Complete mix for Ofada rice sauce       |
+| **Ewa Aganyin Mix** | `ewa-aganyin-mix` | $10.00      | Pack | 950   | No       | Ready mix for mashed beans with sauce   |
 
 ---
 

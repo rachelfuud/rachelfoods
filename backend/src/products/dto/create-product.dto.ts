@@ -6,4 +6,22 @@ export class CreateProductDto {
     weight?: number;
     unit?: string;
     isPerishable?: boolean;
+    images?: ProductImageDto[];
+    videos?: ProductVideoDto[];
+}
+
+export class ProductImageDto {
+    url: string;
+    altText?: string;
+    displayOrder?: number;
+    isPrimary?: boolean;
+}
+
+export class ProductVideoDto {
+    url: string;
+    title?: string;
+    description?: string;
+    thumbnail?: string;
+    duration?: number;
+    displayOrder?: number;
 }

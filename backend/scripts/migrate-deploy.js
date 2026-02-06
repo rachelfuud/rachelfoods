@@ -17,33 +17,33 @@ async function sleep(ms) {
 
 async function runMigration(attempt = 1) {
     console.log(`\n🔄 Migration attempt ${attempt}/${MAX_RETRIES}...`);
-    
+
     try {
         const { stdout, stderr } = await execPromise('npx prisma migrate deploy');
-        
+
         if (stdout) console.log(stdout);
         if (stderr && !stderr.includes('npm notice')) console.error(stderr);
-        
+
         console.log('✅ Migration completed successfully!');
         return true;
     } catch (error) {
         // Check if it's an advisory lock timeout (P1002)
         if (error.message.includes('P1002') || error.message.includes('advisory lock')) {
             console.warn(`⚠️  Advisory lock timeout on attempt ${attempt}`);
-            
+
             if (attempt < MAX_RETRIES) {
-                console.log(`⏳ Waiting ${RETRY_DELAY/1000} seconds before retry...`);
+                console.log(`⏳ Waiting ${RETRY_DELAY / 1000} seconds before retry...`);
                 await sleep(RETRY_DELAY);
                 return runMigration(attempt + 1);
             } else {
                 console.error(`❌ Failed after ${MAX_RETRIES} attempts. Checking migration status...`);
-                
+
                 // Try to get migration status
                 try {
                     const { stdout } = await execPromise('npx prisma migrate status');
                     console.log('\n📊 Migration Status:');
                     console.log(stdout);
-                    
+
                     // If no pending migrations, consider it success
                     if (stdout.includes('No pending migrations')) {
                         console.log('✅ No pending migrations - continuing deployment');
@@ -52,7 +52,7 @@ async function runMigration(attempt = 1) {
                 } catch (statusError) {
                     console.error('Failed to check migration status:', statusError.message);
                 }
-                
+
                 throw new Error('Migration failed: Advisory lock timeout');
             }
         } else {
@@ -65,7 +65,7 @@ async function runMigration(attempt = 1) {
 
 async function main() {
     console.log('🚀 Starting Railway deployment migration...\n');
-    
+
     try {
         await runMigration();
         console.log('\n✅ Deployment migration completed successfully!');
