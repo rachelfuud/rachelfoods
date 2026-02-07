@@ -15,7 +15,7 @@ const currencyFormatter = new Intl.NumberFormat('en-US', {
 
 /**
  * Formats a price amount as USD currency
- * @param amount - The price amount (can be cents or dollars depending on source)
+ * @param amount - The price amount in dollars (from DECIMAL(10,2) column)
  * @returns Formatted currency string (e.g., "$12.00")
  */
 export function formatCurrency(amount: number | string): string {
@@ -25,10 +25,8 @@ export function formatCurrency(amount: number | string): string {
         return '$0.00';
     }
 
-    // Backend returns prices from DECIMAL(10,2) column which are already in dollars
-    // (e.g., 10.50 from database = $10.50)
-    // If the value is very large (> 1000), it might be in cents, so convert
-    const dollars = numericAmount > 1000 ? numericAmount / 100 : numericAmount;
-
-    return currencyFormatter.format(dollars);
+    // Backend stores prices in DECIMAL(10,2) format which are already in dollars
+    // (e.g., 10.50 from database = $10.50, 1500.00 = $1500.00)
+    // No conversion needed - just format directly
+    return currencyFormatter.format(numericAmount);
 }
