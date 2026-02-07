@@ -62,7 +62,7 @@ export default function AdminLoginPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-primary/5 via-background to-secondary/5 px-4">
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-secondary/5 px-4">
             <div className="w-full max-w-md">
                 <div className="bg-background border-2 border-border rounded-xl shadow-xl p-8">
                     {/* Admin Badge */}

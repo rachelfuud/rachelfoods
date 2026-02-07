@@ -116,14 +116,14 @@ export default async function Home() {
 
         {/* Featured Products Section - Priority 1 */}
         {featuredProducts.length > 0 ? (
-          <section className="py-24 bg-linear-to-b from-background to-brand-muted/30 dark:from-background dark:to-surface">
+          <section className="py-24 bg-gradient-to-b from-background to-brand-muted/30 dark:from-background dark:to-surface">
             <div className="container mx-auto px-4">
               <div className="text-center mb-16">
-                <div className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-secondary-100 to-secondary-200 dark:from-secondary-900/30 dark:to-secondary-800/20 rounded-full mb-6">
+                <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-secondary-100 to-secondary-200 dark:from-secondary-900/30 dark:to-secondary-800/20 rounded-full mb-6">
                   <span className="text-2xl">⭐</span>
                   <span className="font-bold text-secondary-700 dark:text-secondary-400">Handpicked for You</span>
                 </div>
-                <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-linear-to-r from-primary-600 to-secondary-600 dark:from-primary-400 dark:to-secondary-400 bg-clip-text text-transparent">
+                <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary-600 to-secondary-600 dark:from-primary-400 dark:to-secondary-400 bg-clip-text text-transparent">
                   Featured Products
                 </h2>
                 <p className="text-xl text-text-secondary max-w-2xl mx-auto">
@@ -140,7 +140,7 @@ export default async function Home() {
               <div className="text-center">
                 <Link
                   href="/catalog"
-                  className="inline-flex items-center gap-3 px-10 py-5 bg-linear-to-r from-primary-600 to-primary-700 dark:from-primary-500 dark:to-primary-600 text-white rounded-2xl font-bold hover:shadow-2xl hover:scale-105 transition-all duration-300"
+                  className="inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-primary-600 to-primary-700 dark:from-primary-500 dark:to-primary-600 text-white rounded-2xl font-bold hover:shadow-2xl hover:scale-105 transition-all duration-300"
                 >
                   <span>View All Products</span>
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -153,14 +153,14 @@ export default async function Home() {
         ) : popularProducts.length > 0 ? (
           <>
             {/* Fallback to Popular if no Featured */}
-            <section className="py-24 bg-linear-to-b from-background to-brand-muted/30 dark:from-background dark:to-surface">
+            <section className="py-24 bg-gradient-to-b from-background to-brand-muted/30 dark:from-background dark:to-surface">
               <div className="container mx-auto px-4">
                 <div className="text-center mb-16">
-                  <div className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-accent-100 to-accent-200 dark:from-accent-900/30 dark:to-accent-800/20 rounded-full mb-6">
+                  <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-accent-100 to-accent-200 dark:from-accent-900/30 dark:to-accent-800/20 rounded-full mb-6">
                     <span className="text-2xl">🔥</span>
                     <span className="font-bold text-accent-700 dark:text-accent-400">Trending Now</span>
                   </div>
-                  <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-linear-to-r from-accent-600 to-primary-600 dark:from-accent-400 dark:to-primary-400 bg-clip-text text-transparent">
+                  <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-accent-600 to-primary-600 dark:from-accent-400 dark:to-primary-400 bg-clip-text text-transparent">
                     Popular Products
                   </h2>
                   <p className="text-xl text-text-secondary max-w-2xl mx-auto">
@@ -177,7 +177,7 @@ export default async function Home() {
                 <div className="text-center">
                   <Link
                     href="/catalog"
-                    className="inline-flex items-center gap-3 px-10 py-5 bg-linear-to-r from-accent-600 to-accent-700 dark:from-accent-500 dark:to-accent-600 text-white rounded-2xl font-bold hover:shadow-2xl hover:scale-105 transition-all duration-300"
+                    className="inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-accent-600 to-accent-700 dark:from-accent-500 dark:to-accent-600 text-white rounded-2xl font-bold hover:shadow-2xl hover:scale-105 transition-all duration-300"
                   >
                     <span>View All Products</span>
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -191,14 +191,14 @@ export default async function Home() {
         ) : newArrivals.length > 0 ? (
           <>
             {/* Final Fallback to New Arrivals */}
-            <section className="py-24 bg-linear-to-b from-background to-brand-muted/30 dark:from-background dark:to-surface">
+            <section className="py-24 bg-gradient-to-b from-background to-brand-muted/30 dark:from-background dark:to-surface">
               <div className="container mx-auto px-4">
                 <div className="text-center mb-16">
-                  <div className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-primary-100 to-primary-200 dark:from-primary-900/30 dark:to-primary-800/20 rounded-full mb-6">
+                  <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-100 to-primary-200 dark:from-primary-900/30 dark:to-primary-800/20 rounded-full mb-6">
                     <span className="text-2xl">✨</span>
                     <span className="font-bold text-primary-700 dark:text-primary-400">Just Added</span>
                   </div>
-                  <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-linear-to-r from-primary-600 to-secondary-600 dark:from-primary-400 dark:to-secondary-400 bg-clip-text text-transparent">
+                  <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary-600 to-secondary-600 dark:from-primary-400 dark:to-secondary-400 bg-clip-text text-transparent">
                     New Arrivals
                   </h2>
                   <p className="text-xl text-text-secondary max-w-2xl mx-auto">
@@ -215,7 +215,7 @@ export default async function Home() {
                 <div className="text-center">
                   <Link
                     href="/catalog"
-                    className="inline-flex items-center gap-3 px-10 py-5 bg-linear-to-r from-primary-600 to-secondary-600 dark:from-primary-500 dark:to-secondary-500 text-white rounded-2xl font-bold hover:shadow-2xl hover:scale-105 transition-all duration-300"
+                    className="inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-primary-600 to-secondary-600 dark:from-primary-500 dark:to-secondary-500 text-white rounded-2xl font-bold hover:shadow-2xl hover:scale-105 transition-all duration-300"
                   >
                     <span>View All Products</span>
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -229,7 +229,7 @@ export default async function Home() {
         ) : null}
 
         {/* CTA Section */}
-        <section className="py-24 bg-linear-to-r from-primary-600 via-secondary-600 to-accent-600 dark:from-primary-700 dark:via-secondary-700 dark:to-accent-700 text-white">
+        <section className="py-24 bg-gradient-to-r from-primary-600 via-secondary-600 to-accent-600 dark:from-primary-700 dark:via-secondary-700 dark:to-accent-700 text-white">
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-5xl md:text-6xl font-bold mb-8">Ready to Get Started?</h2>
             <p className="text-xl md:text-2xl mb-12 max-w-3xl mx-auto opacity-95 leading-relaxed">

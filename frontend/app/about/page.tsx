@@ -13,7 +13,7 @@ export default function AboutPage() {
 
             <main className="flex-1">
                 {/* Hero Section */}
-                <section className="bg-linear-to-br from-primary/10 via-secondary/10 to-accent/10 py-20">
+                <section className="bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 py-20">
                     <div className="container mx-auto px-4 text-center">
                         <h1 className="text-5xl font-bold mb-6">About RachelFoods</h1>
                         <p className="text-xl text-foreground/70 max-w-3xl mx-auto">

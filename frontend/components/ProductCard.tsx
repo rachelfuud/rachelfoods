@@ -36,20 +36,20 @@ export const ProductCard = React.memo(function ProductCard({ product }: ProductC
     const getStatusBadgeStyles = () => {
         switch (status) {
             case 'DRAFT':
-                return 'bg-linear-to-r from-yellow-50 to-yellow-100 text-yellow-800 border-yellow-300 dark:from-yellow-900/30 dark:to-yellow-800/20 dark:text-yellow-400 dark:border-yellow-700';
+                return 'bg-gradient-to-r from-yellow-50 to-yellow-100 text-yellow-800 border-yellow-300 dark:from-yellow-900/30 dark:to-yellow-800/20 dark:text-yellow-400 dark:border-yellow-700';
             case 'DISABLED':
-                return 'bg-linear-to-r from-gray-50 to-gray-100 text-gray-800 border-gray-300 dark:from-gray-900/30 dark:to-gray-800/20 dark:text-gray-400 dark:border-gray-700';
+                return 'bg-gradient-to-r from-gray-50 to-gray-100 text-gray-800 border-gray-300 dark:from-gray-900/30 dark:to-gray-800/20 dark:text-gray-400 dark:border-gray-700';
             case 'ARCHIVED':
-                return 'bg-linear-to-r from-red-50 to-red-100 text-red-800 border-red-300 dark:from-red-900/30 dark:to-red-800/20 dark:text-red-400 dark:border-red-700';
+                return 'bg-gradient-to-r from-red-50 to-red-100 text-red-800 border-red-300 dark:from-red-900/30 dark:to-red-800/20 dark:text-red-400 dark:border-red-700';
             case 'ACTIVE':
             default:
-                return 'bg-linear-to-r from-green-50 to-green-100 text-green-800 border-green-300 dark:from-green-900/30 dark:to-green-800/20 dark:text-green-400 dark:border-green-700';
+                return 'bg-gradient-to-r from-green-50 to-green-100 text-green-800 border-green-300 dark:from-green-900/30 dark:to-green-800/20 dark:text-green-400 dark:border-green-700';
         }
     };
 
     return (
         <Link href={`/products/${product.slug}`}>
-            <div className={`border-2 border-border rounded-2xl p-5 hover:shadow-2xl hover:border-brand-accent/50 transition-all duration-300 bg-linear-to-br from-brand-surface to-brand-muted/30 dark:from-surface dark:to-surface-elevated group ${status === 'DISABLED' ? 'opacity-60' : ''}`}>
+            <div className={`border-2 border-border rounded-2xl p-5 hover:shadow-2xl hover:border-brand-accent/50 transition-all duration-300 bg-gradient-to-br from-brand-surface to-brand-muted/30 dark:from-surface dark:to-surface-elevated group ${status === 'DISABLED' ? 'opacity-60' : ''}`}>
                 {product.imageUrl ? (
                     <div className="relative aspect-square mb-4 rounded-xl overflow-hidden bg-muted ring-2 ring-border group-hover:ring-brand-accent/30 transition-all">
                         <Image
@@ -61,25 +61,25 @@ export const ProductCard = React.memo(function ProductCard({ product }: ProductC
                                 // Fallback to placeholder if image fails to load
                                 const target = e.target as HTMLImageElement;
                                 target.style.display = 'none';
-                                target.parentElement!.innerHTML = '<div class="w-full h-full flex items-center justify-center bg-linear-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/10"><span class="text-6xl">🍽️</span></div>';
+                                target.parentElement!.innerHTML = '<div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/10"><span class="text-6xl">🍽️</span></div>';
                             }}
                         />
                         {hasDiscount && (
-                            <div className="absolute top-3 right-3 bg-linear-to-r from-accent-500 to-accent-600 text-white px-3 py-2 rounded-xl text-sm font-bold shadow-lg backdrop-blur-sm">
+                            <div className="absolute top-3 right-3 bg-gradient-to-r from-accent-500 to-accent-600 text-white px-3 py-2 rounded-xl text-sm font-bold shadow-lg backdrop-blur-sm">
                                 -{discountPercent}%
                             </div>
                         )}
                         {isOutOfStock && (
-                            <div className="absolute top-3 left-3 bg-linear-to-r from-red-600 to-red-700 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg backdrop-blur-sm animate-pulse">
+                            <div className="absolute top-3 left-3 bg-gradient-to-r from-red-600 to-red-700 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg backdrop-blur-sm animate-pulse">
                                 OUT OF STOCK
                             </div>
                         )}
                     </div>
                 ) : (
-                    <div className="relative aspect-square mb-4 rounded-xl bg-linear-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/10 flex items-center justify-center ring-2 ring-border">
+                    <div className="relative aspect-square mb-4 rounded-xl bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/10 flex items-center justify-center ring-2 ring-border">
                         <span className="text-6xl">🍽️</span>
                         {isOutOfStock && (
-                            <div className="absolute top-3 left-3 bg-linear-to-r from-red-600 to-red-700 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg backdrop-blur-sm animate-pulse">
+                            <div className="absolute top-3 left-3 bg-gradient-to-r from-red-600 to-red-700 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg backdrop-blur-sm animate-pulse">
                                 OUT OF STOCK
                             </div>
                         )}
