@@ -17,8 +17,7 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "esModuleInterop": true,
-    "moduleResolution": "node10",
-    "ignoreDeprecations": "6.0"
+    "moduleResolution": "node10"
   },
   "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]
 }
