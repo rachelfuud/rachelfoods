@@ -13,7 +13,7 @@ const nextConfig = {
   },
   // Silence turbopack workspace root warning
   turbopack: {
-    root: '../',
+    root: require('path').resolve(__dirname, '..'),
   },
 };
 
