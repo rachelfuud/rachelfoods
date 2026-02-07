@@ -11,6 +11,10 @@ const nextConfig = {
   outputFileTracingIncludes: {
     '/admin/**/*': ['./app/admin/**/*'],
   },
+  // Silence turbopack workspace root warning
+  turbopack: {
+    root: '../',
+  },
 };
 
 module.exports = nextConfig;
