@@ -8,10 +8,8 @@ const nextConfig = {
   // Fix Railway deployment - ensure standalone output includes all routes
   output: 'standalone',
   // Ensure admin routes are generated at build time
-  experimental: {
-    outputFileTracingIncludes: {
-      '/admin/**/*': ['./app/admin/**/*'],
-    },
+  outputFileTracingIncludes: {
+    '/admin/**/*': ['./app/admin/**/*'],
   },
 };
 

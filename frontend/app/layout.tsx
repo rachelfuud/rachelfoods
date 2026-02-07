@@ -14,8 +14,6 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "RachelFoods - Traditional Food Delivery & Kitchen Refill",
   description: "Order authentic traditional foods with kitchen refill feature - pre-order weekly, monthly or for special events. Seller-confirmed orders with custom delivery scheduling.",
-    ],
-  },
 };
 
 export const viewport = {
